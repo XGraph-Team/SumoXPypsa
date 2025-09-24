@@ -475,14 +475,10 @@ SOFTWARE.
 - **API Latency**: Average < 50ms response time
 - **Scalability**: Horizontally scalable with Docker/Kubernetes
 
-## 📺 Media & Resources
+## 📺 Media
 
 - **[📹 Watch Demo Video](https://youtu.be/36mGJWjrSxw)** - Full system demonstration
-- **[📚 Documentation](https://github.com/XGraph-Team/SumoXPypsa/wiki)** - Detailed guides
-- **[🐛 Report Issues](https://github.com/XGraph-Team/SumoXPypsa/issues)** - Bug reports and feature requests
-- **[💬 Discussions](https://github.com/XGraph-Team/SumoXPypsa/discussions)** - Community forum
 
----
 
 <div align="center">
 
