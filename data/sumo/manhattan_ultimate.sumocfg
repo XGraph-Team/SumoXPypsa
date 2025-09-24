@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<configuration>
+  <input>
+    <net-file value="manhattan.net.xml" />
+    <route-files value="manhattan_continuous.rou.xml" />
+    <additional-files value="manhattan_additional.xml" />
+  </input>
+  <time>
+    <begin value="0" />
+    <end value="86400" />
+    <step-length value="0.5" />
+  </time>
+  <processing>
+    <collision.action value="warn" />
+    <collision.check-junctions value="true" />
+    <emergencydecel.warning-threshold value="1.5" />
+    <time-to-teleport value="300" />
+    <max-depart-delay value="900" />
+    <routing-algorithm value="dijkstra" />
+    <device.rerouting.probability value="0.8" />
+    <device.rerouting.period value="300" />
+    <device.battery.probability value="1" />
+    <device.emissions.probability value="1" />
+    <person.device.taxi.probability value="0.3" />
+  </processing>
+  <routing>
+    <device.rerouting.adaptation-weight value="0.5" />
+    <device.rerouting.adaptation-interval value="30" />
+  </routing>
+  <battery>
+    <device.battery.track-fuel value="true" />
+  </battery>
+</configuration>

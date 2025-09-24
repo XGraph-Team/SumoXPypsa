@@ -1,0 +1,59 @@
+{
+  "bounds": {
+    "north": 40.77,
+    "south": 40.745,
+    "west": -74.01,
+    "east": -73.96
+  },
+  "network_file": "data/sumo\\manhattan.net.xml",
+  "traffic_lights_file": "data/sumo\\traffic_lights.add.xml",
+  "types_file": "data/sumo\\types.add.xml",
+  "critical_intersections": [
+    [
+      40.7589,
+      -73.9851,
+      "Times Square - 42nd & Broadway"
+    ],
+    [
+      40.756,
+      -73.9855,
+      "42nd & 7th Ave"
+    ],
+    [
+      40.7595,
+      -73.9845,
+      "47th & Broadway"
+    ],
+    [
+      40.7527,
+      -73.9772,
+      "Grand Central - 42nd & Park"
+    ],
+    [
+      40.7519,
+      -73.9763,
+      "42nd & Lexington"
+    ],
+    [
+      40.7505,
+      -73.9934,
+      "Penn Station - 34th & 8th"
+    ],
+    [
+      40.7484,
+      -73.9878,
+      "Herald Square - 34th & 6th"
+    ],
+    [
+      40.7644,
+      -73.98,
+      "57th & 5th Ave"
+    ],
+    [
+      40.7593,
+      -73.98,
+      "50th & 5th Ave - Rockefeller"
+    ]
+  ],
+  "created_at": "2025-09-02 06:29:10"
+}

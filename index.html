@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manhattan Power Grid - Advanced Operations Center</title>
+
+    <!-- Mapbox GL JS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link href="/static/styles.css" rel="stylesheet">
+</head>
+<body data-tab="overview">    
+    <!-- Premium Chatbot Launcher -->
+    <div id="chatbot-launcher" class="chatbot-launcher" title="AI Assistant" onclick="toggleChatbot()">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 5.58 2 10c0 2.39 1.31 4.53 3.4 6.01-.14.52-.51 1.89-.59 2.24-.09.37.13.73.5.82.26.06.52-.03.7-.21.28-.27 1.25-1.2 1.77-1.7.79.22 1.63.34 2.52.34 5.52 0 10-3.58 10-8s-4.48-8-10-8Z" fill="#ffffff"/>
+        </svg>
+    </div>
+    
+    <!-- Premium Chatbot Window -->
+    <div id="chatbot-window" class="chatbot-window">
+        <div class="chat-header">
+            <div class="chat-title"><span class="chat-avatar"></span> Manhattan AI Assistant</div>
+            <button class="chat-close" onclick="toggleChatbot()">✕</button>
+        </div>
+        <div id="chat-messages" class="chat-messages"></div>
+        <div class="chat-input">
+            <input id="chat-input" placeholder="Ask about grid status, ML insights, optimization..." onkeypress="handleChatKeyPress(event)"/>
+            <button class="btn btn-primary chat-send" onclick="sendChatMessage()">Send</button>
+        </div>
+    </div>
+    
+    <div id="map"></div>
+    
+    <!-- Premium Control Panel -->
+    <div class="control-panel">
+        <div class="panel-header">
+            <div class="brand"><span class="brand-dot"></span> Manhattan Grid Control</div>
+            <button id="panel-toggle" class="icon-btn" onclick="togglePanel()" title="Toggle panel">✕</button>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="overview" onclick="selectTab('overview', this)">⚡ Overview</button>
+            <button class="tab-btn" data-tab="vehicles" onclick="selectTab('vehicles', this)">🚗 Vehicles</button>
+            <button class="tab-btn" data-tab="ml" onclick="selectTab('ml', this)">🧠 ML Analytics</button>
+            <button class="tab-btn" data-tab="substations" onclick="selectTab('substations', this)">🏭 Substations</button>
+            <button class="tab-btn" data-tab="layers" onclick="selectTab('layers', this)">👁️ Layers</button>
+            <button class="tab-btn" data-tab="v2g" onclick="selectTab('v2g', this)">⚡ V2G</button>
+        </div>
+        
+        <h1>Manhattan Power Grid</h1>
+        <div class="subtitle">Advanced Operations & Real-time Analytics</div>
+        
+        <!-- Main Statistics -->
+        <div id="section-stats" class="stats-grid tab tab-overview">
+            <div class="stat-card">
+                <div class="stat-value" id="traffic-lights" style="color: #ffaa00;">0</div>
+                <div class="stat-label">Traffic Lights</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="powered-lights" style="color: #00ff88;">0</div>
+                <div class="stat-label">Powered</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="load-mw" style="color: #00aaff;">0</div>
+                <div class="stat-label">MW Load</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="substations-online" style="color: #ff88ff;">0</div>
+                <div class="stat-label">Substations</div>
+            </div>
+        </div>
+        
+        <!-- Traffic Light Statistics -->
+        <div class="light-stats tab tab-overview">
+            <div class="light-stat">
+                <div class="light-dot" style="background: #00ff00;"></div>
+                <span id="green-count">0</span> Green
+            </div>
+            <div class="light-stat">
+                <div class="light-dot" style="background: #ffff00;"></div>
+                <span id="yellow-count">0</span> Yellow
+            </div>
+            <div class="light-stat">
+                <div class="light-dot" style="background: #ff0000;"></div>
+                <span id="red-count">0</span> Red
+            </div>
+            <div class="light-stat">
+                <div class="light-dot" style="background: #333333; border: 1px solid #666;"></div>
+                <span id="black-count">0</span> Off
+            </div>
+        </div>
+        
+        <!-- Vehicle Control Section -->
+        <div id="section-vehicles" class="vehicle-control tab tab-vehicles">
+            <h3>Vehicle Simulation Control</h3>
+            
+            <div class="vehicle-stats">
+                <div class="vehicle-stat">
+                    <div class="vehicle-stat-value" id="active-vehicles">0</div>
+                    <div class="vehicle-stat-label">Active</div>
+                </div>
+                <div class="vehicle-stat">
+                    <div class="vehicle-stat-value" id="ev-count">0</div>
+                    <div class="vehicle-stat-label">EVs</div>
+                </div>
+                <div class="vehicle-stat">
+                    <div class="vehicle-stat-value" id="vehicles-charging-count" style="color: #00ffff;">0</div>
+                    <div class="vehicle-stat-label">Charging</div>
+                </div>
+            </div>
+            
+            <!-- EV Configuration Panel -->
+            <div class="ev-config-panel" style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 200, 100, 0.08)); border-radius: 16px; border: 1px solid rgba(0, 255, 136, 0.25);">
+                <h4 style="color: #00ff88; margin-bottom: 16px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                    ⚡ EV Configuration
+                </h4>
+                
+                <!-- EV Percentage Control -->
+                <div class="control-group" style="margin-bottom: 16px;">
+                    <div class="control-label" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 13px; color: var(--text-secondary);">EV Vehicle Percentage</span>
+                        <span id="ev-percentage-display" style="font-weight: 600; color: #00ff88; font-size: 14px;">70%</span>
+                    </div>
+                    <input type="range" id="ev-percentage-slider" 
+                           min="0" max="100" value="70" step="5"
+                           style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; outline: none; -webkit-appearance: none; appearance: none; cursor: pointer;"
+                           oninput="updateEVPercentage(this.value)">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                        <span>0%</span>
+                        <span>50%</span>
+                        <span>100%</span>
+                    </div>
+                </div>
+                
+                <!-- Battery SOC Range Control -->
+                <div class="control-group" style="margin-bottom: 16px;">
+                    <div class="control-label" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 13px; color: var(--text-secondary);">Battery SOC Range</span>
+                        <span id="battery-range-display" style="font-weight: 600; color: #00ffff; font-size: 14px;">20% - 90%</span>
+                    </div>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <div style="flex: 1;">
+                            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Min SOC</label>
+                            <input type="range" id="battery-min-slider" 
+                                   min="1" max="100" value="20" step="1"
+                                   style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; outline: none; -webkit-appearance: none; appearance: none; cursor: pointer;"
+                                   oninput="updateBatteryRange()">
+                        </div>
+                        <div style="flex: 1;">
+                            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Max SOC</label>
+                            <input type="range" id="battery-max-slider" 
+                                   min="1" max="100" value="90" step="1"
+                                   style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; outline: none; -webkit-appearance: none; appearance: none; cursor: pointer;"
+                                   oninput="updateBatteryRange()">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Presets -->
+                <div class="preset-buttons" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px;">
+                    <button class="btn btn-secondary" style="padding: 8px 12px; font-size: 11px;" onclick="setEVPreset('low')">
+                        🚗 Low EV (20%)
+                    </button>
+                    <button class="btn btn-secondary" style="padding: 8px 12px; font-size: 11px;" onclick="setEVPreset('medium')">
+                        ⚡ Medium (50%)
+                    </button>
+                    <button class="btn btn-secondary" style="padding: 8px 12px; font-size: 11px;" onclick="setEVPreset('high')">
+                        🔋 High EV (80%)
+                    </button>
+                </div>
+                
+                <!-- Apply Button -->
+                <button class="btn btn-primary" style="width: 100%; margin-top: 16px; padding: 12px;" onclick="applyEVConfiguration()">
+                    🔄 Apply EV Settings
+                </button>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="startSUMO()" id="start-sumo-btn">
+                    ▶️ Start Vehicles
+                </button>
+                <button class="btn btn-danger" onclick="stopSUMO()" id="stop-sumo-btn" disabled>
+                    ⏹️ Stop Vehicles
+                </button>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="spawnVehicles(10)" id="spawn10-btn" disabled>
+                    ➕ Add Cars
+                </button>
+            </div>
+        </div>
+        
+        <!-- Speed Control -->
+        <div class="speed-control tab tab-overview">
+            <div class="section-title">⚡ Simulation Speed: <span id="speed-value">1.0x</span></div>
+            <input type="range" class="speed-slider" id="speed-slider" 
+                   min="0.1" max="5" step="0.1" value="1.0" 
+                   onchange="setSimulationSpeed(this.value)">
+        </div>
+        
+        <!-- Machine Learning Dashboard -->
+        <div id="section-ml" class="ml-dashboard tab tab-ml">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <h3>Machine Learning Analytics</h3>
+                <div style="font-size:11px;color:var(--text-muted);">Updated <span id="ml-updated">–</span></div>
+            </div>
+            <div class="ml-metrics">
+                <div class="ml-stat">
+                    <div style="color: #c8a2ff;" id="ml-accuracy">–</div>
+                    <div>Accuracy</div>
+                </div>
+                <div class="ml-stat">
+                    <div style="color: #00ff88;" id="ml-patterns">0</div>
+                    <div>Patterns</div>
+                </div>
+                <div class="ml-stat">
+                    <div style="color: #ff6b6b;" id="ml-anomalies">0</div>
+                    <div>Anomalies</div>
+                </div>
+                <div class="ml-stat">
+                    <div style="color: #4ecdc4;" id="ml-savings">0%</div>
+                    <div>Savings</div>
+                </div>
+            </div>
+            <div class="btn-group" style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-secondary" onclick="showMLPredictions()">📈 Predictions</button>
+                <button class="btn btn-secondary" onclick="runMLOptimization()">⚡ Optimize</button>
+                <button class="btn btn-secondary" onclick="askAIAdvice()">🤖 Ask AI</button>
+                <button class="btn btn-secondary" onclick="showBaselines()">📐 Baselines</button>
+                <button class="btn btn-secondary" onclick="downloadExecutiveReport()">📄 Report</button>
+                <button class="btn btn-secondary" onclick="showV2GAnalytics()">⚡ V2G Analytics</button>
+            </div>
+            <div id="ml-results" style="display: none;"></div>
+            
+            <!-- V2G Analytics Panel -->
+            <div id="v2g-analytics-panel" style="display: none; margin-top: 20px; padding: 16px; background: rgba(0, 255, 136, 0.05); border-radius: 12px; border: 1px solid rgba(0, 255, 136, 0.2);">
+                <h4 style="color: #00ff88; margin-bottom: 12px;">⚡ V2G Performance Analytics</h4>
+                <div class="v2g-metrics" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                    <div class="v2g-stat" style="text-align: center; padding: 8px; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                        <div id="v2g-active-vehicles" style="font-size: 18px; font-weight: bold; color: #00ff88;">0</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Active Vehicles</div>
+                    </div>
+                    <div class="v2g-stat" style="text-align: center; padding: 8px; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                        <div id="v2g-energy-traded" style="font-size: 18px; font-weight: bold; color: #00aaff;">0</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Energy Traded (kWh)</div>
+                    </div>
+                    <div class="v2g-stat" style="text-align: center; padding: 8px; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                        <div id="v2g-revenue" style="font-size: 18px; font-weight: bold; color: #ffaa00;">$0</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Total Revenue</div>
+                    </div>
+                    <div class="v2g-stat" style="text-align: center; padding: 8px; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                        <div id="v2g-market-price" style="font-size: 18px; font-weight: bold; color: #c8a2ff;">$0</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Market Price/kWh</div>
+                    </div>
+                </div>
+                <div id="v2g-insights" style="font-size: 13px; color: var(--text-secondary); line-height: 1.4;"></div>
+            </div>
+        </div>
+        <!-- Add this AFTER the ML Dashboard section and BEFORE the Substations section -->
+        <!-- V2G Control Panel -->
+        <div id="section-v2g" class="v2g-dashboard tab tab-v2g">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <h3 style="color: #00ffff;">⚡ Vehicle-to-Grid Energy Trading</h3>
+                <div class="v2g-status" style="display:flex;align-items:center;gap:8px;">
+                    <span class="status-dot" style="width:10px;height:10px;border-radius:50%;background:#00ff88;"></span>
+                    <span id="v2g-active-sessions" style="font-weight:600;">0</span>
+                    <span style="color:var(--text-muted);">Active</span>
+                </div>
+            </div>
+            
+            <!-- V2G Metrics -->
+            <div class="v2g-metrics" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;">
+                <div class="stat-card">
+                    <div style="font-size:24px;margin-bottom:4px;">⚡</div>
+                    <div class="stat-value" id="v2g-power" style="color:#00ffff;">0</div>
+                    <div class="stat-label">kW Providing</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size:24px;margin-bottom:4px;">💰</div>
+                    <div class="stat-value" id="v2g-earnings" style="color:#00ff88;">$0</div>
+                    <div class="stat-label">Total Earnings</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size:24px;margin-bottom:4px;">🚗</div>
+                    <div class="stat-value" id="v2g-vehicles" style="color:#ffaa00;">0</div>
+                    <div class="stat-label">Vehicles</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size:24px;margin-bottom:4px;">📈</div>
+                    <div class="stat-value" id="v2g-rate" style="color:#ff88ff;">$0.00</div>
+                    <div class="stat-label">Rate/kWh</div>
+                </div>
+            </div>
+            
+            <!-- Failed Substations with V2G Toggle -->
+            <div class="v2g-substations">
+                <h4 style="color:var(--text-secondary);margin:16px 0 12px 0;font-size:14px;font-weight:600;">Failed Substations - V2G Control</h4>
+                <div id="v2g-substation-list" style="display:grid;gap:8px;">
+                    <!-- Will be populated dynamically -->
+                    <div style="padding:20px;text-align:center;color:var(--text-muted);background:rgba(255,255,255,0.02);border-radius:12px;">
+                        No failed substations - Fail a substation to enable V2G
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Active V2G Sessions -->
+            <div class="v2g-sessions" style="margin-top:20px;">
+                <h4 style="color:var(--text-secondary);margin-bottom:12px;font-size:14px;font-weight:600;">Active V2G Sessions</h4>
+                <div id="v2g-session-list" style="max-height:200px;overflow-y:auto;background:rgba(0,0,0,0.2);border-radius:12px;padding:12px;">
+                    <div style="text-align:center;color:var(--text-muted);">
+                        No active V2G sessions
+                    </div>
+                </div>
+            </div>
+            
+            <!-- V2G Controls -->
+            <div class="btn-group" style="margin-top:16px;">
+                <button class="btn btn-secondary" onclick="testV2G()">🧪 Test V2G</button>
+                <button class="btn btn-secondary" onclick="updateV2GDashboard()">🔄 Refresh</button>
+            </div>
+        </div>
+        
+        <!-- Substation Controls -->
+        <div id="section-substations" class="section-title tab tab-substations">Substation Control</div>
+        <div class="substation-grid tab tab-substations" id="substation-controls"></div>
+        <div class="tab tab-substations" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 16px;">
+            <button class="btn btn-danger" onclick="triggerBlackout()">⚠️ BLACKOUT</button>
+            <button class="btn btn-primary" onclick="runV2GRescueScenario()">⚡ V2G Scenario</button>
+            <button class="btn btn-primary" onclick="restoreAll()">🔧 Restore All</button>
+        </div>
+        
+        <!-- Layer Controls -->
+        <div id="section-layers" class="layer-controls tab tab-layers">
+            <div class="section-title">Visualization Layers</div>
+            
+            <div class="layer-item">
+                <span>Traffic Lights</span>
+                <label class="toggle">
+                    <input type="checkbox" checked id="layer-lights" onchange="toggleLayer('lights')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="layer-item">
+                <span>Vehicles</span>
+                <label class="toggle">
+                    <input type="checkbox" checked id="layer-vehicles" onchange="toggleLayer('vehicles')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="layer-item">
+                <span>13.8kV Cables</span>
+                <label class="toggle">
+                    <input type="checkbox" checked id="layer-primary" onchange="toggleLayer('primary')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="layer-item">
+                <span>480V Cables</span>
+                <label class="toggle">
+                    <input type="checkbox" checked id="layer-secondary" onchange="toggleLayer('secondary')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="layer-item">
+                <span>EV Stations</span>
+                <label class="toggle">
+                    <input type="checkbox" checked id="layer-ev" onchange="toggleLayer('ev')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Premium Status Bar -->
+    <div class="status-bar">
+        <div class="status-item">
+            <span class="status-indicator" id="system-indicator"></span>
+            <span id="system-status">System Online</span>
+        </div>
+        <div class="status-item">
+            🚗 <span id="vehicle-count">0</span> vehicles
+        </div>
+        <div class="status-item">
+            ⚡ <span id="charging-stations">0</span> charging
+        </div>
+        <div class="status-item">
+            📊 <span id="total-load">0</span> MW
+        </div>
+        <div class="status-item">
+            🕐 <span id="time">00:00</span>
+        </div>
+    </div>
+    
+    <!-- Blackout Alert -->
+    <div id="blackout-alert">
+        <div>
+            <div>🚨 CITYWIDE BLACKOUT</div>
+            <div id="blackout-message">Multiple substations offline</div>
+            <button onclick="dismissBlackoutAlert()" class="btn btn-primary">Dismiss Alert</button>
+        </div>
+    </div>
+    
+    <!-- Premium Legend -->
+    <div class="legend">
+        <div class="legend-title">System Components</div>
+        <div class="legend-grid">
+            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Infrastructure</div>
+            <div class="legend-row">
+                <span class="chip-dot" style="font-size:16px; color:#ff0066; font-weight:bold; background:#ff0066; width:24px; height:24px; display:flex; align-items:center; justify-content:center; clip-path: polygon(50% 0%, 0% 100%, 100% 100%);">S</span>
+                <span>Substations</span>
+                <span id="legend-substations" class="badge">0</span>
+            </div>
+            <div class="legend-row">
+                <span class="chip-dot" style="font-size:12px; color:#00ff88; font-weight:bold; background:#00ff88; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center;">EV</span>
+                <span>EV Stations</span>
+                <span id="legend-ev" class="badge">0</span>
+            </div>
+            <div class="legend-row">
+                <span class="chip-line" style="color:#00ffcc; background:#00ffcc;"></span>
+                <span>Primary (13.8kV)</span>
+            </div>
+            <div class="legend-row">
+                <span class="chip-line" style="color:#ffbb44; background:#ffbb44;"></span>
+                <span>Service (480V)</span>
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 12px; text-transform: uppercase; letter-spacing: 1px;">Vehicles</div>
+            <div class="legend-row">
+                <span class="legend-car" style="color:#00ff00;">
+                    <svg viewBox="0 0 22 14"><rect x="1" y="2" rx="2" ry="2" width="20" height="10"/></svg>
+                </span>
+                <span>EV High 40%+</span>
+                <span id="legend-ev-high" class="badge">0</span>
+            </div>
+            <div class="legend-row">
+                <span class="legend-car" style="color:#ffaa00;">
+                    <svg viewBox="0 0 22 14"><rect x="1" y="2" rx="2" ry="2" width="20" height="10"/></svg>
+                </span>
+                <span>EV Medium 20-40%</span>
+                <span id="legend-ev-medium" class="badge">0</span>
+            </div>
+            <div class="legend-row">
+                <span class="legend-car" style="color:#ff0000;">
+                    <svg viewBox="0 0 22 14"><rect x="1" y="2" rx="2" ry="2" width="20" height="10"/></svg>
+                </span>
+                <span>EV Low 2-20%</span>
+                <span id="legend-ev-low" class="badge">0</span>
+            </div>
+            <div class="legend-row">
+                <span class="legend-car" style="color:#6464ff;">
+                    <svg viewBox="0 0 22 14"><rect x="1" y="2" rx="2" ry="2" width="20" height="10"/></svg>
+                </span>
+                <span>Gas Vehicle</span>
+                <span id="legend-vehicles-gas" class="badge">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="/static/script.js"></script>
+</body>
+</html>

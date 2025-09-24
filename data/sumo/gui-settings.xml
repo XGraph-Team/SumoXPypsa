@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<viewsettings><scheme name="Manhattan Power Grid" /><background backgroundColor="0.2,0.2,0.2" /><edges><edge_colorer scheme="by speed" /><edge_scaler scheme="by flow" /></edges></viewsettings>

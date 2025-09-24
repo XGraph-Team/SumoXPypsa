@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2025-09-02 00:04:31 by Eclipse SUMO GUI Version 1.24.0
+<sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="data/sumo\manhattan.net.xml"/>
+        <route-files value="data/sumo\manhattan.rou.xml"/>
+    </input>
+
+    <output>
+        <emission-output value="data/sumo\emissions.xml"/>
+        <summary-output value="data/sumo\summary.xml"/>
+        <tripinfo-output value="data/sumo\tripinfo.xml"/>
+        <statistic-output value="data/sumo\stats.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="3600"/>
+        <step-length value="0.1"/>
+    </time>
+
+    <processing>
+        <collision.action value="warn"/>
+        <collision.check-junctions value="true"/>
+        <emergencydecel.warning-threshold value="1.5"/>
+    </processing>
+
+    <report>
+        <duration-log.statistics value="true"/>
+        <no-step-log value="true"/>
+    </report>
+
+    <emissions>
+        <device.emissions.probability value="1.0"/>
+    </emissions>
+
+    <battery>
+        <device.battery.probability value="0.3"/>
+    </battery>
+
+    <traci_server>
+        <remote-port value="64770"/>
+    </traci_server>
+
+    <gui_only>
+        <gui-settings-file value="data/sumo\gui-settings.xml"/>
+        <quit-on-end value="true"/>
+        <start value="true"/>
+    </gui_only>
+
+</sumoConfiguration>
+-->
+
+<summary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/summary_file.xsd">
+</summary>

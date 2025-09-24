@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nodes>
+    <node id="n0" x="-1000.00" y="74500.00" type="traffic_light"/>
+    <node id="n1" x="-1000.00" y="75250.00" type="priority"/>
+    <node id="n2" x="-1000.00" y="76000.00" type="traffic_light"/>
+    <node id="n3" x="-1000.00" y="76750.00" type="priority"/>
+    <node id="n4" x="-1000.00" y="77500.00" type="traffic_light"/>
+    <node id="n5" x="250.00" y="74500.00" type="priority"/>
+    <node id="n6" x="250.00" y="75250.00" type="priority"/>
+    <node id="n7" x="250.00" y="76000.00" type="priority"/>
+    <node id="n8" x="250.00" y="76750.00" type="priority"/>
+    <node id="n9" x="250.00" y="77500.00" type="priority"/>
+    <node id="n10" x="1500.00" y="74500.00" type="traffic_light"/>
+    <node id="n11" x="1500.00" y="75250.00" type="priority"/>
+    <node id="n12" x="1500.00" y="76000.00" type="traffic_light"/>
+    <node id="n13" x="1500.00" y="76750.00" type="priority"/>
+    <node id="n14" x="1500.00" y="77500.00" type="traffic_light"/>
+    <node id="n15" x="2750.00" y="74500.00" type="priority"/>
+    <node id="n16" x="2750.00" y="75250.00" type="priority"/>
+    <node id="n17" x="2750.00" y="76000.00" type="priority"/>
+    <node id="n18" x="2750.00" y="76750.00" type="priority"/>
+    <node id="n19" x="2750.00" y="77500.00" type="priority"/>
+    <node id="n20" x="4000.00" y="74500.00" type="traffic_light"/>
+    <node id="n21" x="4000.00" y="75250.00" type="priority"/>
+    <node id="n22" x="4000.00" y="76000.00" type="traffic_light"/>
+    <node id="n23" x="4000.00" y="76750.00" type="priority"/>
+    <node id="n24" x="4000.00" y="77500.00" type="traffic_light"/>
+</nodes>

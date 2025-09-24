@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<viewsettings>
+    <viewport y="40.758" x="-73.980" zoom="500"/>
+    <delay value="50"/>
+    <scheme name="real-world">
+        <background backgroundColor="20,20,20" showGrid="false" gridXSize="100.00" gridYSize="100.00"/>
+        <edge laneWidthExaggeration="1" scaleWidth="true" showLinkDecals="true" showRails="true"/>
+        <vehicle vehicleQuality="2" showBlinker="true" showBrakeLights="true" showRoute="false" 
+                 vehicleSize="2" vehicleShape="passenger/van">
+            <colorScheme name="by_speed" interpolated="true">
+                <entry color="red" threshold="0"/>
+                <entry color="yellow" threshold="8.33"/>
+                <entry color="green" threshold="15.28"/>
+                <entry color="cyan" threshold="22.22"/>
+            </colorScheme>
+        </vehicle>
+        <person personQuality="2" showPedestrians="true"/>
+        <junction showShape="true" drawLinkTLIndex="false" drawLinkJunctionIndex="false"/>
+        <additionals busStopColorSign="1" chargingStationColor="green" chargingStationColorSign="1"/>
+    </scheme>
+</viewsettings>

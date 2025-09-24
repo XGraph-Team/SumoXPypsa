@@ -1,0 +1,57 @@
+# Core Web Framework
+Flask==2.3.3
+Flask-Cors==4.0.1
+
+# Data Processing & Analysis
+numpy==1.26.4
+pandas==2.2.2
+
+# Machine Learning
+scikit-learn==1.4.2
+
+# Power System Analysis
+pypsa==0.26.3
+pandapower>=2.13.1
+
+# Geospatial Analysis
+geopandas>=0.14.0
+shapely>=2.0.0
+
+# Network Analysis
+networkx>=3.0
+
+# Database
+SQLAlchemy>=2.0.0
+pydantic-settings>=2.0.0
+alembic>=1.12.0
+
+# Configuration & Environment
+python-dotenv==1.0.1
+structlog>=23.1.0
+
+# AI & LLM Integration
+openai==1.40.0
+
+# HTTP Requests
+requests>=2.31.0
+
+# Scientific Computing
+scipy>=1.11.0
+
+# SUMO Traffic Simulation (External dependency - install separately)
+# Download from: https://eclipse.org/sumo/
+# traci (included with SUMO)
+# sumolib (included with SUMO)
+
+# Development & Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-asyncio>=0.21.0
+
+# Logging & Monitoring
+structlog>=23.1.0
+
+# Optional: Jupyter for development
+jupyter>=1.0.0
+ipykernel>=6.25.0
+

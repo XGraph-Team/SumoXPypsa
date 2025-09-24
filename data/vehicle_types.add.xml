@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<additional>
+    <vType id="tesla_model3" length="4.69" width="1.85" height="1.44" color="204,26,26,255" accel="2.6" decel="4.5" maxSpeed="60" vClass="passenger" emissionClass="HBEFA3/zero" guiShape="passenger/sedan">
+        <param key="has.battery.device" value="true"/>
+        <param key="maximumBatteryCapacity" value="75000"/>
+        <param key="vehicleMass" value="1800"/>
+    </vType>
+    <vType id="tesla_modely" length="4.75" width="1.92" height="1.62" color="230,230,230,255" accel="3.5" decel="4.5" maxSpeed="55" vClass="passenger" emissionClass="HBEFA3/zero" guiShape="passenger/van">
+        <param key="has.battery.device" value="true"/>
+        <param key="maximumBatteryCapacity" value="82000"/>
+        <param key="vehicleMass" value="1800"/>
+    </vType>
+    <vType id="nissan_leaf" length="4.48" width="1.79" height="1.55" color="0,153,76,255" accel="2.2" decel="4.3" maxSpeed="50" vClass="passenger" emissionClass="HBEFA3/zero" guiShape="passenger/sedan">
+        <param key="has.battery.device" value="true"/>
+        <param key="maximumBatteryCapacity" value="40000"/>
+        <param key="vehicleMass" value="1800"/>
+    </vType>
+    <vType id="rivian_r1t" length="5.51" width="2.01" height="1.8" color="51,102,51,255" accel="3.0" decel="4.0" maxSpeed="60" vClass="passenger" emissionClass="HBEFA3/zero" guiShape="truck">
+        <param key="has.battery.device" value="true"/>
+        <param key="maximumBatteryCapacity" value="135000"/>
+        <param key="vehicleMass" value="1800"/>
+    </vType>
+    <vType id="bmw_i4" length="4.78" width="1.85" height="1.45" color="0,76,178,255" accel="2.4" decel="4.5" maxSpeed="65" vClass="passenger" emissionClass="HBEFA3/zero" guiShape="passenger/sedan">
+        <param key="has.battery.device" value="true"/>
+        <param key="maximumBatteryCapacity" value="80000"/>
+        <param key="vehicleMass" value="1800"/>
+    </vType>
+    <vType id="ford_mache" length="4.71" width="1.88" height="1.6" color="255,128,0,255" accel="2.6" decel="4.3" maxSpeed="60" vClass="passenger" emissionClass="HBEFA3/zero" guiShape="passenger/van">
+        <param key="has.battery.device" value="true"/>
+        <param key="maximumBatteryCapacity" value="88000"/>
+        <param key="vehicleMass" value="1800"/>
+    </vType>
+    <vType id="toyota_camry" length="4.88" width="1.84" height="1.45" color="178,178,178,255" accel="2.8" decel="4.2" maxSpeed="55" vClass="passenger" emissionClass="HBEFA3/PC_G_EU4" guiShape="passenger/sedan"/>
+    <vType id="honda_accord" length="4.93" width="1.86" height="1.45" color="51,51,51,255" accel="2.9" decel="4.1" maxSpeed="55" vClass="passenger" emissionClass="HBEFA3/PC_G_EU4" guiShape="passenger/sedan"/>
+    <vType id="ford_f150" length="5.89" width="2.03" height="1.96" color="0,0,127,255" accel="3.5" decel="3.8" maxSpeed="50" vClass="passenger" emissionClass="HBEFA3/PC_G_EU4" guiShape="truck"/>
+</additional>

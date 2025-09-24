@@ -1,0 +1,3228 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<additional>
+  <tlLogic id="42435253" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42432818" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyy" />
+  </tlLogic>
+  <tlLogic id="42437909" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42445382" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42437644" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42430589" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="7802856372" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="7802856356" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42445916" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrr" />
+    <phase duration="5" state="yyyyrrrryyyyrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGG" />
+    <phase duration="5" state="rrrryyyyrrrryy" />
+  </tlLogic>
+  <tlLogic id="42434439" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42435663" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="1241742563" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430333" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42428287" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="cluster_42437379_62915549" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrr" />
+    <phase duration="5" state="yyyyrrrryyyyrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGG" />
+    <phase duration="5" state="rrrryyyyrrrryy" />
+  </tlLogic>
+  <tlLogic id="42432871" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42440567" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGr" />
+    <phase duration="5" state="yyyyrrrryyyyr" />
+    <phase duration="35" state="rrrrGGGGrrrrG" />
+    <phase duration="5" state="rrrryyyyrrrry" />
+  </tlLogic>
+  <tlLogic id="42435644" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42428329" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42435714" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyy" />
+  </tlLogic>
+  <tlLogic id="42454433" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="GS_246580466" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42430749" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430633" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42440565" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42423564" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42452882" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="593839894" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42434427" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42430983" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrr" />
+    <phase duration="5" state="yyyyrrrryyyyrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGG" />
+    <phase duration="5" state="rrrryyyyrrrryy" />
+  </tlLogic>
+  <tlLogic id="joinedS_42432856_42449971_6680686985" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42442918" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42435624" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42437654" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyy" />
+  </tlLogic>
+  <tlLogic id="42432825" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42437663" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42434965" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGr" />
+    <phase duration="5" state="yyyyrrrryyyyr" />
+    <phase duration="35" state="rrrrGGGGrrrrG" />
+    <phase duration="5" state="rrrryyyyrrrry" />
+  </tlLogic>
+  <tlLogic id="42430984" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="2061592973" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42430394" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42436477" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42437371" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="joinedS_42430673_9019680388" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42432861" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="joinedS_3785586743_42423565" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42430646" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42430643" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="7050687060" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="cluster_42436481_596776057" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42436484" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="7802856365" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42430384" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42437358" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyy" />
+  </tlLogic>
+  <tlLogic id="42437363" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42445365" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42454660" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGr" />
+    <phase duration="5" state="yyyyrrrryyyyr" />
+    <phase duration="35" state="rrrrGGGGrrrrG" />
+    <phase duration="5" state="rrrryyyyrrrry" />
+  </tlLogic>
+  <tlLogic id="42440022" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42455643" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="5706568625" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42432847" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42436486" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42437670" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyy" />
+  </tlLogic>
+  <tlLogic id="42454010" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="7802856352" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="7802856349" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="joinedS_248708582_42455929" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42448326" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrr" />
+    <phase duration="5" state="yyyyrrrryyyyrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGG" />
+    <phase duration="5" state="rrrryyyyrrrryy" />
+  </tlLogic>
+  <tlLogic id="2711029280" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430651" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42435257" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42445037" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGr" />
+    <phase duration="5" state="yyyyrrrryyyyr" />
+    <phase duration="35" state="rrrrGGGGrrrrG" />
+    <phase duration="5" state="rrrryyyyrrrry" />
+  </tlLogic>
+  <tlLogic id="42435629" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430329" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42451695" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42427805" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42430282" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42434092" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42440025" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42440004" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42440453" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42436701" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="cluster_1061531429_42428570" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="joinedS_1825841704_4347550071" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGr" />
+    <phase duration="5" state="yyyyrrrryyyyr" />
+    <phase duration="35" state="rrrrGGGGrrrrG" />
+    <phase duration="5" state="rrrryyyyrrrry" />
+  </tlLogic>
+  <tlLogic id="42445039" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42440163" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42443532" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42444991" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="cluster_10173309977_358448394_42437688" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="GS_42438672" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42444933" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42427477" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="4443775464" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42427812" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42435645" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42435680" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42435677" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42435705" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42435702" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42448390" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42431681" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42431659" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42436527" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42442960" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42442939" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42442947" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42442943" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42442949" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42442955" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42442957" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42432464" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42437693" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42435646" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430314" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="3786901738" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="4443775465" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42427786" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42435420" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42438547" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42444985" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42446504" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="cluster_1061531707_42428595" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyy" />
+  </tlLogic>
+  <tlLogic id="3718672443" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="GS_42446949" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="6744466013" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="5849918504" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42439964" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42428268" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GG" />
+    <phase duration="5" state="yy" />
+    <phase duration="35" state="rr" />
+    <phase duration="5" state="rr" />
+  </tlLogic>
+  <tlLogic id="42433611" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42433620" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42430347" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42432703" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42432585" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42428253" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGG" />
+    <phase duration="5" state="yyy" />
+    <phase duration="35" state="rrr" />
+    <phase duration="5" state="rrr" />
+  </tlLogic>
+  <tlLogic id="42439952" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42434090" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42443556" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="4347534783" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="1241742743" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="joinedS_5852272391_595105499_5993830853" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42428310" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42445236" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42434085" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42430722" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42430713" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430704" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="cluster_11017186436_12153915856" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42430742" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42430739" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42430295" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42435633" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="cluster_42434429_427842070" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42442933" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42456041" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42445232" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42429688" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42447076" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42437433" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42431678" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42437423" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42437425" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42437436" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42431654" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42429976" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42447020" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42445947" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42445924" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42452353" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="593300940" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGG" />
+    <phase duration="5" state="yyy" />
+    <phase duration="35" state="rrr" />
+    <phase duration="5" state="rrr" />
+  </tlLogic>
+  <tlLogic id="42430342" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42428297" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42432700" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42435650" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42433625" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42428258" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42439955" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42438891" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42452365" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42445018" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42440001" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42428307" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GG" />
+    <phase duration="5" state="yy" />
+    <phase duration="35" state="rr" />
+    <phase duration="5" state="rr" />
+  </tlLogic>
+  <tlLogic id="42428308" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42428312" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="cluster_12181374952_42445653_561042195" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42445651" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42445649" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42427762" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42430685" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42430691" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430688" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="joinedS_9915469771_cluster_6173564360_9170816532_9909932988_9909932989_#1more" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="1061531685" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGG" />
+    <phase duration="5" state="yyy" />
+    <phase duration="35" state="rrr" />
+    <phase duration="5" state="rrr" />
+  </tlLogic>
+  <tlLogic id="42446353" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42437914" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyy" />
+  </tlLogic>
+  <tlLogic id="cluster_247081705_6575692624_6575692627" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42422899" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="cluster_11017186435_12153915853" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="cluster_11017186437_12153915859" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="cluster_11027912164_373903786" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42435671" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42439984" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42445908" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42434948" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42423674" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42440465" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430361" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42423885" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="joinedS_42430664_9019680390" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyy" />
+  </tlLogic>
+  <tlLogic id="cluster_42430677_7280430895" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430375" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42429690" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42449991" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42438800" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42439561" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="GS_cluster_10858288590_42437678" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrr" />
+    <phase duration="5" state="yyyyrrrryyyyrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGG" />
+    <phase duration="5" state="rrrryyyyrrrryy" />
+  </tlLogic>
+  <tlLogic id="42446998" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42435657" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42428313" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42428315" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="GS_42445656" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430338" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42454381" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42434810" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42454042" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42440170" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42430597" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42435632" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42439842" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="cluster_12161224646_42445314" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42432438" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="GS_cluster_561042200_8122411159" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42432594" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42432589" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42437368" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyy" />
+  </tlLogic>
+  <tlLogic id="cluster_11017187936_12154598280_12154598283_247120149_#2more" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42450341" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42440153" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="4288677093" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42446987" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42439960" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42435687" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42435684" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42421982" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42436510" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42436511" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42453011" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="cluster_12153915836_2348991703_9140954071" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="joinedS_42424089_cluster_12899699284_1775176473_371037237_9971341069_cluster_3785585954_6176483595" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42439972" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42439994" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430352" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42439996" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="GS_cluster_11017187937_42453555" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42438894" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42455934" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42442959" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430745" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGr" />
+    <phase duration="5" state="yyyyrrrryyyyr" />
+    <phase duration="35" state="rrrrGGGGrrrrG" />
+    <phase duration="5" state="rrrryyyyrrrry" />
+  </tlLogic>
+  <tlLogic id="42443618" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42440566" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42436531" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="595105472" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="cluster_12161232243_246579597_246579753" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42435675" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42435654" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="cluster_42449308_4597668020" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42447060" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42449985" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42431680" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42445910" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42445914" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42445976" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42431674" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42445994" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42429682" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42445227" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42435422" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42450434" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42439464" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42447228" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42431544" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42440951" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42445225" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42429680" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42455693" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42431671" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42455662" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42431649" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42429970" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42456683" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42446701" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42443680" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="cluster_1061531509_42428575" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGr" />
+    <phase duration="5" state="yyyyrrrryyyyr" />
+    <phase duration="35" state="rrrrGGGGrrrrG" />
+    <phase duration="5" state="rrrryyyyrrrry" />
+  </tlLogic>
+  <tlLogic id="42428328" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42428321" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="cluster_1061531447_42428579" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42442977" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42444049" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="cluster_10166860019_42447235_5542680310" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42435716" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42436519" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42436516" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42447009" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="cluster_42445409_4597668033" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="cluster_3639382767_3639382768_561042198" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42442935" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42448813" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42455963" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42437686" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42430288" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42446488" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42443528" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42445025" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430371" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42435707" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42434285" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="joinedS_42455932_595105581" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42434279" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42430600" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="6177439749" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42455751" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42428332" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42430390" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="cluster_42445230_596776021" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42440015" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42436714" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42423752" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="1775201764" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGG" />
+    <phase duration="5" state="yyy" />
+    <phase duration="35" state="rrr" />
+    <phase duration="5" state="rrr" />
+  </tlLogic>
+  <tlLogic id="cluster_1061531787_42428601" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42428283" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42444928" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="4557517549" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42430320" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42424789" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42449689" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42445667" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42442961" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="GS_595105496" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GG" />
+    <phase duration="5" state="yy" />
+    <phase duration="35" state="rr" />
+    <phase duration="5" state="rr" />
+  </tlLogic>
+  <tlLogic id="42455915" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42440012" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42440009" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42430324" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430317" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42430304" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42436917" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42439559" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42438798" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42446466" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42447084" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42430060" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42445950" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42453630" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42434821" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42438674" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42436700" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42445936" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="12463559806" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42445926" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42444043" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42434087" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42447030" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42452973" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42443950" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42445903" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42434807" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="6177439759" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42436707" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42435710" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42431556" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42431560" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42440960" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42445033" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42445027" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="1815133244" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430736" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430707" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42421985" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42442931" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrr" />
+    <phase duration="5" state="yyyyrrrryyyyrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGG" />
+    <phase duration="5" state="rrrryyyyrrrryy" />
+  </tlLogic>
+  <tlLogic id="42442948" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42444964" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="joinedS_4491359481_9807801426" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42444051" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42445930" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42434074" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="cluster_246580797_42427494" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42430358" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42443612" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="cluster_11017187935_62915536" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42445920" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42433604" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42445896" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42451674" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42445404" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42445899" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42445020" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42448379" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42442952" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="cluster_11942111840_42423020_6913714562" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrr" />
+    <phase duration="5" state="yyyyrrrryyyyrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGG" />
+    <phase duration="5" state="rrrryyyyrrrryy" />
+  </tlLogic>
+  <tlLogic id="42434946" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="cluster_12181374934_42458333_561042193" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGr" />
+    <phase duration="5" state="yyyyrrrryyyyr" />
+    <phase duration="35" state="rrrrGGGGrrrrG" />
+    <phase duration="5" state="rrrryyyyrrrry" />
+  </tlLogic>
+  <tlLogic id="42445909" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42449947" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42449954" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42449956" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42440463" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42449961" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42449963" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="cluster_12181374941_42449683_561042192" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrr" />
+    <phase duration="5" state="yyyyrrrryyyyrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGG" />
+    <phase duration="5" state="rrrryyyyrrrryy" />
+  </tlLogic>
+  <tlLogic id="42432693" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42432580" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42445928" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42438881" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42446986" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42438889" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42440452" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42446994" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42440459" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42446991" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42436705" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42445972" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42445961" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42429971" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42431650" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="GS_1825841655" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42440934" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42443534" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42432598" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42443563" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42432706" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42455761" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42430298" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42434969" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42437445" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="cluster_42442983_5542680296_5550244687" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42456049" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42442415" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42434434" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42445953" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42454495" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42430607" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrr" />
+    <phase duration="5" state="yyyyrrrryyyyrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGG" />
+    <phase duration="5" state="rrrryyyyrrrryy" />
+  </tlLogic>
+  <tlLogic id="GS_61271722" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42440469" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42430698" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42438544" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GG" />
+    <phase duration="5" state="yy" />
+    <phase duration="35" state="rr" />
+    <phase duration="5" state="rr" />
+  </tlLogic>
+  <tlLogic id="42454428" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430344" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430356" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42430350" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42434962" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42430603" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42443975" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42433644" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="42443561" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430292" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42453000" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42444055" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42450426" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42434072" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42428264" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42429980" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42430747" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="1241742627" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="cluster_42430056_596776046" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="cluster_42438795_596776063" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42438791" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42438788" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="cluster_42446461_596776052" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42446016" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42446455" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42439990" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42439840" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42439440" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="4461990857" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42430308" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42452975" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42431549" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42440020" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42446977" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42442963" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42431656" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42440966" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42445917" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42432436" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42436710" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42445001" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="joinedS_42443615_6680686184" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrr" />
+    <phase duration="5" state="yyyyrrrryyyyrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGG" />
+    <phase duration="5" state="rrrryyyyrrrryy" />
+  </tlLogic>
+  <tlLogic id="42443614" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42430050" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42430052" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42430378" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42439968" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="cluster_42431677_596776017" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="4862610026" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="cluster_1061531777_42421972" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGrrr" />
+    <phase duration="5" state="yyyyrrrryyyyrrr" />
+    <phase duration="35" state="rrrrGGGGrrrrGGG" />
+    <phase duration="5" state="rrrryyyyrrrryyy" />
+  </tlLogic>
+  <tlLogic id="42446506" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42427797" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="cluster_42429685_596776009" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42429986" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="4347534767" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42430279" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42421969" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGG" />
+    <phase duration="5" state="yyy" />
+    <phase duration="35" state="rrr" />
+    <phase duration="5" state="rrr" />
+  </tlLogic>
+  <tlLogic id="42436913" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="cluster_42436914_596776078" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42439556" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="cluster_42439557_596788016" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="5706568771" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGG" />
+    <phase duration="5" state="yyyyrrrryyy" />
+    <phase duration="35" state="rrrrGGGGrrr" />
+    <phase duration="5" state="rrrryyyyrrr" />
+  </tlLogic>
+  <tlLogic id="42440935" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42430367" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42443326" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42446013" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="cluster_42454691_596776041" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42449982" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42447007" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrG" />
+    <phase duration="5" state="yyyyrrrry" />
+    <phase duration="35" state="rrrrGGGGr" />
+    <phase duration="5" state="rrrryyyyr" />
+  </tlLogic>
+  <tlLogic id="42430363" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42428277" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GG" />
+    <phase duration="5" state="yy" />
+    <phase duration="35" state="rr" />
+    <phase duration="5" state="rr" />
+  </tlLogic>
+  <tlLogic id="42436475" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42430311" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42436911" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42439553" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42454679" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42431563" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <tlLogic id="42421974" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="GS_42426816" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GG" />
+    <phase duration="5" state="yy" />
+    <phase duration="35" state="rr" />
+    <phase duration="5" state="rr" />
+  </tlLogic>
+  <tlLogic id="6176628861" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGG" />
+    <phase duration="5" state="yyy" />
+    <phase duration="35" state="rrr" />
+    <phase duration="5" state="rrr" />
+  </tlLogic>
+  <tlLogic id="42447069" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="cluster_42455694_596776027" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42429981" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGG" />
+    <phase duration="5" state="yyyyrrrryy" />
+    <phase duration="35" state="rrrrGGGGrr" />
+    <phase duration="5" state="rrrryyyyrr" />
+  </tlLogic>
+  <tlLogic id="cluster_12181374945_42453986_561042194" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGr" />
+    <phase duration="5" state="yyyyrrrryyyyr" />
+    <phase duration="35" state="rrrrGGGGrrrrG" />
+    <phase duration="5" state="rrrryyyyrrrry" />
+  </tlLogic>
+  <tlLogic id="cluster_12181374928_42434951_561042191" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGG" />
+    <phase duration="5" state="yyyyrrrryyyy" />
+    <phase duration="35" state="rrrrGGGGrrrr" />
+    <phase duration="5" state="rrrryyyyrrrr" />
+  </tlLogic>
+  <tlLogic id="42442417" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGG" />
+    <phase duration="5" state="yyyy" />
+    <phase duration="35" state="rrrr" />
+    <phase duration="5" state="rrrr" />
+  </tlLogic>
+  <tlLogic id="42449550" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42446363" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="joinedS_42430594_5730369220" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrrGGGGr" />
+    <phase duration="5" state="yyyyrrrryyyyr" />
+    <phase duration="35" state="rrrrGGGGrrrrG" />
+    <phase duration="5" state="rrrryyyyrrrry" />
+  </tlLogic>
+  <tlLogic id="42427483" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrr" />
+    <phase duration="5" state="yyyyrr" />
+    <phase duration="35" state="rrrrGG" />
+    <phase duration="5" state="rrrryy" />
+  </tlLogic>
+  <tlLogic id="42443000" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGr" />
+    <phase duration="5" state="yyyyr" />
+    <phase duration="35" state="rrrrG" />
+    <phase duration="5" state="rrrry" />
+  </tlLogic>
+  <tlLogic id="42445011" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrr" />
+    <phase duration="5" state="yyyyrrr" />
+    <phase duration="35" state="rrrrGGG" />
+    <phase duration="5" state="rrrryyy" />
+  </tlLogic>
+  <tlLogic id="42430694" type="actuated" programID="adaptive" offset="0">
+    <phase duration="35" state="GGGGrrrr" />
+    <phase duration="5" state="yyyyrrrr" />
+    <phase duration="35" state="rrrrGGGG" />
+    <phase duration="5" state="rrrryyyy" />
+  </tlLogic>
+  <parkingArea id="CS_TimesSquare" lane="458106345#0_0" startPos="10" endPos="50" roadsideCapacity="10" angle="0">
+    <chargingStation power="150000" efficiency="0.95" />
+  </parkingArea>
+  <parkingArea id="CS_PennStation" lane="458106345#0_0" startPos="10" endPos="50" roadsideCapacity="8" angle="0">
+    <chargingStation power="150000" efficiency="0.95" />
+  </parkingArea>
+  <parkingArea id="CS_GrandCentral" lane="458106345#0_0" startPos="10" endPos="50" roadsideCapacity="12" angle="0">
+    <chargingStation power="150000" efficiency="0.95" />
+  </parkingArea>
+  <parkingArea id="CS_BryantPark" lane="458106345#0_0" startPos="10" endPos="50" roadsideCapacity="6" angle="0">
+    <chargingStation power="50000" efficiency="0.95" />
+  </parkingArea>
+  <parkingArea id="CS_ColumbusCircle" lane="458106345#0_0" startPos="10" endPos="50" roadsideCapacity="8" angle="0">
+    <chargingStation power="150000" efficiency="0.95" />
+  </parkingArea>
+</additional>

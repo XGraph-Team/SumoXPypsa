@@ -1,0 +1,244 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Operating System
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# SUMO Traffic Simulator
+*.rou.xml
+*.rou.alt.xml
+*.summary.xml
+*.tripinfo.xml
+*.emissions.xml
+*.fcd.xml
+*.netstate.xml
+*.queue.xml
+*.edgedata.xml
+*.lanearea.xml
+*.meandata.xml
+sumo-gui-settings.xml
+sumo.sumocfg
+
+# Power Grid Simulation Data
+data/cache/
+data/temp/
+data/output/
+data/**/*.tmp
+data/**/*.backup
+*.pkl
+*.h5
+*.hdf5
+
+# Logs and Reports
+logs/
+*.log
+reports/
+outputs/
+
+# ML Models and Data
+models/
+*.model
+*.joblib
+*.pt
+*.pth
+*.onnx
+
+# Energy Trading Data
+trading_data/
+market_data/
+
+# Backup Files
+*_BACKUP_*
+*_ORIGINAL.*
+*.bak
+*.backup
+
+# Configuration Files (with sensitive data)
+config.ini
+settings.ini
+.env.local
+.env.*.local
+
+# Node.js (if using any JS tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage reports
+coverage/
+htmlcov/
+
+# Documentation build
+docs/build/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+
+# Compiled binaries
+*.exe
+*.dll
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# API Keys and Secrets
+api_keys.txt
+secrets.json
+

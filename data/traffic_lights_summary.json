@@ -1,0 +1,11 @@
+{
+  "total_lights": 3481,
+  "bounds": {
+    "min_lat": 40.7450031,
+    "max_lat": 40.7749989,
+    "min_lon": -74.0084829,
+    "max_lon": -73.9600107
+  },
+  "data_source": "OpenStreetMap + NYC Grid Calculation",
+  "timestamp": "2025-09-01 14:33:03"
+}

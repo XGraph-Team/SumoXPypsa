@@ -1,0 +1,19 @@
+{
+  "timestamp": "2025-09-05T08:17:26.126125",
+  "scenarios_tested": 7,
+  "ml_metrics": {
+    "demand_mape": 0,
+    "charging_accuracy": 91.5,
+    "anomaly_precision": 0.89,
+    "patterns_found": 0,
+    "optimization_savings": 63.7
+  },
+  "anomalies_detected": 1,
+  "patterns_found": 0,
+  "optimization_savings_mw": 170.2,
+  "ev_clusters": {
+    "urgent": 2,
+    "opportunistic": 13,
+    "regular": 2
+  }
+}
