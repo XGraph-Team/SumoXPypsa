@@ -9,6 +9,16 @@ A **world-class, real-time power grid simulation system** integrating electrical
 
 ![Manhattan Power Grid Dashboard](dashboard-preview.png)
 
+## 🎥 Live Demo
+
+**Watch the full system demonstration on YouTube:**
+
+[![Manhattan Power Grid Demo](https://img.shields.io/badge/YouTube-Demo_Video-red.svg?logo=youtube)](https://youtu.be/36mGJWjrSxw)
+
+🔗 **[Watch Demo: Manhattan Power Grid Simulation - Electric Vehicles, V2G & AI Analytics](https://youtu.be/36mGJWjrSxw)**
+
+See the system in action with live power flow analysis, EV simulation, V2G emergency response, and AI-powered grid management.
+
 ## 🌟 Key Features
 
 ### ⚡ **Advanced Power Grid Simulation**
@@ -85,8 +95,8 @@ sudo apt-get install sumo sumo-tools sumo-doc
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/XGraph-Team/manhattan-power-grid.git
-   cd manhattan-power-grid
+   git clone https://github.com/XGraph-Team/SumoXPypsa.git
+   cd SumoXPypsa
    ```
 
 2. **Create virtual environment**
@@ -227,7 +237,7 @@ Market Price: $0.15/kWh  # Energy trading price
 ### File Structure
 
 ```
-manhattan-power-grid/
+SumoXPypsa/
 ├── 📁 api/                    # API endpoints (organized)
 ├── 📁 core/                   # Core system components
 │   ├── power_system.py        # PyPSA power grid
@@ -434,7 +444,6 @@ SOFTWARE.
 - **Flask** - Web framework
 - **OpenAI** - AI integration capabilities
 
-
 ## 🗺️ Roadmap
 
 ### Current Version (v1.0)
@@ -466,12 +475,19 @@ SOFTWARE.
 - **API Latency**: Average < 50ms response time
 - **Scalability**: Horizontally scalable with Docker/Kubernetes
 
+## 📺 Media & Resources
+
+- **[📹 Watch Demo Video](https://youtu.be/36mGJWjrSxw)** - Full system demonstration
+- **[📚 Documentation](https://github.com/XGraph-Team/SumoXPypsa/wiki)** - Detailed guides
+- **[🐛 Report Issues](https://github.com/XGraph-Team/SumoXPypsa/issues)** - Bug reports and feature requests
+- **[💬 Discussions](https://github.com/XGraph-Team/SumoXPypsa/discussions)** - Community forum
+
 ---
 
 <div align="center">
 
 **Built with ❤️ for sustainable energy and smart city infrastructure**
 
-[⭐ Star this repo](https://github.com/XGraph-Team/manhattan-power-grid) • [🍴 Fork it](https://github.com/XGraph-Team/manhattan-power-grid/fork) • [📝 Report Issues](https://github.com/XGraph-Team/manhattan-power-grid/issues)
+[⭐ Star this repo](https://github.com/XGraph-Team/SumoXPypsa) • [🍴 Fork it](https://github.com/XGraph-Team/SumoXPypsa/fork) • [📺 Watch Demo](https://youtu.be/36mGJWjrSxw)
 
 </div>
