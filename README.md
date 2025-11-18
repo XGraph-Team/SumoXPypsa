@@ -7,7 +7,7 @@
 
 A **world-class, real-time power grid simulation system** integrating electrical power flow analysis, traffic management, electric vehicle simulation, and Vehicle-to-Grid (V2G) energy trading. Built for Manhattan's power infrastructure with advanced AI analytics and machine learning optimization.
 
-![Manhattan Power Grid Dashboard](dashboard-preview.png)
+![Manhattan Power Grid Dashboard](1.png)
 
 ## 🎥 Live Demo
 
