@@ -70,7 +70,7 @@ class ApplicationStarter:
                 self.print_status("  source venv/bin/activate", "info")
             return False
 
-        self.print_status("Virtual environment active ✓", "success")
+        self.print_status("Virtual environment active checkmark", "success")
         return True
 
     def check_dependencies(self) -> bool:
@@ -99,7 +99,7 @@ class ApplicationStarter:
             self.print_status("  pip install -r requirements.txt", "info")
             return False
 
-        self.print_status("All dependencies available ✓", "success")
+        self.print_status("All dependencies available checkmark", "success")
         return True
 
     def check_configuration(self) -> bool:
@@ -112,7 +112,7 @@ class ApplicationStarter:
             self.print_status("Creating default configuration...", "info")
             self.create_default_env()
 
-        self.print_status("Configuration available ✓", "success")
+        self.print_status("Configuration available checkmark", "success")
         return True
 
     def create_default_env(self):
@@ -157,7 +157,7 @@ LOG_LEVEL=INFO
             self.print_status("SUMO binary not found - vehicle simulation will be limited", "warning")
             return False
 
-        self.print_status("SUMO available ✓", "success")
+        self.print_status("SUMO available checkmark", "success")
         return True
 
     def start_application(self, debug: bool = False, port: int = 5000) -> bool:

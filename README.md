@@ -1,65 +1,93 @@
-# Manhattan Power Grid - Advanced Operations Center
+# SumoXPypsa - Manhattan Power Grid with LLM Scenario Control
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-2.0+-green.svg)](https://flask.palletsprojects.com/)
 [![SUMO](https://img.shields.io/badge/SUMO-1.15+-orange.svg)](https://eclipse.org/sumo/)
+[![PyPSA](https://img.shields.io/badge/PyPSA-0.26.3-red.svg)](https://pypsa.org)
+[![OpenAI](https://img.shields.io/badge/OpenAI-LLM%20Powered-brightgreen.svg)](https://openai.com)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A **world-class, real-time power grid simulation system** integrating electrical power flow analysis, traffic management, electric vehicle simulation, and Vehicle-to-Grid (V2G) energy trading. Built for Manhattan's power infrastructure with advanced AI analytics and machine learning optimization.
+An **advanced, LLM-controlled power grid simulation system** integrating electrical power flow analysis, traffic management, electric vehicle simulation, and Vehicle-to-Grid (V2G) energy trading. Built for Manhattan's power infrastructure with **AI-driven scenario orchestration**, natural language control, and realistic time-of-day simulations.
 
-![Manhattan Power Grid Dashboard](dashboard-preview.png)
+> **🚀 What's New:** Unlike traditional grid simulators, this system features **LLM-to-Map commands** allowing natural language control of the entire simulation, **dynamic rush hour scenarios** with time-based vehicle patterns, **weather integration**, and **AI-orchestrated time progression**.
 
-## 🎥 Live Demo
+![Manhattan Power Grid Dashboard](docs/images/scenario1.png)
 
-**Watch the full system demonstration on YouTube:**
+## 🎯 What Makes This Special?
 
-[![Manhattan Power Grid Demo](https://img.shields.io/badge/YouTube-Demo_Video-red.svg?logo=youtube)](https://youtu.be/36mGJWjrSxw)
+This project extends the base SumoXPypsa framework with **groundbreaking LLM integration** that brings unprecedented control and realism:
 
-🔗 **[Watch Demo: Manhattan Power Grid Simulation - Electric Vehicles, V2G & AI Analytics](https://youtu.be/36mGJWjrSxw)**
+| Feature | Base SumoXPypsa | This Project (LLM Enhanced) |
+|---------|-----------------|----------------------------|
+| **Control Interface** | Manual API calls | Natural language commands via AI |
+| **Traffic Patterns** | Static vehicle count | Dynamic, time-based vehicle scaling |
+| **Scenarios** | Basic failure testing | Rush hour, weather, time-of-day orchestration |
+| **Load Modeling** | Fixed loads | Temperature-sensitive, time-varying loads |
+| **System Integration** | Separate components | AI-orchestrated unified scenarios |
+| **User Experience** | Technical commands | Conversational, intelligent control |
 
-See the system in action with live power flow analysis, EV simulation, V2G emergency response, and AI-powered grid management.
+**Example:** Instead of making multiple API calls to configure a morning rush hour scenario, simply tell the AI: *"Simulate morning rush hour with hot weather"* and watch the system intelligently configure vehicles, loads, temperature, and traffic patterns.
 
 ## 🌟 Key Features
+
+### 🤖 **LLM-Powered Scenario Control** ⭐ *UNIQUE TO THIS PROJECT*
+- **Natural Language Commands**: Control the entire system through conversational AI
+  - *"Set time to rush hour and increase temperature to 95°F"*
+  - *"Show me morning traffic with 200 vehicles"*
+  - *"Simulate a heatwave scenario"*
+- **AI Scenario Orchestration**: Chatbot intelligently manages complex scenarios
+- **Dynamic Time Control**: LLM changes time of day, triggering realistic traffic patterns
+- **Weather Integration**: Temperature-based load adjustments and traffic changes
+- **Smart Suggestions**: AI recommends scenarios and system optimizations
+
+### 🕐 **Realistic Time-of-Day Simulation** ⭐ *UNIQUE TO THIS PROJECT*
+- **Rush Hour Scenarios**:
+  - **Morning Rush (7-9 AM)**: 200+ vehicles, high commercial loads, EV charging demand
+  - **Midday (11 AM-2 PM)**: Moderate traffic, peak commercial activity
+  - **Evening Rush (5-7 PM)**: Maximum vehicle density, residential load surge
+  - **Night (10 PM-6 AM)**: Minimal traffic, reduced loads, off-peak charging
+- **Automatic Vehicle Scaling**: Vehicle count changes realistically with time of day
+- **Load Profile Dynamics**: Commercial/residential loads follow realistic daily patterns
+- **Weather-Responsive**: Traffic and load adjust based on temperature/conditions
 
 ### ⚡ **Advanced Power Grid Simulation**
 - **PyPSA Integration**: Real-time DC power flow analysis
 - **8 Substations**: Realistic Manhattan power infrastructure
 - **Distribution Network**: 13.8kV primary and 480V secondary systems
-- **Load Management**: Dynamic load balancing and optimization
+- **Dynamic Load Management**: Temperature-sensitive and time-based load balancing
+- **Scenario-Aware**: Grid responds to LLM-commanded scenarios
 
 ### 🚗 **Intelligent Vehicle Simulation**
 - **SUMO Integration**: Eclipse SUMO traffic simulation
+- **Time-Based Fleet**: Vehicle count adapts to time of day (50-250 vehicles)
 - **Electric Vehicle Fleet**: Configurable EV percentage (0-100%)
 - **Battery Management**: SOC-based routing and charging behavior
-- **Real-time Tracking**: Live vehicle positions and battery states
+- **Weather-Aware Routing**: Traffic patterns adjust to weather conditions
 
 ### 🔋 **Vehicle-to-Grid (V2G) Technology**
 - **Bidirectional Energy Flow**: EVs provide power back to grid
 - **Emergency Response**: Automatic V2G activation during outages
 - **Dynamic Pricing**: Market-based energy trading
 - **Revenue Optimization**: Maximize EV owner earnings
+- **Scenario Integration**: V2G responds to LLM-triggered events
 
-### 🧠 **AI-Powered Analytics**
+### 🧠 **AI-Powered Analytics & Control**
+- **LLM Command Interface**: Full system control via natural language
 - **Machine Learning**: Demand prediction and optimization
+- **Scenario Intelligence**: AI understands context and makes smart decisions
 - **Real-time Insights**: Grid performance analytics
 - **Predictive Maintenance**: Failure prediction and prevention
-- **Interactive Chatbot**: AI assistant for grid operations
+- **Typo Correction**: Smart chatbot understands misspellings and variations
 
 ### 🎮 **Professional Web Interface**
 - **Glassmorphic Design**: Modern, premium UI/UX
 - **Real-time Visualization**: Live map with Mapbox integration
+- **Scenario Controls**: Easy access to preset scenarios (rush hour, heatwave, etc.)
 - **Interactive Controls**: Comprehensive system management
+- **Time/Weather Display**: Live scenario indicators
 - **Responsive Design**: Works on desktop and mobile
 
 ## 🚀 Quick Start
-
-### System Requirements
-
-- **Python**: 3.8 or higher
-- **RAM**: 8GB minimum (16GB recommended)
-- **Storage**: 2GB free disk space
-- **OS**: Windows 10+, macOS 10.14+, or Linux (Ubuntu 20.04+)
-- **Browser**: Chrome, Firefox, Safari, or Edge (latest versions)
 
 ### Prerequisites
 
@@ -67,28 +95,9 @@ See the system in action with live power flow analysis, EV simulation, V2G emerg
 # Python 3.8+ required
 python --version  # Should be 3.8+
 
-# SUMO Traffic Simulator (1.15.0+)
-# See installation instructions below for your OS
-```
-
-#### Installing SUMO
-
-**Windows:**
-1. Download the installer from [Eclipse SUMO Downloads](https://eclipse.org/sumo/)
-2. Run the installer and follow the setup wizard
-3. Add SUMO to your system PATH during installation
-
-**macOS:**
-```bash
-# Using Homebrew
-brew install sumo
-```
-
-**Linux (Ubuntu/Debian):**
-```bash
-sudo add-apt-repository ppa:sumo/stable
-sudo apt-get update
-sudo apt-get install sumo sumo-tools sumo-doc
+# SUMO Traffic Simulator
+# Download from: https://eclipse.org/sumo/
+# Add SUMO_HOME to your environment variables
 ```
 
 ### Installation
@@ -112,86 +121,84 @@ sudo apt-get install sumo sumo-tools sumo-doc
 
 4. **Set up environment variables**
    ```bash
-   # Create .env file
-   cat > .env << EOF
-   # Server Configuration
-   FLASK_PORT=5000
-   FLASK_ENV=development
-   FLASK_DEBUG=True
-
-   # SUMO Configuration
-   SUMO_HOME=/usr/share/sumo  # Update with your SUMO installation path
-   
-   # Mapbox Configuration (optional - for enhanced map features)
-   # Get your free token at https://www.mapbox.com/
-   MAPBOX_API_TOKEN=your_mapbox_token_here
-   
-   # Grid Configuration
-   DEFAULT_EV_PERCENTAGE=0.7
-   DEFAULT_VEHICLE_COUNT=10
-   BATTERY_MIN_SOC=0.2
-   BATTERY_MAX_SOC=0.9
-   
-   # V2G Configuration
-   V2G_MARKET_PRICE=0.15
-   V2G_POWER_RATE=250
-   EMERGENCY_THRESHOLD=0.9
-   EOF
+   cp .env.example .env
+   # Edit .env with your configuration
    ```
 
-5. **Configure SUMO_HOME (if not automatically set)**
-   ```bash
-   # Linux/Mac
-   export SUMO_HOME=/usr/share/sumo
-   
-   # Windows (PowerShell)
-   $env:SUMO_HOME = "C:\Program Files (x86)\Eclipse\Sumo"
-   ```
-
-6. **Run the application**
+5. **Run the application**
    ```bash
    python main_complete_integration.py
    ```
 
-7. **Open your browser**
+6. **Open your browser**
    ```
    http://localhost:5000
    ```
 
-### Mapbox Setup (Optional)
-
-For enhanced map features with satellite imagery and advanced styling:
-
-1. Sign up for a free account at [Mapbox](https://www.mapbox.com/)
-2. Navigate to your account dashboard
-3. Copy your default public token
-4. Add it to your `.env` file as `MAPBOX_API_TOKEN`
-
-> Note: The application works without Mapbox using OpenStreetMap, but Mapbox provides better visuals and performance.
-
 ## 📖 Usage Guide
+
+### LLM Scenario Control ⭐ *NEW*
+
+Control the entire system using natural language through the AI chatbot:
+
+#### Example Commands:
+```
+"Set time to morning rush hour"
+→ System sets to 8 AM, spawns 200 vehicles, increases commercial loads
+
+"Make it a hot summer day, 95 degrees"
+→ Temperature rises, AC loads increase, traffic patterns adjust
+
+"Show me evening traffic with 150 vehicles"
+→ Time changes to 6 PM, 150 vehicles spawn, residential loads peak
+
+"Simulate a weekend night"
+→ Minimal traffic (50 vehicles), low loads, off-peak mode
+
+"What happens during a heatwave at rush hour?"
+→ AI creates combined scenario: high temp + high traffic
+```
+
+#### Available Scenario Presets:
+- **Morning Rush** - 7-9 AM, 200+ vehicles, high commercial activity
+- **Midday Normal** - 11 AM-2 PM, moderate traffic, balanced loads
+- **Evening Rush** - 5-7 PM, maximum traffic, residential peak
+- **Night Quiet** - 10 PM-6 AM, minimal traffic, low loads
+- **Heatwave** - 95°F+, maximum AC loads, stressed grid
+- **Winter Peak** - Cold weather, heating loads, reduced EV range
+- **Weekend** - Lighter traffic, shifted load patterns
 
 ### Basic Operations
 
 1. **Start Vehicle Simulation**
-   - Click "Start Vehicles" in the control panel
+   - Click "Start Vehicles" in the control panel OR use chatbot
    - Configure EV percentage and battery ranges
    - Watch real-time vehicle movement and charging
+   - Try: *"Start 100 vehicles with 80% EVs"*
 
 2. **Test Power Grid Scenarios**
-   - Click on substations to trigger failures
+   - Click on substations to trigger failures OR use chatbot
    - Observe traffic light responses (yellow = caution mode)
    - Monitor EV station impacts
+   - Try: *"Fail Times Square substation"*
 
 3. **Enable V2G Emergency Response**
    - Fail a substation to create power deficit
-   - Enable V2G for that substation
+   - Enable V2G for that substation OR use chatbot
    - Watch high-SOC EVs provide backup power
+   - Try: *"Enable V2G for all failed substations"*
 
 4. **Use AI Analytics**
    - Access ML dashboard for insights
    - Chat with AI assistant for recommendations
    - Generate comprehensive system reports
+   - Try: *"Analyze current grid performance"*
+
+5. **Time & Weather Control** ⭐ *NEW*
+   - Use chatbot to change time of day
+   - Set temperature and weather conditions
+   - Watch system respond with realistic changes
+   - Try: *"Fast forward to evening rush hour"*
 
 ### Configuration
 
@@ -237,7 +244,7 @@ Market Price: $0.15/kWh  # Energy trading price
 ### File Structure
 
 ```
-SumoXPypsa/
+manhattan-power-grid/
 ├── 📁 api/                    # API endpoints (organized)
 ├── 📁 core/                   # Core system components
 │   ├── power_system.py        # PyPSA power grid
@@ -254,10 +261,7 @@ SumoXPypsa/
 ├── ml_engine.py               # ML analytics
 ├── ai_chatbot.py              # AI assistant
 ├── index.html                 # Main web interface
-├── dashboard-preview.png      # Dashboard screenshot
-├── requirements.txt           # Dependencies
-├── .env.example               # Environment variables template
-└── README.md                  # This file
+└── requirements.txt           # Dependencies
 ```
 
 ## 🔧 API Reference
@@ -311,16 +315,32 @@ GET /api/v2g/status
 ```
 Returns V2G system status and active sessions.
 
-### AI Analytics
+### AI Analytics & LLM Control ⭐
 ```http
 POST /api/ai/chat
 Content-Type: application/json
 
 {
-  "message": "Analyze grid performance",
+  "message": "Set time to morning rush hour",
   "user_id": "operator_1"
 }
 ```
+
+```http
+POST /api/scenario/set
+Content-Type: application/json
+
+{
+  "scenario": "rush_hour_morning",
+  "temperature": 75,
+  "vehicle_count": 200
+}
+```
+
+```http
+GET /api/scenario/current
+```
+Returns current scenario state (time of day, temperature, active scenario)
 
 ## 🧪 Testing
 
@@ -366,7 +386,7 @@ python -m pytest --cov=. tests/
 
 ## 🤝 Contributing
 
-We welcome contributions! Please follow these guidelines:
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ### Development Setup
 
@@ -385,56 +405,9 @@ We welcome contributions! Please follow these guidelines:
 - Add docstrings for all functions and classes
 - Include unit tests for new features
 
-### Commit Message Format
-
-```
-type: subject
-
-body (optional)
-
-footer (optional)
-```
-
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-
-Example:
-```
-feat: add renewable energy integration
-
-- Implemented solar panel simulation
-- Added wind turbine models
-- Updated power flow calculations
-
-Closes #123
-```
-
 ## 📝 License
 
-This project is licensed under the MIT License.
-
-```
-MIT License
-
-Copyright (c) 2025 XGraph-Team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
@@ -444,46 +417,42 @@ SOFTWARE.
 - **Flask** - Web framework
 - **OpenAI** - AI integration capabilities
 
+
 ## 🗺️ Roadmap
 
-### Current Version (v1.0)
+### Current Version (v2.5) - LLM Enhanced
 - ✅ Complete power grid simulation
-- ✅ SUMO vehicle integration
+- ✅ SUMO vehicle integration with time-based dynamics
 - ✅ V2G energy trading
-- ✅ AI analytics and chatbot
+- ✅ **LLM-to-Map command interface** ⭐
+- ✅ **Rush hour scenario system** ⭐
+- ✅ **Temperature/weather integration** ⭐
+- ✅ **Time-of-day vehicle scaling** ⭐
+- ✅ **AI scenario orchestration** ⭐
+- ✅ Advanced AI analytics and chatbot
 - ✅ Professional web interface
 
-### Upcoming Features 
-- 🔄 Real-time weather integration
-- 🔄 Advanced ML demand forecasting
-- 🔄 Multi-city support
+### Upcoming Features (v2.6)
+- 🔄 Multi-day simulation with persistent state
+- 🔄 Historical data playback
+- 🔄 Custom scenario builder UI
+- 🔄 Voice command integration
 - 🔄 Mobile app companion
-- 🔄 Renewable energy sources (solar/wind)
 
-### Future Vision 
+### Future Vision (v3.0)
+- 🚀 Multi-city support
 - 🚀 Distributed grid simulation
 - 🚀 Blockchain energy trading
 - 🚀 IoT device integration
 - 🚀 Digital twin capabilities
-- 🚀 Predictive maintenance AI
+- 🚀 Real-world grid data integration
 
-## 🏆 Performance Metrics
-
-- **Simulation Capacity**: Up to 1000 concurrent vehicles
-- **Grid Resolution**: Real-time updates every 100ms
-- **V2G Response Time**: < 2 seconds for emergency activation
-- **API Latency**: Average < 50ms response time
-- **Scalability**: Horizontally scalable with Docker/Kubernetes
-
-## 📺 Media
-
-- **[📹 Watch Demo Video](https://youtu.be/36mGJWjrSxw)** - Full system demonstration
-
+---
 
 <div align="center">
 
 **Built with ❤️ for sustainable energy and smart city infrastructure**
 
-[⭐ Star this repo](https://github.com/XGraph-Team/SumoXPypsa) • [🍴 Fork it](https://github.com/XGraph-Team/SumoXPypsa/fork) • [📺 Watch Demo](https://youtu.be/36mGJWjrSxw)
+[⭐ Star this repo](https://github.com/XGraph-Team/SumoXPypsa) • [🍴 Fork it](https://github.com/XGraph-Team/SumoXPypsa/fork) • [📝 Report Issues](https://github.com/XGraph-Team/SumoXPypsa/issues)
 
 </div>

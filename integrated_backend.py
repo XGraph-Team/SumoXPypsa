@@ -223,7 +223,7 @@ class ManhattanIntegratedSystem:
                 'capacity_mva': 700,
                 'coverage_area': 'East Side 45th to 55th'
             },
-            'Columbus Circle': {
+            'Chelsea': {
                 'lat': 40.768, 'lon': -73.982,
                 'capacity_mva': 600,
                 'coverage_area': 'West 55th to 65th'
@@ -566,12 +566,26 @@ class ManhattanIntegratedSystem:
     
     def simulate_substation_failure(self, substation_name: str) -> Dict[str, Any]:
         """Simulate substation failure with cascading effects"""
-        
+
         if substation_name not in self.substations:
-            return {'error': f'Substation {substation_name} not found'}
-        
+            error_msg = f'Substation {substation_name} not found! Available: {list(self.substations.keys())}'
+            print(f"[ERROR] {error_msg}")
+            return {'error': error_msg}
+
+        # Mark substation as failed
         self.substations[substation_name]['operational'] = False
-        
+
+        # DEBUG: Verify operational status is set correctly
+        print(f"[FAILURE DEBUG] {substation_name} operational status set to: {self.substations[substation_name]['operational']}")
+
+        # CRITICAL FIX: No power = No load consumption
+        # Store the load that was lost for reporting
+        load_lost = self.substations[substation_name]['load_mw']
+
+        # Set load to ZERO (no power means no consumption)
+        self.substations[substation_name]['load_mw'] = 0.0
+        self.substations[substation_name]['ev_load_mw'] = 0.0
+
         affected_components = {
             'transformers': [],
             'traffic_lights': [],
@@ -617,29 +631,34 @@ class ManhattanIntegratedSystem:
         impact = {
             'substation': substation_name,
             'capacity_lost_mva': self.substations[substation_name]['capacity_mva'],
-            'load_lost_mw': self.substations[substation_name]['load_mw'],
+            'load_lost_mw': load_lost,  # Use stored value (before zeroing)
             'transformers_affected': len(affected_components['transformers']),
             'traffic_lights_affected': len(affected_components['traffic_lights']),
             'ev_stations_affected': len(affected_components['ev_stations']),
             'primary_cables_affected': len(affected_components['primary_cables']),
             'secondary_cables_affected': len(affected_components['secondary_cables']),
-            'estimated_customers': int(self.substations[substation_name]['load_mw'] * 1000),
+            'estimated_customers': int(load_lost * 1000),  # Use stored load value
             'affected_area': self.substations[substation_name]['coverage_area']
         }
-        
+
         print(f"\nSUBSTATION FAILURE: {substation_name}")
         print(f"  - {impact['traffic_lights_affected']} traffic lights lost power (BLACK)")
         print(f"  - {impact['ev_stations_affected']} EV stations offline")
         print(f"  - {impact['load_lost_mw']:.2f} MW load lost")
-        
+        print(f"  - Load now: 0.00 MW (no power = no consumption)")
+
         return impact
     
+    def fail_substation(self, substation_name: str) -> Dict[str, Any]:
+        """Fail a substation - alias for simulate_substation_failure for consistency"""
+        return self.simulate_substation_failure(substation_name)
+
     def restore_substation(self, substation_name: str) -> bool:
         """Restore failed substation and all connected components"""
-        
+
         if substation_name not in self.substations:
             return False
-        
+
         self.substations[substation_name]['operational'] = True
         
         # Restore all distribution transformers
@@ -685,10 +704,15 @@ class ManhattanIntegratedSystem:
     
     def get_network_state(self) -> Dict[str, Any]:
         """Get complete network state for visualization - PROPERLY FIXED"""
-        
+
+        # DEBUG: Log operational status of all substations
+        failed_subs = [name for name, data in self.substations.items() if not data.get('operational', True)]
+        if failed_subs:
+            print(f"[NETWORK STATE DEBUG] Failed substations: {failed_subs}")
+
         # Calculate base load
         base_load_mw = sum(s['load_mw'] for s in self.substations.values())
-        
+
         # Add EV charging load
         ev_charging_load_mw = 0
         for ev_station in self.ev_stations.values():
@@ -720,19 +744,26 @@ class ManhattanIntegratedSystem:
         else:
             print(f"[DEBUG] Using manual calculation: {total_load_mw:.2f} MW (PyPSA not available)")
 
+        substations_list = [
+            {
+                'name': name,
+                'lat': data['lat'],
+                'lon': data['lon'],
+                'capacity_mva': data['capacity_mva'],
+                'load_mw': data['load_mw'] + data.get('ev_load_mw', 0),  # Include EV load
+                'operational': data['operational'],
+                'coverage_area': data['coverage_area']
+            }
+            for name, data in self.substations.items()
+        ]
+
+        # DEBUG: Log substations being returned
+        for sub in substations_list:
+            if not sub['operational']:
+                print(f"[NETWORK STATE DEBUG] Returning FAILED substation: {sub['name']} operational={sub['operational']}")
+
         return {
-            'substations': [
-                {
-                    'name': name,
-                    'lat': data['lat'],
-                    'lon': data['lon'],
-                    'capacity_mva': data['capacity_mva'],
-                    'load_mw': data['load_mw'] + data.get('ev_load_mw', 0),  # Include EV load
-                    'operational': data['operational'],
-                    'coverage_area': data['coverage_area']
-                }
-                for name, data in self.substations.items()
-            ],
+            'substations': substations_list,
             'total_load_mw': total_load_mw,  # This should now be correct
             'traffic_lights': [
                 {

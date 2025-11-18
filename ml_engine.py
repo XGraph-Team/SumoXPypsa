@@ -112,7 +112,7 @@ class MLPowerGridEngine:
         # Start the background thread
         learning_thread = threading.Thread(target=background_learning, daemon=True)
         learning_thread.start()
-        print("✅ Background learning thread started")
+        print("Success Background learning thread started")
     
     def _update_models_online(self):
         """Update models with recent data"""
@@ -165,7 +165,7 @@ class MLPowerGridEngine:
     def stop_background_learning(self):
         """Stop the background learning thread"""
         self.online_learning_enabled = False
-        print("🛑 Background learning stopped")
+        print("[STOP] Background learning stopped")
     
     def _initialize_models(self):
         """Initialize models with synthetic training data"""
@@ -207,7 +207,7 @@ class MLPowerGridEngine:
         X_anomaly = np.random.randn(n_samples, 10)
         self.anomaly_detector.fit(X_anomaly)
         
-        print("✅ ML models initialized with synthetic data")
+        print("Success ML models initialized with synthetic data")
     
     def predict_power_demand(self, next_hours=24):
         """
@@ -239,7 +239,7 @@ class MLPowerGridEngine:
             pred = self.demand_predictor.predict(features)[0]
             
             # Add confidence interval (simplified)
-            confidence = pred * 0.1  # ±10% confidence
+            confidence = pred * 0.1  # +/-10% confidence
             
             predictions.append({
                 'hour': h,
@@ -587,7 +587,7 @@ class MLPowerGridEngine:
         with open(filename, 'wb') as f:
             pickle.dump(models, f)
         
-        print(f"✅ Models saved to {filename}")
+        print(f"Success Models saved to {filename}")
     
     def load_model(self, filename='ml_models.pkl'):
         """Load trained models from disk"""
@@ -601,10 +601,10 @@ class MLPowerGridEngine:
             self.anomaly_detector = models['anomaly_detector']
             self.metrics = models['metrics']
             
-            print(f"✅ Models loaded from {filename}")
+            print(f"Success Models loaded from {filename}")
             return True
         except:
-            print(f"⚠️ Could not load models from {filename}, using fresh models")
+            print(f"WARNING Could not load models from {filename}, using fresh models")
             return False
 # Add to ml_engine.py
     def compare_with_baselines(self):

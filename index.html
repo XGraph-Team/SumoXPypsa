@@ -14,10 +14,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
+
     <!-- Custom Styles -->
     <link href="/static/styles.css" rel="stylesheet">
+    <link href="/static/chatbot-enhanced-ui.css" rel="stylesheet">
 </head>
-<body data-tab="overview">    
+<body data-tab="overview">
+    <!-- Advanced Background Effects -->
+    <div class="bg-overlay"></div>
+    <div class="neural-grid"></div>    
     <!-- Premium Chatbot Launcher -->
     <div id="chatbot-launcher" class="chatbot-launcher" title="AI Assistant" onclick="toggleChatbot()">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -28,18 +36,46 @@
     <!-- Premium Chatbot Window -->
     <div id="chatbot-window" class="chatbot-window">
         <div class="chat-header">
-            <div class="chat-title"><span class="chat-avatar"></span> Manhattan AI Assistant</div>
+            <div class="chat-title"><span class="chat-avatar"></span> Ultra-Intelligent AI Assistant</div>
             <button class="chat-close" onclick="toggleChatbot()">✕</button>
         </div>
-        <div id="chat-messages" class="chat-messages"></div>
+            <div class="chat-capabilities" style="padding: 12px 18px; background: linear-gradient(135deg, rgba(0,255,136,0.12) 0%, rgba(0,212,255,0.08) 100%); border-bottom: 1px solid rgba(255,255,255,0.12); font-size: 12px; color: var(--text-secondary); backdrop-filter: blur(10px); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,255,136,0.5), transparent); animation: shimmerLine 3s ease-in-out infinite;"></div>
+            ✨ Typo correction • 💡 Smart suggestions • 🎯 Fuzzy matching • 🤖 GPT-4 powered • ⚡ Real control
+        </div>
+        <div id="chat-messages" class="chat-messages">
+            <div class="chat-message bot-message" style="margin: 12px; padding: 16px; background: linear-gradient(135deg, rgba(0,255,136,0.15) 0%, rgba(0,255,136,0.08) 100%); border-radius: 16px; font-size: 14px; line-height: 1.6; border: 1px solid rgba(0,255,136,0.2); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(180deg, var(--primary-glow), rgba(0,255,136,0.6)); box-shadow: 0 0 8px rgba(0,255,136,0.4);"></div>
+                <strong style="color: var(--primary-glow); font-weight: 700;">🚀 Ultra-Intelligent AI ready!</strong><br>
+                I understand typos and give suggestions like ChatGPT. Try typing with typos:<br>
+                <div style="margin: 12px 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border-left: 2px solid var(--secondary-glow);">
+                    "turnn of tims squar" → I'll understand "turn off times square"
+                </div>
+                <div class="suggestion-chips" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+                    <button class="suggestion-chip" onclick="sendSuggestion('turn off times square')" style="padding: 6px 12px; background: linear-gradient(135deg, rgba(0,170,255,0.4), rgba(0,123,255,0.3)); border: 1px solid rgba(0,170,255,0.6); border-radius: 14px; color: white; font-size: 11px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(5px);">turn off times square</button>
+                    <button class="suggestion-chip" onclick="sendSuggestion('activate v2g system')" style="padding: 6px 12px; background: linear-gradient(135deg, rgba(0,170,255,0.4), rgba(0,123,255,0.3)); border: 1px solid rgba(0,170,255,0.6); border-radius: 14px; color: white; font-size: 11px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(5px);">activate v2g system</button>
+                    <button class="suggestion-chip" onclick="sendSuggestion('show me central park')" style="padding: 6px 12px; background: linear-gradient(135deg, rgba(0,170,255,0.4), rgba(0,123,255,0.3)); border: 1px solid rgba(0,170,255,0.6); border-radius: 14px; color: white; font-size: 11px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(5px);">show central park</button>
+                </div>
+            </div>
+        </div>
         <div class="chat-input">
-            <input id="chat-input" placeholder="Ask about grid status, ML insights, optimization..." onkeypress="handleChatKeyPress(event)"/>
+            <input id="chat-input" placeholder="💬 Type anything... I understand typos and incomplete words!" onkeypress="handleChatKeyPress(event)"/>
             <button class="btn btn-primary chat-send" onclick="sendChatMessage()">Send</button>
         </div>
     </div>
     
     <div id="map"></div>
-    
+
+    <!-- Performance Stats Overlay - HIDDEN -->
+    <div id="performance-stats" style="display: none;">
+        <div style="font-weight: bold; margin-bottom: 8px; color: #fff; border-bottom: 1px solid rgba(0, 255, 136, 0.2); padding-bottom: 4px;">⚡ PERFORMANCE</div>
+        <div>FPS: <span id="fps-counter" style="color: #00ff88;">--</span></div>
+        <div>Vehicles: <span id="vehicle-count">0</span></div>
+        <div>Update: <span id="update-time">0</span>ms</div>
+        <div>Render: <span id="render-time">0</span>ms</div>
+        <div>Mode: <span id="render-mode">WEBGL</span></div>
+    </div>
+
     <!-- Premium Control Panel -->
     <div class="control-panel">
         <div class="panel-header">
@@ -50,7 +86,7 @@
         <div class="tabs">
             <button class="tab-btn active" data-tab="overview" onclick="selectTab('overview', this)">⚡ Overview</button>
             <button class="tab-btn" data-tab="vehicles" onclick="selectTab('vehicles', this)">🚗 Vehicles</button>
-            <button class="tab-btn" data-tab="ml" onclick="selectTab('ml', this)">🧠 ML Analytics</button>
+            <!-- ML Analytics tab removed -->
             <button class="tab-btn" data-tab="substations" onclick="selectTab('substations', this)">🏭 Substations</button>
             <button class="tab-btn" data-tab="layers" onclick="selectTab('layers', this)">👁️ Layers</button>
             <button class="tab-btn" data-tab="v2g" onclick="selectTab('v2g', this)">⚡ V2G</button>
@@ -98,7 +134,7 @@
                 <span id="black-count">0</span> Off
             </div>
         </div>
-        
+
         <!-- Vehicle Control Section -->
         <div id="section-vehicles" class="vehicle-control tab tab-vehicles">
             <h3>Vehicle Simulation Control</h3>
@@ -232,12 +268,7 @@
                 </div>
             </div>
             <div class="btn-group" style="display:flex;gap:8px;flex-wrap:wrap;">
-                <button class="btn btn-secondary" onclick="showMLPredictions()">📈 Predictions</button>
-                <button class="btn btn-secondary" onclick="runMLOptimization()">⚡ Optimize</button>
-                <button class="btn btn-secondary" onclick="askAIAdvice()">🤖 Ask AI</button>
-                <button class="btn btn-secondary" onclick="showBaselines()">📐 Baselines</button>
-                <button class="btn btn-secondary" onclick="downloadExecutiveReport()">📄 Report</button>
-                <button class="btn btn-secondary" onclick="showV2GAnalytics()">⚡ V2G Analytics</button>
+                <!-- ML Analytics buttons removed: Predictions, Optimize, Baselines, Report, AI Research -->
             </div>
             <div id="ml-results" style="display: none;"></div>
             
@@ -278,7 +309,7 @@
             </div>
             
             <!-- V2G Metrics -->
-            <div class="v2g-metrics" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;">
+            <div class="v2g-metrics" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
                 <div class="stat-card">
                     <div style="font-size:24px;margin-bottom:4px;">⚡</div>
                     <div class="stat-value" id="v2g-power" style="color:#00ffff;">0</div>
@@ -290,9 +321,14 @@
                     <div class="stat-label">Total Earnings</div>
                 </div>
                 <div class="stat-card">
+                    <div style="font-size:24px;margin-bottom:4px;">🔋</div>
+                    <div class="stat-value" id="v2g-discharging-count" style="color:#00FFFF;">0</div>
+                    <div class="stat-label">Discharging</div>
+                </div>
+                <div class="stat-card">
                     <div style="font-size:24px;margin-bottom:4px;">🚗</div>
                     <div class="stat-value" id="v2g-vehicles" style="color:#ffaa00;">0</div>
-                    <div class="stat-label">Vehicles</div>
+                    <div class="stat-label">Total EVs</div>
                 </div>
                 <div class="stat-card">
                     <div style="font-size:24px;margin-bottom:4px;">📈</div>
@@ -329,13 +365,29 @@
             </div>
         </div>
         
-        <!-- Substation Controls -->
-        <div id="section-substations" class="section-title tab tab-substations">Substation Control</div>
-        <div class="substation-grid tab tab-substations" id="substation-controls"></div>
-        <div class="tab tab-substations" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 16px;">
-            <button class="btn btn-danger" onclick="triggerBlackout()">⚠️ BLACKOUT</button>
-            <button class="btn btn-primary" onclick="runV2GRescueScenario()">⚡ V2G Scenario</button>
-            <button class="btn btn-primary" onclick="restoreAll()">🔧 Restore All</button>
+        <!-- Substation Controls & Monitoring -->
+        <div id="section-substations" class="tab tab-substations">
+            <!-- Original Substation Control Grid -->
+            <div class="section-title" style="margin-bottom: 12px;">🏭 Substation Controls</div>
+            <div class="substation-grid" id="substation-controls" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                <!-- Will be populated by JavaScript with fail/restore buttons -->
+            </div>
+
+            <!-- Control Buttons -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 24px;">
+                <button class="btn btn-danger" onclick="triggerBlackout()">⚠️ BLACKOUT</button>
+                <button class="btn btn-primary" onclick="runV2GRescueScenario()">⚡ V2G Scenario</button>
+                <button class="btn btn-primary" onclick="restoreAll()">🔧 Restore All</button>
+            </div>
+
+            <!-- NEW: Detailed Power Load Monitor -->
+            <div class="section-title" style="margin: 24px 0 12px 0; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                ⚡ Real-Time Power Loads
+                <button class="btn btn-primary" onclick="if(window.scenarioUI) window.scenarioUI.updateStatus()" style="float: right; padding: 4px 12px; font-size: 11px;">🔄 Refresh</button>
+            </div>
+            <div id="detailed-substation-grid" style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+                <!-- Will be populated by JavaScript with detailed status cards -->
+            </div>
         </div>
         
         <!-- Layer Controls -->
@@ -361,23 +413,31 @@
             <div class="layer-item">
                 <span>13.8kV Cables</span>
                 <label class="toggle">
-                    <input type="checkbox" checked id="layer-primary" onchange="toggleLayer('primary')">
+                    <input type="checkbox" id="layer-primary" onchange="toggleLayer('primary')">
                     <span class="slider"></span>
                 </label>
             </div>
-            
+
             <div class="layer-item">
                 <span>480V Cables</span>
                 <label class="toggle">
-                    <input type="checkbox" checked id="layer-secondary" onchange="toggleLayer('secondary')">
+                    <input type="checkbox" id="layer-secondary" onchange="toggleLayer('secondary')">
                     <span class="slider"></span>
                 </label>
             </div>
-            
+
             <div class="layer-item">
                 <span>EV Stations</span>
                 <label class="toggle">
                     <input type="checkbox" checked id="layer-ev" onchange="toggleLayer('ev')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="layer-item">
+                <span>Substations</span>
+                <label class="toggle">
+                    <input type="checkbox" checked id="layer-substations" onchange="toggleLayer('substations')">
                     <span class="slider"></span>
                 </label>
             </div>
@@ -391,7 +451,7 @@
             <span id="system-status">System Online</span>
         </div>
         <div class="status-item">
-            🚗 <span id="vehicle-count">0</span> vehicles
+            🚗 <span id="footer-vehicle-count">0</span> vehicles
         </div>
         <div class="status-item">
             ⚡ <span id="charging-stations">0</span> charging
@@ -401,6 +461,9 @@
         </div>
         <div class="status-item">
             🕐 <span id="time">00:00</span>
+        </div>
+        <div class="status-item">
+            🌡️ <span id="temperature">72</span>°F
         </div>
     </div>
     
@@ -470,5 +533,16 @@
 
     <!-- Custom JavaScript -->
     <script src="/static/script.js"></script>
+    <script src="/static/ai-enhanced.js"></script>
+    <script src="/static/ai-functions.js"></script>
+    <script src="/static/world-class-map.js"></script>
+    <script src="/static/scenario-director.js"></script>
+    <script src="/static/chatbot-scenarios.js"></script>
+
+    <!-- Scenario Controller -->
+    <script src="/static/traffic-patterns.js"></script>
+    <script src="/static/time-vehicle-manager.js"></script>
+    <script src="/static/scenario-controls.js"></script>
+    <script src="/static/chatbot-scenario-llm.js"></script>
 </body>
 </html>

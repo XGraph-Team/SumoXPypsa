@@ -1,9 +1,39 @@
+        /**
+         * World-Class Markdown Renderer for Chatbot
+         * Renders markdown with proper formatting (bold, italic, lists, code blocks, etc.)
+         */
+        window.renderMarkdown = function(text) {
+            if (typeof marked === 'undefined' || typeof DOMPurify === 'undefined') {
+                // Fallback if libraries not loaded
+                return text.replace(/\n/g, '<br>');
+            }
+
+            // Configure marked for better rendering
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                headerIds: false,
+                mangle: false
+            });
+
+            // Convert markdown to HTML
+            const rawHtml = marked.parse(text);
+
+            // Sanitize HTML to prevent XSS attacks
+            const cleanHtml = DOMPurify.sanitize(rawHtml, {
+                ALLOWED_TAGS: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 'code', 'pre', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'a'],
+                ALLOWED_ATTR: ['href', 'target', 'rel']
+            });
+
+            return cleanHtml;
+        };
+
         function togglePanel() {
             const panel = document.querySelector('.control-panel');
             const btn = document.getElementById('panel-toggle');
-            
+
             if (!panel || !btn) return;
-            
+
             if (panel.classList.contains('collapsed')) {
                 // Expanding
                 panel.classList.remove('collapsed');
@@ -250,13 +280,13 @@
         }
 
     // ==========================================
-    // PERFORMANCE CONFIGURATION FOR HIGH-END HARDWARE
+    // ULTRA PERFORMANCE CONFIGURATION - MAXIMUM GPU UTILIZATION
     // ==========================================
     const PERFORMANCE_CONFIG = {
         renderMode: 'webgl',
-        targetFPS: 240,
-        dataUpdateRate: 120,
-        interpolationSteps: 2,
+        targetFPS: 144,  // Cap at 144 for stability
+        dataUpdateRate: 200,  // Reduced polling frequency (5 FPS for data)
+        interpolationSteps: 4,  // Smoother interpolation
         useWebWorkers: true,
         useGPUAcceleration: true,
         vehiclePoolSize: 5000,
@@ -284,6 +314,45 @@
         fadeDuration: 0,
         maxZoom: 20,
         minZoom: 10
+    });
+
+    // Make map globally accessible for AI map actions
+    window.map = map;
+    window.mapLoaded = false;
+
+    // Wait for map to fully load before allowing AI actions
+    map.on('load', async () => {
+        console.log('Map fully loaded - AI actions now available');
+        window.mapLoaded = true;
+
+        // **LOAD NETWORK STATE FIRST TO CREATE LAYERS WITH DATA**
+        await loadNetworkState();
+        console.log('✅ Network state loaded on map init');
+
+        // Initialize power grid layers based on their initial state
+        // Shorter delay since layers should exist now
+        setTimeout(() => {
+            const powerGridLayers = ['primary', 'secondary', 'ev', 'substations'];
+            powerGridLayers.forEach(layer => {
+                const layerMappings = {
+                    'primary': ['primary-cables', 'primary-cables-glow'],
+                    'secondary': ['secondary-cables', 'secondary-cables-glow'],
+                    'ev': ['ev-stations-layer', 'ev-stations-badge-bg', 'ev-stations-badge-text', 'ev-stations-icon'],
+                    'substations': ['substations-layer', 'substations-icon']
+                };
+
+                const layerIds = layerMappings[layer] || [];
+                const shouldBeVisible = layers[layer]; // Check initial state
+
+                layerIds.forEach(id => {
+                    if (map.getLayer(id)) {
+                        const visibility = shouldBeVisible ? 'visible' : 'none';
+                        map.setLayoutProperty(id, 'visibility', visibility);
+                        console.log(`Layer ${id}: ${visibility} (initial state)`);
+                    }
+                });
+            });
+        }, 100); // Reduced from 1000ms to 100ms
     });
 
     // ==========================================
@@ -337,10 +406,10 @@
                         varying vec2 v_offset;
                         
                         void main() {
-                            // Moderate size that scales nicely with zoom
-                            float baseSize = 2.2;
-                            float zoomFactor = smoothstep(12.0, 18.0, u_zoom);
-                            float size = a_scale * baseSize * (1.0 + zoomFactor * 0.3);
+                            // Realistic vehicle size that doesn't get too big when zooming
+                            float baseSize = 1.5;  // Balanced base size for realistic scale
+                            float zoomFactor = smoothstep(14.0, 20.0, u_zoom);  // Start scaling later
+                            float size = a_scale * baseSize * (1.0 + zoomFactor * 0.15);  // Reduced zoom scaling
                             
                             vec2 rotatedOffset = vec2(
                                 a_offset.x * cos(a_angle) - a_offset.y * sin(a_angle),
@@ -481,7 +550,7 @@
                             
                             this.arrays.angles[idx] = angle;
                             
-                            this.arrays.scales[idx] = (vehicle.scale || 1) * 1.05;
+                            this.arrays.scales[idx] = (vehicle.scale || 1) * 0.7;  // Smaller scale for realistic view
                         }
                         
                         vehicleIndex++;
@@ -531,7 +600,14 @@
         
         updateBuffer(gl, buffer, data, attribute, size, count) {
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-            gl.bufferData(gl.ARRAY_BUFFER, data.subarray(0, count * size), gl.DYNAMIC_DRAW);
+            // Use bufferSubData for better performance with existing buffers
+            const byteLength = count * size * 4; // Float32 = 4 bytes
+            if (buffer.size !== byteLength) {
+                gl.bufferData(gl.ARRAY_BUFFER, data.buffer, gl.DYNAMIC_DRAW);
+                buffer.size = byteLength;
+            } else {
+                gl.bufferSubData(gl.ARRAY_BUFFER, 0, data.subarray(0, count * size));
+            }
             gl.enableVertexAttribArray(attribute);
             gl.vertexAttribPointer(attribute, size, gl.FLOAT, false, 0, 0);
         }
@@ -542,12 +618,17 @@
                 lat: vehicle.currentLat || vehicle.targetLat || 0
             };
         }
-        
+
         updateVehicles(vehicleData) {
             const updateStartTime = performance.now();
             const currentTime = performance.now();
-            
+
+            // Pre-allocate Set for O(1) lookups
+            const currentIds = new Set();
+
             vehicleData.forEach(data => {
+                currentIds.add(data.id);
+
                 if (!this.vehicles.has(data.id)) {
                     this.vehicles.set(data.id, {
                         id: data.id,
@@ -562,8 +643,9 @@
                         velocityLon: 0,
                         velocityLat: 0,
                         angle: 0,
+                        targetAngle: 0,  // Initialize target angle for smooth rotation
                         scale: 0,
-                        targetScale: 1,
+                        targetScale: 0.8,
                         opacity: 0,
                         targetOpacity: 1,
                         data: data,
@@ -596,8 +678,8 @@
                     vehicle.data = data;
                 }
             });
-            
-            const currentIds = new Set(vehicleData.map(v => v.id));
+
+            // Remove vehicles that are no longer present (reuse currentIds from above)
             for (const [id, vehicle] of this.vehicles) {
                 if (!currentIds.has(id)) {
                     vehicle.targetOpacity = 0;
@@ -776,8 +858,9 @@ interpolate(deltaTime) {
                         velocityLon: 0,
                         velocityLat: 0,
                         angle: 0,
+                        targetAngle: 0,  // Initialize target angle for smooth rotation
                         scale: 0,
-                        targetScale: 1,
+                        targetScale: 0.8,
                         opacity: 0,
                         targetOpacity: 1,
                         data: data,
@@ -804,14 +887,40 @@ interpolate(deltaTime) {
                         const dx = vehicle.targetLon - vehicle.previousLon;
                         const dy = vehicle.targetLat - vehicle.previousLat;
                         if (Math.abs(dx) > 0.00001 || Math.abs(dy) > 0.00001) {
-                            vehicle.angle = Math.atan2(dy, dx);
+                            const newAngle = Math.atan2(dy, dx);
+
+                            // Smooth angle transition - no sudden jumps!
+                            if (vehicle.angle !== undefined && vehicle.angle !== null) {
+                                let angleDiff = newAngle - vehicle.angle;
+
+                                // Normalize angle difference to [-PI, PI] for shortest rotation
+                                while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+                                while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+
+                                // Store target angle for smooth interpolation
+                                vehicle.targetAngle = newAngle;
+                            } else {
+                                // First time - set directly
+                                vehicle.angle = newAngle;
+                                vehicle.targetAngle = newAngle;
+                            }
                         }
                     }
-                    
+
                     vehicle.data = data;
+
+                    // UPDATE MARKER COLOR (V2G real-time color change)
+                    const marker = this.activeMarkers.get(data.id);
+                    if (marker) {
+                        const newColor = this.getColor(data);
+                        const element = marker.getElement();
+                        if (element) {
+                            element.style.background = newColor;
+                        }
+                    }
                 }
             });
-            
+
             const currentIds = new Set(vehicleData.map(v => v.id));
             for (const [id, vehicle] of this.vehicles) {
                 if (!currentIds.has(id)) {
@@ -835,18 +944,11 @@ interpolate(deltaTime) {
                 const expectedUpdateInterval = PERFORMANCE_CONFIG.dataUpdateRate * 1.1;
                 vehicle.interpolationProgress = Math.min(1, timeSinceUpdate / expectedUpdateInterval);
                 
-                const easeInOutCubic = (t) => {
-                    return t < 0.5 
-                        ? 4 * t * t * t 
-                        : 1 - Math.pow(-2 * t + 2, 3) / 2;
-                };
-                
-                const easedProgress = easeInOutCubic(vehicle.interpolationProgress);
-                
-                vehicle.currentLon = vehicle.previousLon + 
-                    (vehicle.targetLon - vehicle.previousLon) * easedProgress;
-                vehicle.currentLat = vehicle.previousLat + 
-                    (vehicle.targetLat - vehicle.previousLat) * easedProgress;
+                // Use LINEAR interpolation for accurate street following (no curve cutting)
+                vehicle.currentLon = vehicle.previousLon +
+                    (vehicle.targetLon - vehicle.previousLon) * vehicle.interpolationProgress;
+                vehicle.currentLat = vehicle.previousLat +
+                    (vehicle.targetLat - vehicle.previousLat) * vehicle.interpolationProgress;
                 
                 if (vehicle.scale !== vehicle.targetScale) {
                     const scaleDelta = vehicle.targetScale - vehicle.scale;
@@ -863,6 +965,23 @@ interpolate(deltaTime) {
                         vehicle.opacity = vehicle.targetOpacity;
                     }
                 }
+
+                // SMOOTH ANGLE INTERPOLATION - Fixes turning issues!
+                if (vehicle.targetAngle !== undefined && vehicle.angle !== undefined) {
+                    let angleDiff = vehicle.targetAngle - vehicle.angle;
+
+                    // Normalize to shortest rotation path
+                    while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+                    while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+
+                    // Smooth rotation - responsive but not too slow
+                    vehicle.angle += angleDiff * 0.35;
+
+                    // Snap when very close
+                    if (Math.abs(angleDiff) < 0.01) {
+                        vehicle.angle = vehicle.targetAngle;
+                    }
+                }
             }
             
            if (PERFORMANCE_CONFIG.renderMode === 'webgl') {
@@ -873,6 +992,11 @@ interpolate(deltaTime) {
         }
         
         getColor(data) {
+            // V2G ACTIVE vehicles get BRIGHT CYAN (highest priority!)
+            if (data.is_v2g_active || (window.v2gActiveVehicles && window.v2gActiveVehicles.has(data.id))) {
+                return '#00FFFF'; // Bright cyan for V2G discharge
+            }
+
             if (data.is_stranded) return '#ff00ff';
             if (data.is_charging) return '#00ffff';
             if (data.is_queued) return '#ffff00';
@@ -912,11 +1036,55 @@ interpolate(deltaTime) {
     let layers = {
         lights: true,
         vehicles: true,
-        primary: true,
-        secondary: true,
-        ev: true
+        primary: false,
+        secondary: false,
+        ev: true,
+        substations: true
     };
     let sumoRunning = false;
+
+    // V2G Active Vehicle Tracking (optimized - no lag)
+    window.v2gActiveVehicles = new Set();
+    window.v2gStationCounts = {}; // station_id -> count
+
+    // OPTIMIZED V2G Color Updater - Updates every 3 seconds, no lag!
+    async function updateV2GColorsOptimized() {
+        try {
+            const response = await fetch('/api/v2g/status');
+            const data = await response.json();
+
+            // Update active vehicle set
+            window.v2gActiveVehicles.clear();
+            if (data.active_vehicles && Array.isArray(data.active_vehicles)) {
+                data.active_vehicles.forEach(v => {
+                    const vid = v.vehicle_id || v.id;
+                    if (vid) window.v2gActiveVehicles.add(vid);
+                });
+            }
+
+            // FORCE COLOR UPDATE - Update existing markers
+            if (vehicleRenderer && vehicleRenderer.activeMarkers) {
+                for (const [vehicleId, marker] of vehicleRenderer.activeMarkers) {
+                    const isV2G = window.v2gActiveVehicles.has(vehicleId);
+                    const vehicle = vehicleRenderer.vehicles.get(vehicleId);
+
+                    if (vehicle && vehicle.data) {
+                        const newColor = isV2G ? '#00FFFF' : vehicleRenderer.getColor(vehicle.data);
+                        const element = marker.getElement();
+                        if (element) {
+                            element.style.background = newColor;
+                        }
+                    }
+                }
+            }
+
+        } catch (error) {
+            // Silently ignore errors
+        }
+
+        // Update every 3 seconds (not too frequent - no lag!)
+        setTimeout(updateV2GColorsOptimized, 3000);
+    }
 
     // ==========================================
     // PERFORMANCE MONITORING
@@ -933,11 +1101,33 @@ interpolate(deltaTime) {
                 this.fps = this.frameCount;
                 this.frameCount = 0;
                 this.lastTime = now;
-                
+
+                // Always update performance stats overlay
+                this.updatePerformanceStats();
+
                 if (PERFORMANCE_CONFIG.enableDebugMode) {
                     this.updateDebugDisplay();
                 }
             }
+        },
+
+        updatePerformanceStats() {
+            const stats = vehicleRenderer ? vehicleRenderer.getStats() : {};
+
+            const fpsEl = document.getElementById('fps-counter');
+            const updateTimeEl = document.getElementById('update-time');
+            const renderTimeEl = document.getElementById('render-time');
+            const renderModeEl = document.getElementById('render-mode');
+
+            if (fpsEl) {
+                fpsEl.textContent = this.fps.toFixed(0);
+                fpsEl.style.color = this.fps >= 60 ? '#00ff88' : (this.fps >= 30 ? '#ffaa00' : '#ff4444');
+            }
+            // Vehicle count is handled by updateUI() when network state is reloaded
+            // Don't update it here to avoid race conditions with scenario changes
+            if (updateTimeEl) updateTimeEl.textContent = (stats.updateTime || 0).toFixed(2);
+            if (renderTimeEl) renderTimeEl.textContent = (stats.renderTime || 0).toFixed(2);
+            if (renderModeEl) renderModeEl.textContent = PERFORMANCE_CONFIG.renderMode.toUpperCase();
         },
         
         updateDebugDisplay() {
@@ -982,19 +1172,38 @@ interpolate(deltaTime) {
         lastFetch: 0,
         cache: null,
         fetching: false,
-        
+        lastVehicleHash: null,
+
         async fetchData() {
             if (this.fetching) return this.cache;
-            
+
             const now = performance.now();
             if (this.cache && now - this.lastFetch < PERFORMANCE_CONFIG.dataUpdateRate) {
                 return this.cache;
             }
-            
+
             this.fetching = true;
             try {
-                const response = await fetch('/api/network_state');
+                const response = await fetch('/api/network_state', {
+                    // Enable compression if supported
+                    headers: {
+                        'Accept-Encoding': 'gzip, deflate, br'
+                    }
+                });
                 const data = await response.json();
+
+                // Only update if vehicles data has changed
+                if (data.vehicles) {
+                    const vehicleHash = data.vehicles.length + '_' + (data.vehicles[0]?.id || '');
+                    if (vehicleHash === this.lastVehicleHash && this.cache) {
+                        // No changes, return cached data
+                        this.lastFetch = now;
+                        this.fetching = false;
+                        return this.cache;
+                    }
+                    this.lastVehicleHash = vehicleHash;
+                }
+
                 this.cache = data;
                 this.lastFetch = now;
                 return data;
@@ -1006,6 +1215,128 @@ interpolate(deltaTime) {
             }
         }
     };
+
+    // ==========================================
+    // V2G STATUS UPDATER
+    // ==========================================
+    async function updateV2GStatus() {
+        try {
+            const response = await fetch('/api/v2g/status');
+            const data = await response.json();
+
+            // Update active V2G vehicles set
+            const previousVehicles = new Set(window.v2gActiveVehicles);
+            window.v2gActiveVehicles.clear();
+            window.v2gStationCounts = {};
+
+            if (data.active_vehicles && Array.isArray(data.active_vehicles)) {
+                data.active_vehicles.forEach(v => {
+                    const vehicleId = v.vehicle_id || v.id;
+                    const stationId = v.station_id;
+
+                    if (vehicleId) {
+                        window.v2gActiveVehicles.add(vehicleId);
+
+                        // Count vehicles per station
+                        if (stationId) {
+                            window.v2gStationCounts[stationId] = (window.v2gStationCounts[stationId] || 0) + 1;
+                        }
+                    }
+                });
+            }
+
+            // Force marker update if V2G status changed
+            const hasChanges = previousVehicles.size !== window.v2gActiveVehicles.size ||
+                               [...previousVehicles].some(id => !window.v2gActiveVehicles.has(id));
+
+            if (hasChanges && vehicleRenderer && networkState && networkState.vehicles) {
+                // Force color update by re-rendering vehicles
+                vehicleRenderer.updateVehicles(networkState.vehicles);
+            }
+
+            // Update EV station badges
+            updateEVStationBadges();
+
+        } catch (error) {
+            // V2G endpoint might not be available, silently ignore
+        }
+
+        // Update every 2 seconds
+        setTimeout(updateV2GStatus, 2000);
+    }
+
+    // ==========================================
+    // EV STATION V2G BADGE UPDATER
+    // ==========================================
+    function updateEVStationBadges() {
+        if (!map || !networkState || !networkState.ev_stations) return;
+
+        // Remove old badges
+        const oldBadges = document.querySelectorAll('.v2g-station-badge');
+        oldBadges.forEach(badge => badge.remove());
+
+        // Create new badges for active V2G stations
+        Object.entries(window.v2gStationCounts).forEach(([stationId, count]) => {
+            if (count <= 0) return;
+
+            // Find station coordinates
+            const station = networkState.ev_stations.find(s => s.id === stationId);
+            if (!station) return;
+
+            const point = map.project([station.lon, station.lat]);
+
+            // Create badge element
+            const badge = document.createElement('div');
+            badge.className = 'v2g-station-badge';
+            badge.style.cssText = `
+                position: absolute;
+                left: ${point.x}px;
+                top: ${point.y - 25}px;
+                background: linear-gradient(135deg, #00FFFF, #00CCCC);
+                color: #000;
+                font-size: 11px;
+                font-weight: 700;
+                padding: 3px 8px;
+                border-radius: 10px;
+                border: 2px solid rgba(255, 255, 255, 0.9);
+                box-shadow: 0 3px 12px rgba(0, 255, 255, 0.6);
+                pointer-events: none;
+                z-index: 10;
+                transform: translate(-50%, -100%);
+                animation: v2gBadgePulse 1.5s ease-in-out infinite;
+                white-space: nowrap;
+            `;
+            badge.textContent = `⚡ ${count}`;
+
+            map.getCanvasContainer().appendChild(badge);
+        });
+
+        // Add CSS animation if not already present
+        if (!document.getElementById('v2g-badge-styles')) {
+            const style = document.createElement('style');
+            style.id = 'v2g-badge-styles';
+            style.textContent = `
+                @keyframes v2gBadgePulse {
+                    0%, 100% {
+                        transform: translate(-50%, -100%) scale(1);
+                        box-shadow: 0 3px 12px rgba(0, 255, 255, 0.6);
+                    }
+                    50% {
+                        transform: translate(-50%, -100%) scale(1.1);
+                        box-shadow: 0 5px 20px rgba(0, 255, 255, 0.9);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    // Update badges when map moves or zooms
+    if (map) {
+        map.on('move', updateEVStationBadges);
+        map.on('zoom', updateEVStationBadges);
+    }
+
 // ==========================================
     // MAIN LOOPS
     // ==========================================
@@ -1103,6 +1434,7 @@ interpolate(deltaTime) {
                 updateWithAnimation('active-vehicles', active);
                 updateWithAnimation('ev-count', networkState.vehicle_stats.ev_vehicles || 0);
                 updateWithAnimation('vehicle-count', active);
+                updateWithAnimation('footer-vehicle-count', active);  // Update footer status bar
                 const chargingCount = networkState.vehicle_stats.vehicles_charging || 0;
                 updateWithAnimation('charging-stations', chargingCount);
                 updateWithAnimation('vehicles-charging-count', chargingCount);
@@ -1578,25 +1910,49 @@ function initializeEVStationLayer() {
     function renderNetwork() {
         if (!networkState) return;
         
-        // Premium substations visualization
-        const substationFeatures = networkState.substations.map(sub => ({
-            type: 'Feature',
-            geometry: { type: 'Point', coordinates: [sub.lon, sub.lat] },
-            properties: {
-                name: sub.name,
-                capacity_mva: sub.capacity_mva,
-                load_mw: sub.load_mw,
-                operational: !!sub.operational,
-                coverage_area: sub.coverage_area,
-                color: sub.operational ? '#ff0066' : '#666666'
+        // Premium substations visualization with REAL-TIME FAILURE STATUS
+        const substationFeatures = networkState.substations.map(sub => {
+            // Determine color based on operational status
+            let color = '#ff0066';  // Default: operational (pink/red)
+
+            if (sub.operational === false || sub.operational === 'false') {
+                // FAILED substation - BLACK
+                color = '#000000';
+                console.log(`[RENDER DEBUG] ${sub.name} set to BLACK (operational=${sub.operational})`);
+            } else {
+                // Check utilization for color coding
+                const utilization = sub.load_mw / sub.capacity_mva;
+                if (utilization >= 0.95) {
+                    color = '#ff0000';  // CRITICAL - bright red
+                } else if (utilization >= 0.85) {
+                    color = '#ff9800';  // WARNING - orange
+                } else {
+                    color = '#00ff00';  // NORMAL - green
+                }
             }
-        }));
+
+            return {
+                type: 'Feature',
+                geometry: { type: 'Point', coordinates: [sub.lon, sub.lat] },
+                properties: {
+                    name: sub.name,
+                    capacity_mva: sub.capacity_mva,
+                    load_mw: sub.load_mw,
+                    operational: !!sub.operational,
+                    coverage_area: sub.coverage_area,
+                    color: color
+                }
+            };
+        });
         
         if (!substationLayerInitialized && map.loaded()) {
             if (!map.getSource('substations')) {
                 map.addSource('substations', { type: 'geojson', data: { type: 'FeatureCollection', features: [] }});
             }
             if (!map.getLayer('substations-layer')) {
+                // Respect initial layer visibility state
+                const initialVisibility = layers.substations ? 'visible' : 'none';
+
                 map.addLayer({
                     id: 'substations-layer',
                     type: 'symbol',
@@ -1610,7 +1966,8 @@ function initializeEVStationLayer() {
                             16, 56
                         ],
                         'text-allow-overlap': true,
-                        'text-ignore-placement': true
+                        'text-ignore-placement': true,
+                        'visibility': initialVisibility
                     },
                     paint: {
                         'text-color': ['get', 'color'],
@@ -1619,7 +1976,7 @@ function initializeEVStationLayer() {
                         'text-halo-blur': 1
                     }
                 });
-                
+
                 // In renderNetwork function, update the substations-icon layer:
                 map.addLayer({
                     id: 'substations-icon',
@@ -1635,7 +1992,8 @@ function initializeEVStationLayer() {
                             16, 20
                         ],
                         'text-allow-overlap': true,
-                        'text-ignore-placement': true
+                        'text-ignore-placement': true,
+                        'visibility': initialVisibility
                     },
                     paint: {
                         'text-color': '#ffffff',
@@ -1690,7 +2048,7 @@ function initializeEVStationLayer() {
                     .map(cable => ({
                         type: 'Feature',
                         geometry: { type: 'LineString', coordinates: cable.path },
-                        properties: { operational: cable.operational }
+                        properties: { operational: cable.operational, id: cable.id }
                     }));
                 const primaryData = { type: 'FeatureCollection', features: primaryFeatures };
                 
@@ -1702,6 +2060,9 @@ function initializeEVStationLayer() {
                         id: 'primary-cables-glow',
                         type: 'line',
                         source: 'primary-cables',
+                        layout: {
+                            'visibility': 'none'  // Hidden by default
+                        },
                         paint: {
                             'line-color': ['case', ['get', 'operational'], '#00ff88', '#ff3366'],
                             'line-width': 10,
@@ -1713,6 +2074,9 @@ function initializeEVStationLayer() {
                         id: 'primary-cables',
                         type: 'line',
                         source: 'primary-cables',
+                        layout: {
+                            'visibility': 'none'  // Hidden by default
+                        },
                         paint: {
                             'line-color': ['case', ['get', 'operational'], '#00ffcc', '#ff3b3b'],
                             'line-width': 3.5,
@@ -1728,7 +2092,7 @@ function initializeEVStationLayer() {
                     .map(cable => ({
                         type: 'Feature',
                         geometry: { type: 'LineString', coordinates: cable.path },
-                        properties: { operational: cable.operational, substation: cable.substation || 'unknown' }
+                        properties: { operational: cable.operational, substation: cable.substation || 'unknown', id: cable.id }
                     }));
                 const secondaryData = { type: 'FeatureCollection', features: secondaryFeatures };
                 
@@ -1740,6 +2104,9 @@ function initializeEVStationLayer() {
                         id: 'secondary-cables-glow',
                         type: 'line',
                         source: 'secondary-cables',
+                        layout: {
+                            'visibility': 'none'  // Hidden by default
+                        },
                         paint: {
                             'line-color': '#ffcc66',
                             'line-width': 4,
@@ -1751,6 +2118,9 @@ function initializeEVStationLayer() {
                         id: 'secondary-cables',
                         type: 'line',
                         source: 'secondary-cables',
+                        layout: {
+                            'visibility': 'none'  // Hidden by default
+                        },
                         paint: {
                             'line-color': '#ffbb44',
                             'line-width': 1.4,
@@ -2094,20 +2464,68 @@ function initializeEVStationLayer() {
 
     async function toggleSubstation(name) {
         const sub = networkState.substations.find(s => s.name === name);
-        
+
         if (sub.operational) {
             await fetch(`/api/fail/${name}`, { method: 'POST' });
         } else {
             await fetch(`/api/restore/${name}`, { method: 'POST' });
         }
-        
+
+        // Small delay to ensure backend completes
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        // Reload network state
         await loadNetworkState();
+
+        // Force update the specific button
+        const btn = document.getElementById(`sub-btn-${name}`);
+        if (btn && networkState) {
+            const updatedSub = networkState.substations.find(s => s.name === name);
+            if (updatedSub) {
+                if (updatedSub.operational) {
+                    btn.classList.remove('failed');
+                } else {
+                    btn.classList.add('failed');
+                }
+            }
+        }
+
+        // Update detailed substation grid (power loads section)
+        if (window.scenarioUI) {
+            await window.scenarioUI.updateStatus();
+        }
     }
 
     async function restoreAll() {
-        await fetch('/api/restore_all', { method: 'POST' });
+        const response = await fetch('/api/restore_all', { method: 'POST' });
+        const data = await response.json();
+
+        // Small delay to ensure backend completes the restore
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        // Force reload network state and update UI
         await loadNetworkState();
-        showNotification('🔧 System Restored', 'All substations back online', 'success');
+
+        // Force update the substation buttons
+        if (networkState && networkState.substations) {
+            networkState.substations.forEach(sub => {
+                const btn = document.getElementById(`sub-btn-${sub.name}`);
+                if (btn) {
+                    if (sub.operational) {
+                        btn.classList.remove('failed');
+                    } else {
+                        btn.classList.add('failed');
+                    }
+                }
+            });
+        }
+
+        // Update detailed substation grid (power loads section)
+        if (window.scenarioUI) {
+            await window.scenarioUI.updateStatus();
+        }
+
+        showNotification('🔧 System Restored', data.message || 'All substations back online', 'success');
     }
 
     async function triggerBlackout() {
@@ -2138,6 +2556,12 @@ function initializeEVStationLayer() {
         try {
             const response = await fetch('/api/network_state');
             networkState = await response.json();
+
+            // DEBUG: Log failed substations
+            const failedSubs = networkState.substations.filter(sub => !sub.operational);
+            if (failedSubs.length > 0) {
+                console.log('[MAP DEBUG] Failed substations received:', failedSubs.map(s => `${s.name} (operational=${s.operational})`));
+            }
             updateUI();
             renderNetwork();
             if (layers.vehicles && vehicleRenderer && networkState.vehicles) {
@@ -2150,6 +2574,14 @@ function initializeEVStationLayer() {
         }
     }
 
+    // Expose loadNetworkState globally for use by other modules (e.g., scenario-controls.js)
+    window.loadNetworkState = loadNetworkState;
+
+    // Periodic network state updates to keep vehicle count fresh (every 2 seconds)
+    setInterval(() => {
+        loadNetworkState();
+    }, 2000);
+
     function toggleLayer(layer) {
         layers[layer] = !layers[layer];
         
@@ -2158,7 +2590,8 @@ function initializeEVStationLayer() {
             'primary': ['primary-cables', 'primary-cables-glow'],
             'secondary': ['secondary-cables', 'secondary-cables-glow'],
             'vehicles': ['vehicle-webgl-layer', 'vehicles-symbols', 'vehicles-click-layer'],
-            'ev': ['ev-stations-layer', 'ev-stations-badge-bg', 'ev-stations-badge-text', 'ev-stations-icon']
+            'ev': ['ev-stations-layer', 'ev-stations-badge-bg', 'ev-stations-badge-text', 'ev-stations-icon'],
+            'substations': ['substations-layer', 'substations-icon']
         };
         
         const layerIds = layerMappings[layer] || [];
@@ -2173,11 +2606,61 @@ function initializeEVStationLayer() {
         }
     }
 
+    // Track simulation time with local seconds counter
+    let displayHours = 12;
+    let displayMinutes = 0;
+    let displaySeconds = 0;
+    let timeInitialized = false;
+
     function updateTime() {
-        const now = new Date();
-        document.getElementById('time').textContent = 
-            now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        const timeEl = document.getElementById('time');
+        if (!timeEl) return;
+
+        // Only fetch from backend ONCE at initialization
+        if (!timeInitialized) {
+            fetch('/api/scenario/status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.time_formatted) {
+                        const timeMatch = data.time_formatted.match(/(\d+):(\d+)/);
+                        if (timeMatch) {
+                            displayHours = parseInt(timeMatch[1]);
+                            displayMinutes = parseInt(timeMatch[2]);
+                            displaySeconds = 0;
+                            timeInitialized = true;
+                        }
+                    }
+                })
+                .catch(() => {
+                    // If fetch fails, start from 12:00:00
+                    timeInitialized = true;
+                });
+            return; // Don't increment on first call, wait for backend response
+        }
+
+        // Increment seconds every call (called every 1 second)
+        displaySeconds++;
+        if (displaySeconds >= 60) {
+            displaySeconds = 0;
+            displayMinutes++;
+            if (displayMinutes >= 60) {
+                displayMinutes = 0;
+                displayHours++;
+                if (displayHours >= 24) {
+                    displayHours = 0;
+                }
+            }
+        }
+
+        // Convert to 12-hour format with AM/PM
+        const ampm = displayHours >= 12 ? 'PM' : 'AM';
+        const hours12 = displayHours % 12 || 12;
+
+        timeEl.textContent = `${String(hours12).padStart(2, '0')}:${String(displayMinutes).padStart(2, '0')}:${String(displaySeconds).padStart(2, '0')} ${ampm}`;
     }
+
+    // Expose updateTime globally for scenario handlers
+    window.updateTime = updateTime;
 
     function showBlackoutAlert(failedCount, operationalCount) {
         const alertEl = document.getElementById('blackout-alert');
@@ -2365,17 +2848,9 @@ function initializeEVStationLayer() {
         }
         chat.style.display = 'flex';
         const box = document.getElementById('ai-messages');
-        box.innerHTML = '<div class="typing">Loading latest insights…</div>';
-        try {
-            const resp = await fetch('/api/ai/advice');
-            const data = await resp.json();
-            if (data.advice) {
-                box.innerHTML = `<div class="msg ai" style="padding:10px;background:rgba(0,0,0,0.2);border-radius:10px;color:var(--text-secondary);">${data.advice.replace(/\\n/g,'<br>')}</div>`;
-            } else {
-                box.innerHTML = `<div style="color:#ff6b6b;">${data.error||'No response'}</div>`;
-            }
-        } catch(e) {
-            box.innerHTML = '<div style="color:#ff6b6b;">AI request failed.</div>';
+        // Don't auto-load insights - let users request them manually
+        if (!box.innerHTML.trim()) {
+            box.innerHTML = '<div class="msg ai" style="padding:10px;background:rgba(0,0,0,0.2);border-radius:10px;color:var(--text-secondary);">👋 Hello! Ask me anything about the power grid system. I can provide insights, recommendations, and answer questions about the current state.</div>';
         }
     }
 
@@ -2428,17 +2903,8 @@ function initializeEVStationLayer() {
         } else {
             win.style.display = 'flex';
             launcher.style.display = 'none';
-            const box = document.getElementById('chat-messages');
-            box.innerHTML = '<div class="msg ai">Loading system status…</div>';
-            fetch('/api/ai/advice').then(r=>r.json()).then(data=>{
-                if (data.advice) {
-                    box.innerHTML = `<div class="msg ai" style="padding:10px;background:rgba(0,0,0,0.2);border-radius:10px;">${data.advice.replace(/\\n/g,'<br>')}</div>`;
-                } else {
-                    box.innerHTML = `<div class="msg ai" style="color:#ff6b6b;">${data.error||'No response'}</div>`;
-                }
-            }).catch(()=>{
-                box.innerHTML = '<div class="msg ai" style="color:#ff6b6b;">AI request failed.</div>';
-            });
+            // Chat history preserved - no auto-loading of insights
+            // Users can manually request insights using the chat interface
         }
     }
 
@@ -2446,6 +2912,673 @@ function initializeEVStationLayer() {
         if (event.key === 'Enter') {
             sendChatMessage();
         }
+    }
+
+    // ==========================================
+    // ENHANCED CHATBOT FUNCTIONS
+    // ==========================================
+
+    function sendSuggestion(suggestion) {
+        const input = document.getElementById('chat-input');
+        if (input) {
+            input.value = suggestion;
+            input.focus();
+
+            // Add visual feedback
+            input.style.background = 'rgba(0,255,136,0.1)';
+            input.style.borderColor = '#00ff88';
+
+            // Auto-send after a brief moment
+            setTimeout(() => {
+                sendChatMessage();
+                // Reset input style
+                input.style.background = '';
+                input.style.borderColor = '';
+            }, 300);
+        }
+    }
+
+    // Expose sendSuggestion globally for inline onclick handlers
+    window.sendSuggestion = sendSuggestion;
+
+    function formatAIResponse(text) {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#00ffcc;">$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em style="color:#ffcc00;">$1</em>')
+            .replace(/`(.*?)`/g, '<code style="background:rgba(0,0,0,0.3);padding:2px 4px;border-radius:3px;color:#ff88cc;">$1</code>')
+            .replace(/•/g, '<span style="color:#00ff88;">•</span>')
+            .replace(/\n/g, '<br>')
+            .replace(/✅/g, '<span style="color:#00ff88;">✅</span>')
+            .replace(/❌/g, '<span style="color:#ff6b6b;">❌</span>')
+            .replace(/⚠️/g, '<span style="color:#ffaa00;">⚠️</span>')
+            .replace(/🔋/g, '<span style="color:#00ffff;">🔋</span>')
+            .replace(/⚡/g, '<span style="color:#ffff00;">⚡</span>');
+    }
+
+    // ==========================================
+    // ADVANCED MAP ACTION EXECUTION SYSTEM
+    // ==========================================
+
+    // Global map highlighting state
+    let activeHighlights = new Map();
+    let highlightAnimations = new Map();
+
+    async function executeMapAction(mapAction) {
+        console.log('executeMapAction called with:', mapAction);
+        console.log('window.map exists:', !!window.map);
+        console.log('window.mapLoaded:', window.mapLoaded);
+
+        if (!mapAction) {
+            console.error('No map action provided');
+            return;
+        }
+
+        if (!window.map) {
+            console.error('Map not available');
+            showNotification('❌ Map Error', 'Map not loaded yet', 'error');
+            return;
+        }
+
+        if (!window.mapLoaded) {
+            console.warn('Map not fully loaded yet, retrying in 1 second...');
+            setTimeout(() => executeMapAction(mapAction), 1000);
+            return;
+        }
+
+        if (typeof window.map.flyTo !== 'function') {
+            console.error('Map flyTo method not available:', typeof window.map.flyTo);
+            showNotification('❌ Map Error', 'Map not fully initialized', 'error');
+            return;
+        }
+
+        try {
+            switch (mapAction.type) {
+                case 'zoom_to_location':
+                case 'focus_and_highlight':
+                    console.log('Processing focus_and_highlight action:', mapAction);
+
+                    if (mapAction.coordinates && mapAction.coordinates.length === 2) {
+                        console.log('Flying to coordinates:', mapAction.coordinates);
+
+                        // CRITICAL: Reload network state to update map with restored substation
+                        await loadNetworkState();
+
+                        // Clear previous highlights
+                        clearAllHighlights();
+
+                        // Enhanced fly-to with smooth animation
+                        try {
+                            window.map.flyTo({
+                                center: mapAction.coordinates,
+                                zoom: mapAction.zoom || 16,
+                                duration: 1500,
+                                essential: true,
+                                easing(t) {
+                                    return t * (2 - t); // easeOutQuad
+                                }
+                            });
+                            console.log('Map flyTo executed successfully');
+                        } catch (flyError) {
+                            console.error('Map flyTo error:', flyError);
+                            showNotification('❌ Map Error', 'Could not focus on location', 'error');
+                            return;
+                        }
+
+                        // Add advanced highlight with delay
+                        setTimeout(() => {
+                            console.log('Creating advanced highlight...');
+                            createAdvancedHighlight({
+                                coordinates: mapAction.coordinates,
+                                name: mapAction.name || mapAction.location || 'Location',
+                                type: 'location',
+                                duration: 15000,
+                                pulseColor: '#00ff88',
+                                showConnections: mapAction.showConnections || true
+                            });
+                        }, 800);
+
+                        // Show success notification
+                        showNotification('🗺️ Location Found', `Showing ${mapAction.name || mapAction.location || 'location'} on map`, 'success');
+                        console.log('Map action executed successfully');
+                    } else {
+                        console.error('Invalid coordinates:', mapAction.coordinates);
+                        showNotification('❌ Map Error', 'Invalid location coordinates', 'error');
+                    }
+                    break;
+
+                case 'highlight_substation':
+                case 'highlight_failure':
+                case 'highlight_restore':
+                    if (mapAction.substation_id || mapAction.location || mapAction.name) {
+                        const locationName = mapAction.location || mapAction.name || mapAction.substation_id;
+                        console.log('Highlighting substation:', locationName, mapAction.coordinates || mapAction.coords);
+                        highlightSubstationAdvanced(locationName, mapAction.coordinates || mapAction.coords);
+                        showNotification('🏭 Substation Highlighted', `Showing ${locationName} on map`, 'info');
+                    }
+                    break;
+
+                case 'zoom_to_area':
+                    if (mapAction.bounds) {
+                        window.map.fitBounds(mapAction.bounds, {
+                            padding: { top: 80, bottom: 80, left: 80, right: 80 },
+                            duration: 2000,
+                            essential: true
+                        });
+                    }
+                    break;
+
+                case 'show_system_overview':
+                    showSystemOverview();
+                    break;
+
+                case 'show_connections':
+                    if (mapAction.coordinates) {
+                        showLocationConnections(mapAction.coordinates, mapAction.name);
+                    }
+                    break;
+
+                // ===== WORLD-CLASS LLM MAP ACTIONS =====
+                case 'show_route':
+                    if (mapAction.from_coords && mapAction.to_coords) {
+                        showRouteOnMap(mapAction.from_coords, mapAction.to_coords, mapAction);
+                    }
+                    break;
+
+                case 'visualize_power_grid':
+                case 'show_power_grid':
+                    console.log('🔌 Showing complete power grid');
+                    showPowerGrid();
+                    break;
+
+                case 'hide_power_grid':
+                    console.log('🔌 Hiding complete power grid');
+                    hidePowerGrid();
+                    break;
+
+                case 'show_substation_network':
+                    console.log('🔌 Showing individual substation network:', mapAction);
+                    if (mapAction.substation_name) {
+                        showSubstationNetwork(mapAction.substation_name, {
+                            showCables: mapAction.show_cables || true,
+                            focusZoom: mapAction.focus_zoom || 15
+                        });
+                    }
+                    break;
+
+                case 'show_ev_charging':
+                    console.log('⚡ Showing EV charging station for substation:', mapAction);
+                    if (mapAction.substation && mapAction.coordinates) {
+                        // Enable EV layer if not already enabled
+                        const evToggle = document.getElementById('layer-ev');
+                        if (evToggle && !evToggle.checked) {
+                            evToggle.checked = true;
+                            toggleLayer('ev');
+                        }
+
+                        // Fly to the substation location
+                        window.map.flyTo({
+                            center: mapAction.coordinates,
+                            zoom: mapAction.zoom || 16,
+                            duration: 1500,
+                            essential: true,
+                            easing(t) {
+                                return t * (2 - t); // easeOutQuad
+                            }
+                        });
+
+                        // Highlight the EV station and substation
+                        setTimeout(() => {
+                            highlightEVStations(mapAction.substation);
+                            createAdvancedHighlight({
+                                coordinates: mapAction.coordinates,
+                                name: `${mapAction.substation} - EV Charging Station`,
+                                type: 'ev_station',
+                                duration: 15000,
+                                pulseColor: '#00ffff',
+                                showConnections: true
+                            });
+                        }, 800);
+
+                        showNotification('⚡ EV Charging Station', `Showing EV station for ${mapAction.substation}`, 'success');
+                    }
+                    break;
+
+                case 'control_layers':
+                    console.log('🎛️ Controlling layers:', mapAction);
+                    if (mapAction.layers && Array.isArray(mapAction.layers)) {
+                        controlLayers(mapAction.layers, mapAction.message || '');
+                    }
+                    break;
+
+                case 'focus_location':
+                    if (mapAction.coords) {
+                        window.map.flyTo({
+                            center: mapAction.coords,
+                            zoom: mapAction.zoom || 16,
+                            duration: 2000,
+                            essential: true
+                        });
+                        setTimeout(() => {
+                            createAdvancedHighlight({
+                                coordinates: mapAction.coords,
+                                name: mapAction.name || 'Location',
+                                type: 'destination',
+                                duration: 20000,
+                                pulseColor: '#00aaff'
+                            });
+                        }, 1000);
+                        showNotification('🎯 Location Focus', `Focused on ${mapAction.name || 'location'}`, 'success');
+                    }
+                    break;
+
+                case 'show_all_vehicles':
+                    highlightAllVehicles(mapAction);
+                    showNotification('🚗 Vehicle Display', 'All vehicles highlighted with tracking', 'info');
+                    break;
+
+                case 'visualize_grid':
+                    visualizePowerGrid(mapAction);
+                    showNotification('⚡ Grid Visualization', 'Power grid network displayed', 'info');
+                    break;
+
+                case 'show_heatmap':
+                    showHeatmapOverlay(mapAction);
+                    showNotification('🌡️ Heatmap Active', (mapAction.data_type || 'Data') + ' heatmap overlay enabled', 'info');
+                    break;
+
+                case 'zoom_change':
+                    // Handle zoom in/out commands
+                    const currentZoom = window.map.getZoom();
+                    const newZoom = currentZoom + (mapAction.delta || 0);
+                    window.map.easeTo({
+                        zoom: newZoom,
+                        duration: 800,
+                        easing(t) {
+                            return t * (2 - t); // easeOutQuad
+                        }
+                    });
+                    const direction = mapAction.delta > 0 ? 'in' : 'out';
+                    showNotification('🔍 Zoom', `Zooming ${direction} to level ${newZoom.toFixed(1)}`, 'info');
+                    break;
+
+                case 'set_zoom':
+                    // Set specific zoom level
+                    window.map.easeTo({
+                        zoom: mapAction.level || 12,
+                        duration: 1000,
+                        easing(t) {
+                            return t * (2 - t);
+                        }
+                    });
+                    showNotification('🔍 Zoom', `Zoom level set to ${mapAction.level || 12}`, 'info');
+                    break;
+
+                case 'set_camera':
+                    // Set camera pitch and bearing
+                    window.map.easeTo({
+                        pitch: mapAction.pitch !== undefined ? mapAction.pitch : window.map.getPitch(),
+                        bearing: mapAction.bearing !== undefined ? mapAction.bearing : window.map.getBearing(),
+                        zoom: mapAction.zoom !== undefined ? mapAction.zoom : window.map.getZoom(),
+                        duration: 1500,
+                        easing(t) {
+                            return t * (2 - t);
+                        }
+                    });
+                    showNotification('📷 Camera', 'Camera view adjusted', 'info');
+                    break;
+            }
+
+            // Enhanced notification system
+            if (mapAction.message && !mapAction.type.includes('highlight')) {
+                showNotification(`🗺️ Map Action`, mapAction.message, 'info');
+            }
+        } catch (error) {
+            console.error('Map action execution error:', error);
+            console.error('Error details:', error.stack);
+            showNotification('❌ Map Error', `Could not execute map action: ${error.message}`, 'error');
+        }
+    }
+
+    // ==========================================
+    // ADVANCED HIGHLIGHTING SYSTEM
+    // ==========================================
+
+    function createAdvancedHighlight(options) {
+        if (!window.map) return;
+
+        const {
+            coordinates,
+            name,
+            type = 'location',
+            duration = 15000,
+            pulseColor = '#00ff88',
+            showConnections = false
+        } = options;
+
+        // Clear existing highlight for this location
+        const key = `${coordinates[0]}_${coordinates[1]}`;
+        if (activeHighlights.has(key)) {
+            activeHighlights.get(key).remove();
+        }
+
+        // Create advanced pulsing marker
+        const pulseDiv = document.createElement('div');
+        pulseDiv.className = 'advanced-pulse-marker';
+        pulseDiv.innerHTML = `
+            <div class="pulse-ring"></div>
+            <div class="pulse-core"></div>
+            <div class="pulse-label">${name}</div>
+        `;
+
+        // Enhanced CSS animations
+        if (!document.getElementById('advanced-pulse-animation')) {
+            const style = document.createElement('style');
+            style.id = 'advanced-pulse-animation';
+            style.textContent = `
+                .advanced-pulse-marker {
+                    position: relative;
+                    width: 40px;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .pulse-ring {
+                    position: absolute;
+                    width: 40px;
+                    height: 40px;
+                    border: 3px solid ${pulseColor};
+                    border-radius: 50%;
+                    animation: pulseRing 2s ease-out infinite;
+                    opacity: 0;
+                }
+                .pulse-core {
+                    width: 16px;
+                    height: 16px;
+                    background: ${pulseColor};
+                    border: 2px solid #ffffff;
+                    border-radius: 50%;
+                    box-shadow: 0 0 15px ${pulseColor};
+                    animation: pulseCore 1.5s ease-in-out infinite alternate;
+                }
+                .pulse-label {
+                    position: absolute;
+                    top: -35px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(0, 0, 0, 0.8);
+                    color: white;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    white-space: nowrap;
+                    pointer-events: none;
+                    opacity: 0;
+                    animation: labelFade 0.5s ease-in 1s forwards;
+                }
+                @keyframes pulseRing {
+                    0% {
+                        transform: scale(0.8);
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: scale(2.5);
+                        opacity: 0;
+                    }
+                }
+                @keyframes pulseCore {
+                    0% {
+                        transform: scale(1);
+                        box-shadow: 0 0 15px ${pulseColor};
+                    }
+                    100% {
+                        transform: scale(1.2);
+                        box-shadow: 0 0 25px ${pulseColor};
+                    }
+                }
+                @keyframes labelFade {
+                    from {
+                        opacity: 0;
+                        transform: translateX(-50%) translateY(-10px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(-50%) translateY(0);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Create marker with enhanced popup
+        const marker = new mapboxgl.Marker(pulseDiv)
+            .setLngLat(coordinates)
+            .setPopup(
+                new mapboxgl.Popup({
+                    offset: 35,
+                    className: 'custom-popup'
+                }).setHTML(`
+                    <div style="padding: 10px;">
+                        <h4 style="margin: 0 0 8px 0; color: ${pulseColor};">${name}</h4>
+                        <p style="margin: 0; font-size: 12px; opacity: 0.8;">
+                            📍 ${coordinates[1].toFixed(4)}, ${coordinates[0].toFixed(4)}<br>
+                            🎯 Click to see connections
+                        </p>
+                    </div>
+                `)
+            )
+            .addTo(window.map);
+
+        // Store reference
+        activeHighlights.set(key, marker);
+
+        // Show connections if requested
+        if (showConnections) {
+            setTimeout(() => {
+                showLocationConnections(coordinates, name);
+            }, 1500);
+        }
+
+        // Auto-remove after duration
+        setTimeout(() => {
+            if (activeHighlights.has(key)) {
+                activeHighlights.get(key).remove();
+                activeHighlights.delete(key);
+            }
+        }, duration);
+
+        return marker;
+    }
+
+    function clearAllHighlights() {
+        activeHighlights.forEach(marker => marker.remove());
+        activeHighlights.clear();
+    }
+
+    // ==========================================
+    // ENHANCED SUBSTATION HIGHLIGHTING
+    // ==========================================
+
+    function highlightSubstationAdvanced(substationId, providedCoords = null) {
+        const substationCoords = {
+            'times_square': [-73.9857, 40.7549],
+            'times square': [-73.9857, 40.7549],
+            'penn_station': [-73.9904, 40.7505],
+            'penn station': [-73.9904, 40.7505],
+            'grand_central': [-73.9772, 40.7527],
+            'grand central': [-73.9772, 40.7527],
+            'murray_hill': [-73.9816, 40.7486],
+            'murray hill': [-73.9816, 40.7486],
+            'turtle_bay': [-73.9665, 40.7519],
+            'turtle bay': [-73.9665, 40.7519],
+            'chelsea': [-73.9969, 40.7439],
+            'hells_kitchen': [-73.9897, 40.7648],
+            'hell\'s kitchen': [-73.9897, 40.7648],
+            'midtown_east': [-73.9735, 40.7549],
+            'midtown east': [-73.9735, 40.7549],
+            'wall street': [-73.9901, 40.7074],
+            'broadway': [-73.9776, 40.7614],
+            'central park': [-73.9654, 40.7829]
+        };
+
+        // Try multiple ways to match the substation name
+        let coords = providedCoords;
+        if (!coords) {
+            const normalizedId = substationId.toLowerCase().replace(/[^a-z\s]/g, '');
+            coords = substationCoords[normalizedId] || substationCoords[substationId.toLowerCase()] || substationCoords[substationId];
+        }
+
+        console.log('highlightSubstationAdvanced:', substationId, '-> coords:', coords);
+
+        if (coords && coords.length === 2) {
+            const formattedName = substationId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+            // Direct highlighting to avoid recursive calls
+            clearAllHighlights();
+
+            // Zoom and highlight
+            if (window.map) {
+                console.log('Flying to coordinates:', coords);
+                window.map.flyTo({
+                    center: coords,
+                    zoom: 17,
+                    duration: 1500,
+                    essential: true
+                });
+
+                // Create highlight after zoom
+                setTimeout(() => {
+                    console.log('Creating highlight for:', formattedName);
+                    createAdvancedHighlight({
+                        coordinates: coords,
+                        name: `${formattedName} Substation`,
+                        type: 'substation',
+                        duration: 15000,
+                        pulseColor: '#ff6b6b',
+                        showConnections: true
+                    });
+                }, 800);
+
+                // Show info
+                setTimeout(() => {
+                    showSubstationInfo(coords, formattedName);
+                }, 2000);
+
+                showNotification('🏭 Substation Located', `Highlighting ${formattedName}`, 'success');
+            } else {
+                console.error('Map not available');
+            }
+        } else {
+            console.error('Coordinates not found for substation:', substationId);
+            showNotification('⚠️ Location Error', `Substation "${substationId}" coordinates not found`, 'warning');
+        }
+    }
+
+    function showSubstationInfo(coordinates, name) {
+        if (!window.map) return;
+
+        // Create info overlay
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'substation-info-overlay';
+        infoDiv.style.cssText = `
+            position: fixed;
+            top: 120px;
+            right: 20px;
+            width: 300px;
+            background: linear-gradient(135deg, rgba(0, 40, 60, 0.95), rgba(0, 20, 40, 0.98));
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: slideInRight 0.5s ease;
+        `;
+
+        infoDiv.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: between; margin-bottom: 12px;">
+                <h3 style="color: #00ff88; margin: 0; font-size: 16px;">🏭 ${name}</h3>
+                <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; margin-left: auto;">×</button>
+            </div>
+            <div style="font-size: 13px; color: #ccc; line-height: 1.5;">
+                <p><strong>📍 Location:</strong> ${coordinates[1].toFixed(4)}, ${coordinates[0].toFixed(4)}</p>
+                <p><strong>⚡ Voltage:</strong> 13.8kV Primary / 480V Secondary</p>
+                <p><strong>🔋 Capacity:</strong> 50-100 MVA</p>
+                <p><strong>🔄 Status:</strong> <span id="substation-status">Checking...</span></p>
+                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <button onclick="toggleSubstationControl('${name}')" class="btn btn-secondary" style="width: 100%; padding: 8px; font-size: 12px;">🔧 Control Panel</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(infoDiv);
+
+        // Update status
+        setTimeout(() => {
+            const statusEl = document.getElementById('substation-status');
+            if (statusEl) {
+                statusEl.innerHTML = '<span style="color: #00ff88;">✅ Operational</span>';
+            }
+        }, 1000);
+
+        // Auto-remove after 15 seconds
+        setTimeout(() => {
+            if (infoDiv.parentElement) {
+                infoDiv.remove();
+            }
+        }, 15000);
+    }
+
+    function showLocationConnections(coordinates, name) {
+        // Show connected infrastructure
+        const connections = [
+            { name: 'Traffic Lights', count: 12, color: '#ffaa00' },
+            { name: 'EV Stations', count: 3, color: '#00ff88' },
+            { name: 'Primary Lines', count: 4, color: '#00ffcc' },
+            { name: 'Secondary Lines', count: 8, color: '#ffbb44' }
+        ];
+
+        showNotification(
+            `🔗 ${name} Connections`,
+            connections.map(c => `${c.name}: ${c.count}`).join(' • '),
+            'info'
+        );
+    }
+
+    function showSystemOverview() {
+        clearAllHighlights();
+
+        window.map.flyTo({
+            center: [-73.9857, 40.7549],
+            zoom: 12,
+            duration: 2000,
+            essential: true
+        });
+
+        showNotification('🗺️ System Overview', 'Showing Manhattan power grid overview', 'info');
+
+        // Highlight all major substations
+        setTimeout(() => {
+            const majorSubstations = [
+                { name: 'Times Square', coords: [-73.9857, 40.7549] },
+                { name: 'Grand Central', coords: [-73.9772, 40.7527] },
+                { name: 'Penn Station', coords: [-73.9904, 40.7505] },
+                { name: 'Chelsea', coords: [-73.9969, 40.7439] }
+            ];
+
+            majorSubstations.forEach((sub, index) => {
+                setTimeout(() => {
+                    createAdvancedHighlight({
+                        coordinates: sub.coords,
+                        name: sub.name + ' Substation',
+                        type: 'substation',
+                        duration: 20000,
+                        pulseColor: '#ff6b6b'
+                    });
+                }, index * 500);
+            });
+        }, 1500);
     }
 
     function handleAIKeyPress(event) {
@@ -2461,32 +3594,171 @@ function initializeEVStationLayer() {
         const input = document.getElementById('chat-input');
         const text = (input.value||'').trim();
         if (!text) return;
+
+        // Check for scenario confirmation/cancellation
+        const textLower = text.toLowerCase();
+        if (window.chatbotScenarioHandler && window.chatbotScenarioHandler.awaitingConfirmation) {
+            if (textLower === 'confirm' || textLower === 'yes' || textLower === 'proceed') {
+                const box = document.getElementById('chat-messages');
+                box.innerHTML += `<div class="msg user" style="margin:10px 0;padding:14px 18px;background:linear-gradient(135deg,rgba(0,170,255,0.25),rgba(0,120,255,0.18));border-radius:14px;border:1px solid rgba(0,170,255,0.5);box-shadow:0 3px 12px rgba(0,170,255,0.2);position:relative;overflow:hidden;">
+                    <div style="position:absolute;top:0;right:0;width:4px;height:100%;background:linear-gradient(180deg,#00aaff,#0077ff);box-shadow:0 0 10px rgba(0,170,255,0.6);"></div>
+                    <strong style="color:#00d4ff;display:flex;align-items:center;margin-bottom:8px;font-size:13px;letter-spacing:0.3px;">
+                        <svg width="16" height="16" style="margin-right:7px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>You
+                    </strong>
+                    <div style="color:rgba(255,255,255,0.98);font-size:14px;line-height:1.6;padding-left:23px;">${text}</div>
+                </div>`;
+                input.value = '';
+                box.scrollTop = box.scrollHeight;
+                window.chatbotScenarioHandler.handleScenarioConfirmation();
+                return;
+            } else if (textLower === 'cancel' || textLower === 'no' || textLower === 'abort') {
+                const box = document.getElementById('chat-messages');
+                box.innerHTML += `<div class="msg user" style="margin:10px 0;padding:14px 18px;background:linear-gradient(135deg,rgba(0,170,255,0.25),rgba(0,120,255,0.18));border-radius:14px;border:1px solid rgba(0,170,255,0.5);box-shadow:0 3px 12px rgba(0,170,255,0.2);position:relative;overflow:hidden;">
+                    <div style="position:absolute;top:0;right:0;width:4px;height:100%;background:linear-gradient(180deg,#00aaff,#0077ff);box-shadow:0 0 10px rgba(0,170,255,0.6);"></div>
+                    <strong style="color:#00d4ff;display:flex;align-items:center;margin-bottom:8px;font-size:13px;letter-spacing:0.3px;">
+                        <svg width="16" height="16" style="margin-right:7px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>You
+                    </strong>
+                    <div style="color:rgba(255,255,255,0.98);font-size:14px;line-height:1.6;padding-left:23px;">${text}</div>
+                </div>`;
+                input.value = '';
+                box.scrollTop = box.scrollHeight;
+                window.chatbotScenarioHandler.handleScenarioCancellation();
+                return;
+            }
+        }
+
         const box = document.getElementById('chat-messages');
-        box.innerHTML += `<div class="msg user" style="margin:8px 0;padding:10px;background:linear-gradient(135deg,rgba(0,170,255,0.1),rgba(0,120,255,0.05));border-radius:10px;border:1px solid rgba(0,170,255,0.2);"><strong>You:</strong> ${text}</div>`;
-        box.innerHTML += `<div class="typing">AI is typing…</div>`;
-        const typingRef = box.querySelector('.typing');
+        box.innerHTML += `<div class="msg user" style="margin:10px 0;padding:14px 18px;background:linear-gradient(135deg,rgba(0,170,255,0.25),rgba(0,120,255,0.18));border-radius:14px;border:1px solid rgba(0,170,255,0.5);box-shadow:0 3px 12px rgba(0,170,255,0.2), inset 0 1px 0 rgba(255,255,255,0.15);position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;right:0;width:4px;height:100%;background:linear-gradient(180deg,#00aaff,#0077ff);box-shadow:0 0 10px rgba(0,170,255,0.6);"></div>
+            <strong style="color:#00d4ff;display:flex;align-items:center;margin-bottom:8px;font-size:13px;letter-spacing:0.3px;">
+                <svg width="16" height="16" style="margin-right:7px;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                </svg>You
+            </strong>
+            <div style="color:rgba(255,255,255,0.98);font-size:14px;line-height:1.6;padding-left:23px;">${text}</div>
+        </div>`;
+
         input.value = '';
-        // Use the enhanced AI chat endpoint
+
+        // **WORLD-CLASS LLM SCENARIO PROCESSING**
+        // First check if this is a scenario command
+        if (window.llmScenarioHandler) {
+            window.llmScenarioHandler.processCommand(text).then(result => {
+                if (result !== null) {
+                    // Scenario command was handled
+                    let responseHtml = `<div class="msg ai" style="margin:10px 0;padding:16px 20px;background:linear-gradient(135deg,rgba(15,25,45,0.95),rgba(20,30,50,0.92));border-radius:16px;border:1px solid rgba(0,255,136,0.3);box-shadow:0 4px 16px rgba(0,255,136,0.15), inset 0 1px 0 rgba(255,255,255,0.1);position:relative;overflow:hidden;">`;
+                    responseHtml += `<div style="position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,#00ff88,#00d4ff);box-shadow:0 0 12px rgba(0,255,136,0.5);"></div>`;
+                    responseHtml += `<strong style="color:#00ff88;display:flex;align-items:center;margin-bottom:10px;font-size:14px;letter-spacing:0.3px;"><svg width="18" height="18" style="margin-right:8px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.58 2 10c0 2.39 1.31 4.53 3.4 6.01-.14.52-.51 1.89-.59 2.24-.09.37.13.73.5.82.26.06.52-.03.7-.21.28-.27 1.25-1.2 1.77-1.7.79.22 1.63.34 2.52.34 5.52 0 10-3.58 10-8s-4.48-8-10-8Z"/></svg>Ultra-Intelligent AI</strong>`;
+                    responseHtml += `<div style="line-height:1.7;color:rgba(255,255,255,0.95);font-size:14px;padding-left:26px;" class="markdown-content">${window.renderMarkdown(result.message)}</div>`;
+
+                    // Add suggestions if available
+                    if (result.suggestions && result.suggestions.length > 0) {
+                        responseHtml += `<div style="margin-top:12px;padding-left:26px;"><div style="font-size:12px;color:#00ffcc;margin-bottom:6px;">💡 Suggested test scenarios:</div>`;
+                        responseHtml += `<div style="display:flex;flex-wrap:wrap;gap:6px;">`;
+                        result.suggestions.forEach(suggestion => {
+                            const scenarioKey = suggestion.key;
+                            const scenario = window.llmScenarioHandler.testScenarios[scenarioKey];
+                            if (scenario) {
+                                // Send the scenario KEY, not the full description
+                                responseHtml += `<button onclick="sendSuggestion('${scenarioKey.replace(/_/g, ' ')}')" style="padding:6px 12px;background:rgba(0,123,255,0.3);border:1px solid rgba(0,123,255,0.5);border-radius:12px;color:white;font-size:11px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(0,123,255,0.6)'" onmouseout="this.style.background='rgba(0,123,255,0.3)'">${scenario.icon} ${scenarioKey.replace(/_/g, ' ')}</button>`;
+                            }
+                        });
+                        responseHtml += `</div></div>`;
+                    }
+
+                    responseHtml += `</div>`;
+                    box.innerHTML += responseHtml;
+                    box.scrollTop = box.scrollHeight;
+                    return;
+                }
+
+                // Not a scenario command, proceed with normal AI chat
+                proceedWithNormalChat(text, box);
+            });
+        } else {
+            // Scenario handler not available, proceed with normal chat
+            proceedWithNormalChat(text, box);
+        }
+    }
+
+    // Separated normal chat logic
+    function proceedWithNormalChat(text, box) {
+        box.innerHTML += `<div class="typing">AI is analyzing…</div>`;
+        const typingRef = box.querySelector('.typing');
+
+        // Use the enhanced Ultra-Intelligent AI chat endpoint
         fetch('/api/ai/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message:text, user_id:'web_user'})})
         .then(r=>r.json()).then(data=>{
             if (typingRef) typingRef.remove();
-            if (data.response) {
-                let responseHtml = `<div class="msg ai" style="margin:8px 0;padding:10px;background:rgba(0,0,0,0.2);border-radius:10px;border:1px solid rgba(255,255,255,0.05);">`;
-                responseHtml += `<strong style="color:#c8a2ff;">AI:</strong> ${data.response.replace(/\\n/g,'<br>')}`;
-                
-                // Optional debug: show intent and data only in debug mode
-                if (PERFORMANCE_CONFIG && PERFORMANCE_CONFIG.enableDebugMode) {
-                    if (data.intent && data.intent !== 'general') {
-                        responseHtml += `<div style="margin-top:8px;padding:6px;background:rgba(0,255,136,0.1);border-radius:6px;font-size:12px;color:#00ff88;">Intent: ${data.intent}</div>`;
-                    }
-                    if (data.data && Object.keys(data.data).length > 0) {
-                        responseHtml += `<div style="margin-top:8px;padding:6px;background:rgba(200,162,255,0.1);border-radius:6px;font-size:12px;color:#c8a2ff;">Data: ${JSON.stringify(data.data, null, 2)}</div>`;
-                    }
+
+            // Handle ultra-intelligent chatbot response format
+            let aiResponse = null;
+            if (data.status === 'success' && data.response) {
+                // Backend returns {status: 'success', response: 'text', full_data: {...}}
+                // Extract full_data if available, otherwise create object with response text
+                aiResponse = data.full_data || { text: data.response };
+            } else if (data.text) {
+                aiResponse = data;
+            }
+
+            if (aiResponse && aiResponse.text) {
+                // Check if this is a scenario prep response
+                if (window.chatbotScenarioHandler && window.chatbotScenarioHandler.processChatbotResponse(aiResponse)) {
+                    // Scenario handler took care of the response
+                    box.scrollTop = box.scrollHeight;
+                    return;
                 }
+
+                let responseHtml = `<div class="msg ai" style="margin:10px 0;padding:16px 20px;background:linear-gradient(135deg,rgba(15,25,45,0.95),rgba(20,30,50,0.92));border-radius:16px;border:1px solid rgba(0,255,136,0.3);box-shadow:0 4px 16px rgba(0,255,136,0.15), inset 0 1px 0 rgba(255,255,255,0.1);position:relative;overflow:hidden;">`;
+                responseHtml += `<div style="position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,#00ff88,#00d4ff);box-shadow:0 0 12px rgba(0,255,136,0.5);"></div>`;
+                responseHtml += `<strong style="color:#00ff88;display:flex;align-items:center;margin-bottom:10px;font-size:14px;letter-spacing:0.3px;"><svg width="18" height="18" style="margin-right:8px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.58 2 10c0 2.39 1.31 4.53 3.4 6.01-.14.52-.51 1.89-.59 2.24-.09.37.13.73.5.82.26.06.52-.03.7-.21.28-.27 1.25-1.2 1.77-1.7.79.22 1.63.34 2.52.34 5.52 0 10-3.58 10-8s-4.48-8-10-8Z"/></svg>Ultra-Intelligent AI</strong>`;
+                responseHtml += `<div style="line-height:1.7;color:rgba(255,255,255,0.95);font-size:14px;padding-left:26px;" class="markdown-content">${window.renderMarkdown(aiResponse.text)}</div>`;
+
+                // Add suggestions if available
+                if (aiResponse.suggestions && aiResponse.suggestions.length > 0) {
+                    responseHtml += `<div style="margin-top:12px;"><div style="font-size:12px;color:#00ffcc;margin-bottom:6px;">💡 Try these suggestions:</div>`;
+                    responseHtml += `<div style="display:flex;flex-wrap:wrap;gap:6px;">`;
+                    aiResponse.suggestions.slice(0,3).forEach(suggestion => {
+                        responseHtml += `<button onclick="sendSuggestion('${suggestion.replace(/'/g, '\\\'')}')" style="padding:4px 8px;background:rgba(0,123,255,0.3);border:1px solid rgba(0,123,255,0.5);border-radius:12px;color:white;font-size:11px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(0,123,255,0.6)'" onmouseout="this.style.background='rgba(0,123,255,0.3)'">${suggestion}</button>`;
+                    });
+                    responseHtml += `</div></div>`;
+                }
+
+                // Show typo corrections if available
+                if (aiResponse.corrections_made && aiResponse.corrections_made.length > 0) {
+                    responseHtml += `<div style="margin-top:8px;padding:6px;background:rgba(255,255,0,0.1);border-radius:6px;font-size:11px;color:#ffff88;">✨ Auto-corrected: ${aiResponse.corrections_made.join(', ')}</div>`;
+                }
+
+                // Only show backend error if there's a failure
+                if (aiResponse.backend_error) {
+                    responseHtml += `<div style="margin-top:8px;padding:6px;background:rgba(255,107,107,0.15);border-radius:6px;font-size:11px;color:#ff6b6b;border-left:3px solid #ff6b6b;">❌ <strong>Backend connection failed</strong></div>`;
+                }
+
+                // Don't show extra system changes or action details - the main message already contains this info
+
                 responseHtml += `</div>`;
                 box.innerHTML += responseHtml;
+
+                // Enhanced map action handling
+                if (aiResponse.map_action) {
+                    console.log('Executing map action:', aiResponse.map_action);
+                    setTimeout(() => {
+                        executeMapAction(aiResponse.map_action);
+                    }, 500);
+                }
+
+                // Handle map updates (for multiple actions)
+                if (aiResponse.map_updates && aiResponse.map_updates.length > 0) {
+                    console.log('Executing map updates:', aiResponse.map_updates);
+                    aiResponse.map_updates.forEach((update, index) => {
+                        setTimeout(() => {
+                            executeMapAction(update);
+                        }, 500 + (index * 200));
+                    });
+                }
+
             } else {
-                box.innerHTML += `<div class="msg ai" style="color:#ff6b6b;"><strong>AI:</strong> ${data.error||'No response'}</div>`;
+                box.innerHTML += `<div class="msg ai" style="margin:8px 0;padding:12px;background:rgba(255,107,107,0.1);border-radius:12px;border:1px solid rgba(255,107,107,0.3);"><strong style="color:#ff6b6b;">Ultra-AI:</strong> ${data.error||data.message||'No response received. Please try again.'}</div>`;
             }
             box.scrollTop = box.scrollHeight;
         }).catch(()=>{
@@ -2524,6 +3796,7 @@ function initializeEVStationLayer() {
             updateWithAnimation('v2g-power', data.total_power_kw);
             updateWithAnimation('v2g-vehicles', data.vehicles_participated);
             updateWithAnimation('v2g-rate', `$${data.current_rate.toFixed(2)}`);
+            updateWithAnimation('v2g-discharging-count', data.active_vehicles ? data.active_vehicles.length : 0);
             
             // Animate earnings with counting effect
             const earningsEl = document.getElementById('v2g-earnings');
@@ -2544,15 +3817,8 @@ function initializeEVStationLayer() {
                 sessionList.innerHTML = data.active_vehicles.map(v => {
                     // Calculate real-time progress
                     const progress = ((v.power_delivered || 0) / (v.min_energy_required || 10)) * 100;
-                    const progressBar = `
-                        <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 4px;">
-                            <div style="width: ${Math.min(progress, 100)}%; height: 100%; background: linear-gradient(90deg, #00ffff, #00ff88); border-radius: 2px; transition: width 0.3s;"></div>
-                        </div>
-                    `;
-                    
-                    // Calculate real power rate in kW
                     const powerRate = v.duration > 0 ? (v.power_delivered * 3600 / v.duration).toFixed(0) : '0';
-                    
+
                     return `
                         <div class="v2g-session-item" style="animation: v2gPulse 2s ease-in-out infinite;">
                             <div style="display: flex; align-items: center; gap: 8px;">
@@ -2573,7 +3839,9 @@ function initializeEVStationLayer() {
                                         ${v.power_delivered.toFixed(2)} kWh
                                     </span>
                                 </div>
-                                ${progressBar}
+                                <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 4px;">
+                                    <div style="width: ${Math.min(progress, 100)}%; height: 100%; background: linear-gradient(90deg, #00ffff, #00ff88); border-radius: 2px; transition: width 0.3s;"></div>
+                                </div>
                             </div>
                             <div style="text-align: right;">
                                 <div style="font-size: 14px; color: #ffaa00; font-weight: 600;">
@@ -2857,16 +4125,227 @@ function initializeEVStationLayer() {
         
         initializeRenderers();
         initializeEVStationLayer();
-        
+
+        // Network state already loaded in first map.on('load') handler
+
         updateLoop();
+        updateV2GColorsOptimized(); // OPTIMIZED - no lag!
         if (!animationFrameId) {
             animationFrameId = requestAnimationFrame(animationLoop);
         }
         setInterval(updateTime, 1000);
         updateTime();
         
-        setInterval(updateMLDashboard, 8000);
+        // Removed automatic ML dashboard updates - only update when manually requested
+        // setInterval(updateMLDashboard, 8000);
         updateMLDashboard();
+
+        // ==========================================
+        // AI MAP FOCUS INTEGRATION - REAL-TIME VISUAL UPDATES
+        // ==========================================
+        let lastMapFocusUpdate = null;
+        let mapFocusHighlight = null;
+
+        async function checkAIMapFocus() {
+            try {
+                const response = await fetch('/api/ai/map_focus_status');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.has_update && data.focus_data && data.focus_data !== lastMapFocusUpdate) {
+                        lastMapFocusUpdate = data.focus_data;
+                        await applyAIMapFocus(data.focus_data);
+                    }
+                }
+            } catch (e) {
+                // Silent fail - AI focus is optional enhancement
+            }
+        }
+
+        async function applyAIMapFocus(focusData) {
+            if (!focusData || !focusData.location) return;
+
+            // Clear existing highlight
+            if (mapFocusHighlight) {
+                map.removeLayer(mapFocusHighlight.id);
+                map.removeSource(mapFocusHighlight.sourceId);
+                mapFocusHighlight = null;
+            }
+
+            const coords = [focusData.longitude || focusData.lon, focusData.latitude || focusData.lat];
+            const zoom = focusData.zoom || 16;
+
+            // Smooth camera transition to AI-requested location
+            map.flyTo({
+                center: coords,
+                zoom: zoom,
+                duration: 2000,
+                essential: true
+            });
+
+            // Add visual highlighting based on action type
+            if (focusData.action_type === 'blackout' || focusData.action_type === 'substation_off') {
+                // Red pulsing circle for blackouts/failures
+                const circleId = 'ai-highlight-' + Date.now();
+                const sourceId = 'ai-highlight-source-' + Date.now();
+
+                map.addSource(sourceId, {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: coords
+                        }
+                    }
+                });
+
+                map.addLayer({
+                    id: circleId,
+                    source: sourceId,
+                    type: 'circle',
+                    paint: {
+                        'circle-radius': [
+                            'interpolate',
+                            ['linear'],
+                            ['zoom'],
+                            10, 20,
+                            18, 100
+                        ],
+                        'circle-color': '#ff0000',
+                        'circle-opacity': 0.6,
+                        'circle-stroke-width': 3,
+                        'circle-stroke-color': '#ff0000',
+                        'circle-stroke-opacity': 0.8
+                    }
+                });
+
+                mapFocusHighlight = { id: circleId, sourceId: sourceId };
+
+                // Animate pulsing effect
+                let opacity = 0.6;
+                let direction = -1;
+                const pulseInterval = setInterval(() => {
+                    opacity += direction * 0.1;
+                    if (opacity <= 0.2) direction = 1;
+                    if (opacity >= 0.8) direction = -1;
+
+                    if (map.getLayer(circleId)) {
+                        map.setPaintProperty(circleId, 'circle-opacity', opacity);
+                    } else {
+                        clearInterval(pulseInterval);
+                    }
+                }, 150);
+
+                // Auto-remove after 10 seconds
+                setTimeout(() => {
+                    if (map.getLayer(circleId)) {
+                        map.removeLayer(circleId);
+                        map.removeSource(sourceId);
+                    }
+                    clearInterval(pulseInterval);
+                    mapFocusHighlight = null;
+                }, 10000);
+
+            } else {
+                // Blue highlight circle for normal focus
+                const circleId = 'ai-focus-' + Date.now();
+                const sourceId = 'ai-focus-source-' + Date.now();
+
+                map.addSource(sourceId, {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: coords
+                        }
+                    }
+                });
+
+                map.addLayer({
+                    id: circleId,
+                    source: sourceId,
+                    type: 'circle',
+                    paint: {
+                        'circle-radius': [
+                            'interpolate',
+                            ['linear'],
+                            ['zoom'],
+                            10, 15,
+                            18, 60
+                        ],
+                        'circle-color': '#00aaff',
+                        'circle-opacity': 0.4,
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': '#00aaff',
+                        'circle-stroke-opacity': 0.9
+                    }
+                });
+
+                mapFocusHighlight = { id: circleId, sourceId: sourceId };
+
+                // Auto-remove after 8 seconds
+                setTimeout(() => {
+                    if (map.getLayer(circleId)) {
+                        map.removeLayer(circleId);
+                        map.removeSource(sourceId);
+                    }
+                    mapFocusHighlight = null;
+                }, 8000);
+            }
+
+            // Show notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+                color: #ffffff;
+                padding: 12px 20px;
+                border-radius: 8px;
+                border: 1px solid #00aaff;
+                box-shadow: 0 4px 20px rgba(0, 170, 255, 0.3);
+                font-size: 14px;
+                font-weight: 500;
+                z-index: 10000;
+                opacity: 0;
+                transform: translateX(20px);
+                transition: all 0.3s ease;
+                max-width: 300px;
+            `;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center;">
+                    <div style="color: #00aaff; margin-right: 8px;">🤖</div>
+                    <div>
+                        <div style="color: #00aaff;">AI Map Focus</div>
+                        <div style="font-size: 12px; opacity: 0.8;">${focusData.location}</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Auto-remove notification
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(20px)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        // Poll for AI map focus updates every 2 seconds
+        setInterval(checkAIMapFocus, 2000);
+        checkAIMapFocus(); // Initial check
         
         initializeEVConfig();
         
@@ -2887,3 +4366,18 @@ function initializeEVStationLayer() {
     setTimeout(fixTabLayout, 100);
     // Set initial tab
     document.body.setAttribute('data-tab', 'overview');
+
+    // Handle messages from embedded chatbot for map actions
+    window.addEventListener('message', (event) => {
+        try {
+            if (event.data && event.data.type === 'executeMapAction') {
+                console.log('Received map action from chatbot:', event.data.data);
+                executeMapAction(event.data.data);
+            } else if (event.data && event.data.type === 'showNotification') {
+                console.log('Received notification from chatbot:', event.data.data);
+                showNotification(event.data.data.title, event.data.data.message, event.data.data.type);
+            }
+        } catch (error) {
+            console.error('Error handling chatbot message:', error);
+        }
+    });

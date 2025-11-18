@@ -68,7 +68,7 @@ class EVStationManager:
                     'current_load_kw': 0
                 }
                 
-                print(f"✅ Initialized {ev_station['name']} on edge {edge} with EXACTLY 20 ports")
+                print(f"Success Initialized {ev_station['name']} on edge {edge} with EXACTLY 20 ports")
     
     def _find_nearest_valid_edge(self, lat, lon):
         """Find nearest edge that can be routed to"""
@@ -162,7 +162,7 @@ class EVStationManager:
                     # Store reservation
                     self.vehicle_reservations[vehicle_id] = station_id
                     
-                    print(f"✅ {vehicle_id} → Port at {station['name']} ({len(station['vehicles_charging'])}/20 occupied)")
+                    print(f"Success {vehicle_id} -> Port at {station['name']} ({len(station['vehicles_charging'])}/20 occupied)")
                     return True
             
         # Station full - vehicle must circle
@@ -274,7 +274,7 @@ class EVStationManager:
                     if vehicle_id in self.vehicle_reservations:
                         del self.vehicle_reservations[vehicle_id]
                     
-                    print(f"🔋 {vehicle_id} finished charging at {station['name']} ({len(station['vehicles_charging'])}/20 now occupied)")
+                    print(f"Battery {vehicle_id} finished charging at {station['name']} ({len(station['vehicles_charging'])}/20 now occupied)")
                     
                     # Return the edge where station is located
                     return station['edge']
@@ -313,7 +313,7 @@ class EVStationManager:
                 station['current_load_kw'] = 0
         
         if affected_stations:
-            print(f"⚡ BLACKOUT: {', '.join(affected_stations)} offline! {len(released_vehicles)} vehicles interrupted")
+            print(f"POWER BLACKOUT: {', '.join(affected_stations)} offline! {len(released_vehicles)} vehicles interrupted")
         
         return released_vehicles
     
@@ -349,7 +349,7 @@ class EVStationManager:
         station['current_load_kw'] = 0
         
         if released_vehicles:
-            print(f"🚨 STATION FAILURE: {station['name']} offline! {len(released_vehicles)} vehicles interrupted")
+            print(f"[EMERGENCY] STATION FAILURE: {station['name']} offline! {len(released_vehicles)} vehicles interrupted")
         
         return released_vehicles
     
@@ -367,7 +367,7 @@ class EVStationManager:
                     self.integrated_system.ev_stations[station_id]['operational'] = True
         
         if restored_stations:
-            print(f"✅ POWER RESTORED: {', '.join(restored_stations)} back online!")
+            print(f"Success POWER RESTORED: {', '.join(restored_stations)} back online!")
         
         return restored_stations
     
@@ -384,7 +384,7 @@ class EVStationManager:
         if station_id in self.integrated_system.ev_stations:
             self.integrated_system.ev_stations[station_id]['operational'] = True
         
-        print(f"✅ STATION RESTORED: {station['name']} back online")
+        print(f"Success STATION RESTORED: {station['name']} back online")
         return True
     
     def get_station_status(self, station_id: str) -> Dict:

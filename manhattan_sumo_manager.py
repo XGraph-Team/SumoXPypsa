@@ -17,14 +17,26 @@ import time
 from ev_battery_model import EVBatteryModel
 from ev_station_manager import EVStationManager
 
-# Check if SUMO is available
+# Check if SUMO is available - ULTRA PERFORMANCE MODE
 try:
-    import traci
+    # Try libsumo first (10x faster - in-process library)
+    import libsumo as traci
     import sumolib
     SUMO_AVAILABLE = True
+    USING_LIBSUMO = True
+    print("🔥 ULTRA PERFORMANCE MODE: Using libsumo (10x faster)")
 except ImportError:
-    print("Warning: SUMO not installed. Install with: pip install sumo")
-    SUMO_AVAILABLE = False
+    try:
+        # Fallback to regular traci (socket-based, slower)
+        import traci
+        import sumolib
+        SUMO_AVAILABLE = True
+        USING_LIBSUMO = False
+        print("⚠️ Using traci (slower). For 10x speedup: pip install eclipse-sumo")
+    except ImportError:
+        print("Warning: SUMO not installed. Install with: pip install eclipse-sumo")
+        SUMO_AVAILABLE = False
+        USING_LIBSUMO = False
 
 class VehicleType(Enum):
     """Vehicle types matching real NYC traffic"""
@@ -331,16 +343,31 @@ class ManhattanSUMOManager:
         # Build command
         sumo_binary = "sumo-gui" if gui else "sumo"
         
+        # ULTRA PERFORMANCE MODE - Optimized for 1000+ vehicles
+        import os
+        num_cores = os.cpu_count() or 4
+
         cmd = [
             sumo_binary,
             "-n", self.sumo_config['net_file'],
             "--step-length", str(self.sumo_config['step_length']),
-            "--collision.action", self.sumo_config['collision_action'],
-            "--device.rerouting.probability", self.sumo_config['device.rerouting.probability'],
-            "--no-warnings",
-            "--no-step-log",
-            "--duration-log.statistics",
-            "--device.emissions.probability", "1.0"
+
+            # COLLISION PREVENTION - CRITICAL FOR NO STACKING:
+            "--collision.action", "warn",          # Warn on collisions (don't teleport)
+            "--collision.check-junctions", "true", # Check collisions at intersections
+            "--collision.mingap-factor", "1.0",    # Enforce minimum gap
+            "--collision.stoptime", "0",           # Don't let vehicles stack when stopped
+
+            "--device.rerouting.probability", str(self.sumo_config.get('device.rerouting.probability', 0)),
+
+            # PERFORMANCE OPTIMIZATIONS:
+            "--no-warnings",               # Disable warning messages (I/O overhead)
+            "--no-step-log",               # Disable step logging (I/O overhead)
+            "--duration-log.disable",      # Disable duration logging
+            "--lanechange.duration", "3",  # 3 seconds for lane change (more realistic than instant)
+            "--time-to-teleport", "-1",    # Disable teleporting (more realistic)
+            "--threads", str(num_cores),   # Use all CPU cores
+            "--routing-algorithm", "astar", # Faster routing algorithm
         ]
         
         # Collect additional files
@@ -427,10 +454,13 @@ class ManhattanSUMOManager:
                 }
     
     def spawn_vehicles(self, count: int = 10, ev_percentage: float = 0.3, battery_min_soc: float = 0.2, battery_max_soc: float = 0.9) -> int:
-        """Spawn vehicles - GUARANTEED to spawn exact count requested"""
-        
+        """Spawn vehicles - NO LIMITS"""
+
         if not self.running:
             return 0
+
+        # NO CAP - spawn as many as requested
+        print(f"Spawning {count} vehicles...")
         
         import traci
         spawned = 0
@@ -502,13 +532,22 @@ class ManhattanSUMOManager:
                             depart="now"
                         )
                         
-                        # Set speed
-                        traci.vehicle.setMaxSpeed(vehicle_id, 200)
-                        traci.vehicle.setSpeedMode(vehicle_id, 0)
-                        traci.vehicle.setSpeed(vehicle_id, 100)
-                        traci.vehicle.setAccel(vehicle_id, 50)
-                        traci.vehicle.setDecel(vehicle_id, 50)
-                        traci.vehicle.setMinGap(vehicle_id, 0.5)
+                        # Set REALISTIC Manhattan speeds and COLLISION PREVENTION
+                        traci.vehicle.setMaxSpeed(vehicle_id, 13.9)  # 50 km/h (31 mph) - realistic city speed
+
+                        # COLLISION PREVENTION - Let SUMO handle all safety rules
+                        # Don't override speed mode - vehicles will obey traffic lights and avoid collisions
+                        # setSpeedMode with default (31) means:
+                        # - Respect speed limits
+                        # - Respect right of way
+                        # - Respect traffic lights
+                        # - Keep safe distance
+
+                        traci.vehicle.setAccel(vehicle_id, 2.6)  # Realistic car acceleration (m/s²)
+                        traci.vehicle.setDecel(vehicle_id, 4.5)  # Realistic braking (m/s²)
+                        traci.vehicle.setMinGap(vehicle_id, 2.5)  # 2.5m minimum gap (prevents stacking)
+                        traci.vehicle.setTau(vehicle_id, 1.5)     # 1.5s reaction time (safe following distance)
+                        traci.vehicle.setImperfection(vehicle_id, 0.3)  # 30% driver imperfection (more realistic)
                         
                         # Set color
                         if is_ev:
@@ -604,9 +643,9 @@ class ManhattanSUMOManager:
         self.stats['total_vehicles'] += spawned
         
         if spawned == count:
-            print(f"✅ Successfully spawned exactly {spawned} vehicles!")
+            print(f"Success Successfully spawned exactly {spawned} vehicles!")
         else:
-            print(f"⚠️ Spawned {spawned}/{count} vehicles (some routes couldn't be created)")
+            print(f"WARNING Spawned {spawned}/{count} vehicles (some routes couldn't be created)")
         
         print(f"  EVs: {sum(1 for v in self.vehicles.values() if v.config.is_ev)}")
         print(f"  Gas: {sum(1 for v in self.vehicles.values() if not v.config.is_ev)}")
@@ -730,15 +769,12 @@ class ManhattanSUMOManager:
                 # Set traffic light state based on power status
                 if power_tl:
                     if not power_tl['powered']:
-                        # NO POWER = FLASHING YELLOW (vehicles proceed with caution)
-                        # Or OFF state - vehicles treat as uncontrolled intersection
-                        
-                        # Option 1: All yellow (caution mode)
-                        yellow_state = 'y' * state_length
-                        traci.trafficlight.setRedYellowGreenState(tl_id, yellow_state)
-                        
-                        # Option 2: Turn off traffic light program (vehicles use priority rules)
-                        # traci.trafficlight.setProgram(tl_id, "off")
+                        # NO POWER = Turn OFF traffic lights completely
+                        # Vehicles treat as uncontrolled intersection (slow down & proceed with caution)
+                        # Using 'o' (off) instead of 'y' (yellow which makes them stop)
+                        off_state = 'o' * state_length
+                        traci.trafficlight.setRedYellowGreenState(tl_id, off_state)
+                        # This makes vehicles slow down but NOT stop completely
                         
                     else:
                         # Normal operation - set based on power grid phase
@@ -823,49 +859,72 @@ class ManhattanSUMOManager:
                 traci.trafficlight.setRedYellowGreenState(tl_id, red_state)
             except:
                 pass
-        print("⚠️ All traffic lights set to RED")
+        print("WARNING All traffic lights set to RED")
     
     def step(self):
-        """Advance simulation one step"""
-        
+        """Advance simulation one step - SIMPLIFIED FOR PERFORMANCE"""
+
         if not self.running:
             return
-        
+
+        # Initialize step counter
+        if not hasattr(self, '_step_count'):
+            self._step_count = 0
+        self._step_count += 1
+
         try:
             import traci
+
+            # JUST DO THE SUMO STEP - That's it!
             traci.simulationStep()
-            
-            # These are the ACTUAL methods in your code
-            self.update_traffic_lights()  # This exists
-            self._update_vehicles()  # This exists  
-            self._handle_ev_charging()  # This exists
-            self._update_statistics()  # This exists around line 1752
-            
+
+            # Update vehicles - but SIMPLIFIED (only essential data)
+            if self._step_count % 10 == 0:  # Every 1 second
+                self._update_vehicles()
+                self._handle_ev_charging()
+                self._update_statistics()
+
+            # Traffic lights only every 2 seconds
+            if self._step_count % 20 == 0:
+                self.update_traffic_lights()
+
         except Exception as e:
             print(f"Simulation step error: {e}")
             import traceback
             traceback.print_exc()
     
     def _update_statistics(self):
-        """Update simulation statistics"""
-        
+        """Update simulation statistics - OPTIMIZED"""
+
+        # OPTIMIZED: Only update statistics every 50 steps (5 seconds) instead of every step
+        if not hasattr(self, '_stats_update_counter'):
+            self._stats_update_counter = 0
+
+        self._stats_update_counter += 1
+        if self._stats_update_counter % 50 != 0:
+            return  # Skip most updates for performance
+
         if not self.running:
             return
-        
+
         try:
             import traci
             vehicle_ids = traci.vehicle.getIDList()
-            
+
             if vehicle_ids:
-                speeds = [traci.vehicle.getSpeed(v) for v in vehicle_ids]
+                # OPTIMIZED: Calculate stats from cached vehicle data when possible
+                speeds = [self.vehicles[v].speed for v in vehicle_ids if v in self.vehicles]
                 self.stats['avg_speed_mps'] = sum(speeds) / len(speeds) if speeds else 0
-                
+
+                # These are less critical, only update periodically
                 self.stats['total_distance_km'] = sum(
-                    traci.vehicle.getDistance(v) / 1000 for v in vehicle_ids
+                    self.vehicles[v].distance_traveled / 1000
+                    for v in vehicle_ids if v in self.vehicles and hasattr(self.vehicles[v], 'distance_traveled')
                 )
-                
+
                 self.stats['total_wait_time'] = sum(
-                    traci.vehicle.getWaitingTime(v) for v in vehicle_ids
+                    self.vehicles[v].waiting_time
+                    for v in vehicle_ids if v in self.vehicles and hasattr(self.vehicles[v], 'waiting_time')
                 )
                 
                 # Calculate energy for EVs
@@ -881,134 +940,111 @@ class ManhattanSUMOManager:
             pass  # Silent fail for stats
     
     def _update_vehicles(self):
-        """Update vehicle states with realistic battery drain"""
-        
+        """Update vehicle states with realistic battery drain - OPTIMIZED"""
+
         import traci
         vehicle_ids = traci.vehicle.getIDList()
-        
+
+        # Initialize cache attributes if needed
+        if not hasattr(self, '_vehicle_update_counter'):
+            self._vehicle_update_counter = 0
+            self._last_battery_colors = {}  # Cache last battery color to avoid redundant setColor calls
+
+        self._vehicle_update_counter += 1
+        update_non_critical = (self._vehicle_update_counter % 10 == 0)  # Only update non-critical data every 1 second
+
         for veh_id in vehicle_ids:
             if veh_id in self.vehicles:
                 vehicle = self.vehicles[veh_id]
-                
+
                 try:
-                    # Get vehicle dynamics
-                    vehicle.position = traci.vehicle.getPosition(veh_id)
+                    # OPTIMIZED: Only get essential data every step
                     speed = traci.vehicle.getSpeed(veh_id)
                     vehicle.speed = speed
-                    
-                    # FIXED: Check if stranded FIRST - don't allow movement
+
+                    # OPTIMIZED: Only update position every 10 steps (still smooth for visualization)
+                    if update_non_critical:
+                        vehicle.position = traci.vehicle.getPosition(veh_id)
+                        vehicle.distance_traveled = traci.vehicle.getDistance(veh_id)
+                        vehicle.waiting_time = traci.vehicle.getWaitingTime(veh_id)
+
+                    # FIXED: Check if stranded FIRST
                     if hasattr(vehicle, 'is_stranded') and vehicle.is_stranded:
-                        # FORCE STOP - don't allow any movement
-                        traci.vehicle.setSpeed(veh_id, 0)
-                        continue  # Skip all other updates for stranded vehicle
+                        if update_non_critical:  # Only set speed periodically, not every step
+                            traci.vehicle.setSpeed(veh_id, 0)
+                        continue
                     
-                    # FORCE EXTREME SPEED if not charging
-                    if not vehicle.is_charging:
-                        if speed < 150:  # If going slower than 150 m/s
-                            traci.vehicle.setSpeed(veh_id, 200)  # Force 200 m/s
-                            traci.vehicle.setSpeedMode(veh_id, 0)  # Ignore all safety
-                            traci.vehicle.setAccel(veh_id, 50)  # Super acceleration
-                    
-                    vehicle.distance_traveled = traci.vehicle.getDistance(veh_id)
-                    vehicle.waiting_time = traci.vehicle.getWaitingTime(veh_id)
-                    
-                    # Handle EVs with CALIBRATED battery drain
+                    # Handle EVs with battery drain
                     if vehicle.config.is_ev and not vehicle.is_charging:
-                        # CALIBRATED DRAIN RATE FOR MANHATTAN
-                        # At 200 m/s, we travel 20m per step (0.1s steps)
-                        # To drain 30% over 5km: 5000m / 20m = 250 steps
-                        # 30% / 250 steps = 0.12% per step
-                        
-                        # Base drain rate: 0.12% per step at full speed
-                        # This ensures from farthest point with 38% battery, 
-                        # we arrive at farthest station with 8% left
-                        
-                        if speed > 150:  # Fast driving (normal for our simulation)
-                            drain_rate = 0.0007  # 0.12% per step
-                        elif speed > 50:  # Medium speed
-                            drain_rate = 0.0002  # 0.08% per step
-                        elif speed > 10:  # Slow/traffic
-                            drain_rate = 0.0001  # 0.05% per step
-                        else:  # Stopped/crawling
-                            drain_rate = 0.00005  # 0.02% per step (idle consumption)
-                        
-                        # Additional drain if accelerating hard
-                        try:
-                            acceleration = traci.vehicle.getAcceleration(veh_id)
-                            if acceleration > 10:  # Hard acceleration
-                                drain_rate *= 1.5
-                        except:
-                            pass
-                        
+                        # Realistic battery drain based on speed
+                        if speed > 30:  # Highway/fast driving
+                            drain_rate = 0.0003
+                        elif speed > 10:  # City driving
+                            drain_rate = 0.0001
+                        else:  # Stopped/slow
+                            drain_rate = 0.00003
+
                         # Apply battery drain
-                        old_soc = vehicle.config.current_soc
                         vehicle.config.current_soc -= drain_rate
                         vehicle.config.current_soc = max(0, vehicle.config.current_soc)
-                        
-                        # Update SUMO battery parameter
-                        try:
-                            new_battery = vehicle.config.current_soc * vehicle.config.battery_capacity_kwh * 1000
-                            traci.vehicle.setParameter(veh_id, "device.battery.actualBatteryCapacity", str(new_battery))
-                        except:
-                            pass
-                        
-                        # Visual indication of battery level
-                        if vehicle.config.current_soc <= 0.02:
-                            # EMERGENCY - 2% or less (flashing purple)
-                            import time
-                            flash = int(time.time() * 3) % 2
-                            if flash == 0:
-                                traci.vehicle.setColor(veh_id, (255, 0, 255, 255))  # Bright purple
+
+                        # OPTIMIZED: Only update visual/route every 10 steps (1 second)
+                        if update_non_critical:
+                            # Determine battery color
+                            if vehicle.config.current_soc <= 0.02:
+                                new_color = (255, 0, 255, 255)  # Purple - emergency
+                            elif vehicle.config.current_soc < 0.25:
+                                new_color = (255, 0, 0, 255)  # Red - needs charging
                             else:
-                                traci.vehicle.setColor(veh_id, (139, 0, 139, 255))  # Dark purple
-                        elif vehicle.config.current_soc < 0.25:
-                            # Needs charging - red
-                            traci.vehicle.setColor(veh_id, (255, 0, 0, 255))
-                        else:
-                            # Charged - green
-                            traci.vehicle.setColor(veh_id, (0, 255, 0, 255))
-                        
-                        # Route to charging when below 25% (gives margin to reach station)
-                        if vehicle.config.current_soc < 0.38 and not vehicle.assigned_ev_station and self.station_manager:
-                            current_edge = traci.vehicle.getRoadID(veh_id)
-                            
-                            if current_edge and not current_edge.startswith(':'):
-                                # Convert position for station manager
-                                x, y = vehicle.position
-                                lon, lat = traci.simulation.convertGeo(x, y)
-                                
-                                # Use smart station manager
-                                result = self.station_manager.request_charging(
-                                    veh_id,
-                                    vehicle.config.current_soc,
-                                    current_edge,
-                                    (lon, lat),
-                                    is_emergency=(vehicle.config.current_soc < 0.1)
-                                )
-                                
-                                if result:
-                                    station_id, target_edge, wait_time, distance = result
-                                    
-                                    # Navigate to station
-                                    try:
-                                        route = traci.simulation.findRoute(current_edge, target_edge)
-                                        if route and route.edges:
-                                            traci.vehicle.setRoute(veh_id, route.edges)
-                                            vehicle.assigned_ev_station = station_id
-                                            vehicle.destination = target_edge
-                                            
-                                            print(f"🔋 {veh_id} (SOC: {vehicle.config.current_soc:.1%}) → {station_id}")
-                                    except:
-                                        pass
-                    
-                    # Update route if near end
-                    route_index = traci.vehicle.getRouteIndex(veh_id)
-                    route = traci.vehicle.getRoute(veh_id)
-                    if route_index >= len(route) - 1 and not vehicle.is_charging:
-                        new_route = self._generate_realistic_route()
-                        if new_route and len(new_route) >= 2:
-                            traci.vehicle.setRoute(veh_id, new_route)
-                            vehicle.config.destination = new_route[-1]
+                                new_color = (0, 255, 0, 255)  # Green - good
+
+                            # OPTIMIZED: Only set color if it changed
+                            last_color = self._last_battery_colors.get(veh_id)
+                            if last_color != new_color:
+                                traci.vehicle.setColor(veh_id, new_color)
+                                self._last_battery_colors[veh_id] = new_color
+
+                            # Route to charging when below 38%
+                            if vehicle.config.current_soc < 0.38 and not vehicle.assigned_ev_station and self.station_manager:
+                                current_edge = traci.vehicle.getRoadID(veh_id)
+
+                                if current_edge and not current_edge.startswith(':'):
+                                    # Use cached position if available, otherwise get it
+                                    if hasattr(vehicle, 'position') and vehicle.position:
+                                        x, y = vehicle.position
+                                    else:
+                                        x, y = traci.vehicle.getPosition(veh_id)
+
+                                    lon, lat = traci.simulation.convertGeo(x, y)
+
+                                    result = self.station_manager.request_charging(
+                                        veh_id,
+                                        vehicle.config.current_soc,
+                                        current_edge,
+                                        (lon, lat),
+                                        is_emergency=(vehicle.config.current_soc < 0.1)
+                                    )
+
+                                    if result:
+                                        station_id, target_edge, wait_time, distance = result
+                                        try:
+                                            route = traci.simulation.findRoute(current_edge, target_edge)
+                                            if route and route.edges:
+                                                traci.vehicle.setRoute(veh_id, route.edges)
+                                                vehicle.assigned_ev_station = station_id
+                                                vehicle.destination = target_edge
+                                        except:
+                                            pass
+
+                    # OPTIMIZED: Only check route updates every 10 steps
+                    if update_non_critical and not vehicle.is_charging:
+                        route_index = traci.vehicle.getRouteIndex(veh_id)
+                        route = traci.vehicle.getRoute(veh_id)
+                        if route_index >= len(route) - 1:
+                            new_route = self._generate_realistic_route()
+                            if new_route and len(new_route) >= 2:
+                                traci.vehicle.setRoute(veh_id, new_route)
+                                vehicle.config.destination = new_route[-1]
                     
                 except:
                     pass
@@ -1093,22 +1129,32 @@ class ManhattanSUMOManager:
     # This goes in the ManhattanSUMOManager class
 
     def _handle_ev_charging(self):
-        """WORLD CLASS EV charging/V2G handler - ZERO CONFLICTS"""
-        
+        """WORLD CLASS EV charging/V2G handler - OPTIMIZED"""
+
+        # OPTIMIZED: Only run charging logic every 10 steps (1 second) instead of every step
+        if not hasattr(self, '_charging_update_counter'):
+            self._charging_update_counter = 0
+
+        self._charging_update_counter += 1
+        if self._charging_update_counter % 10 != 0:
+            return  # Skip most updates for performance
+
         import traci
         import random
         import time
-        
+
+        vehicle_ids = set(traci.vehicle.getIDList())  # Get once for all vehicles
+
         for vehicle in list(self.vehicles.values()):
             if not vehicle.config.is_ev:
                 continue
-            
+
             try:
                 veh_id = vehicle.id
-                
-                if veh_id not in traci.vehicle.getIDList():
+
+                if veh_id not in vehicle_ids:  # Use cached set
                     continue
-                
+
                 current_edge = traci.vehicle.getRoadID(veh_id)
                 if current_edge.startswith(':'):
                     continue
@@ -1211,7 +1257,7 @@ class ManhattanSUMOManager:
                                             vehicle.is_charging = False
                                             vehicle.assigned_ev_station = None
                                             vehicle.v2g_lock = True
-                                            print(f"⚡ {veh_id} started V2G at {station_info['name']}")
+                                            print(f"POWER {veh_id} started V2G at {station_info['name']}")
                                             continue  # Skip normal logic
                 
                 # ============================================================
@@ -1222,7 +1268,7 @@ class ManhattanSUMOManager:
                         vehicle.is_stranded = True
                         vehicle.is_charging = False
                         vehicle.is_diverted = False
-                        print(f"🚨 {veh_id} STRANDED at {vehicle.config.current_soc:.1%} battery")
+                        print(f"[EMERGENCY] {veh_id} STRANDED at {vehicle.config.current_soc:.1%} battery")
                     
                     # Force complete stop
                     traci.vehicle.setSpeed(veh_id, 0)
@@ -1271,10 +1317,10 @@ class ManhattanSUMOManager:
                             if best_station:
                                 vehicle.assigned_ev_station = best_station
                                 station_name = self.integrated_system.ev_stations[best_station]['name']
-                                print(f"🔋 {veh_id} (SOC: {vehicle.config.current_soc:.0%}) → {station_name}")
+                                print(f"Battery {veh_id} (SOC: {vehicle.config.current_soc:.0%}) -> {station_name}")
                             else:
                                 if vehicle.stations_tried:
-                                    print(f"♻️ {veh_id} resetting station search")
+                                    print(f"[RECYCLE]️ {veh_id} resetting station search")
                                     vehicle.stations_tried = []
                         
                         # HANDLE STATION INTERACTION
@@ -1307,7 +1353,7 @@ class ManhattanSUMOManager:
                                         traci.vehicle.setColor(veh_id, (0, 255, 255, 255))
                                         
                                         station_name = self.integrated_system.ev_stations[vehicle.assigned_ev_station]['name']
-                                        print(f"⚡ {veh_id} CHARGING at {station_name}")
+                                        print(f"POWER {veh_id} CHARGING at {station_name}")
                                     else:
                                         # Station full -> divert for 3s, then reroute to the closest station
                                         station_name = self.integrated_system.ev_stations[vehicle.assigned_ev_station]['name']
@@ -1356,7 +1402,7 @@ class ManhattanSUMOManager:
                         station = self.station_manager.stations.get(vehicle.assigned_ev_station)
                         if station and not station['operational']:
                             # STATION FAILED - Stop charging and redirect
-                            print(f"🚨 STATION FAILURE: {vehicle.assigned_ev_station} offline! {veh_id} stopping charge")
+                            print(f"[EMERGENCY] STATION FAILURE: {vehicle.assigned_ev_station} offline! {veh_id} stopping charge")
                             
                             # Stop charging
                             vehicle.is_charging = False
@@ -1368,10 +1414,10 @@ class ManhattanSUMOManager:
                             
                             # If still needs charging, find alternative
                             if vehicle.config.current_soc < 0.38:
-                                print(f"🔋 {veh_id} needs charging - finding alternative station")
+                                print(f"Battery {veh_id} needs charging - finding alternative station")
                                 # Will be handled in next iteration by normal charging logic
                             else:
-                                print(f"✅ {veh_id} has enough charge to continue")
+                                print(f"Success {veh_id} has enough charge to continue")
                                 traci.vehicle.setColor(veh_id, (0, 255, 0, 255))  # Green for good battery
                             
                             continue  # Skip charging logic for this step
@@ -1392,13 +1438,13 @@ class ManhattanSUMOManager:
                     if int(old_soc * 20) != int(vehicle.config.current_soc * 20):
                         if vehicle.assigned_ev_station in self.integrated_system.ev_stations:
                             station_name = self.integrated_system.ev_stations[vehicle.assigned_ev_station]['name']
-                            print(f"🔋 {veh_id}: {vehicle.config.current_soc:.0%} at {station_name}")
+                            print(f"Battery {veh_id}: {vehicle.config.current_soc:.0%} at {station_name}")
                     
                     # Charging complete
                     if vehicle.config.current_soc >= 0.80:
                         if vehicle.assigned_ev_station in self.integrated_system.ev_stations:
                             station_name = self.integrated_system.ev_stations[vehicle.assigned_ev_station]['name']
-                            print(f"✅ {veh_id} FULLY CHARGED at {station_name}!")
+                            print(f"Success {veh_id} FULLY CHARGED at {station_name}!")
                         
                         # Release charging port from station manager
                         if self.station_manager:
@@ -1419,7 +1465,7 @@ class ManhattanSUMOManager:
                             
                             # Broadcast availability for V2G
                             for substation in self.v2g_manager.v2g_enabled_substations:
-                                print(f"   💰 {veh_id} available for V2G at {substation}")
+                                print(f"   Money {veh_id} available for V2G at {substation}")
                                 break
                         
                         # Resume normal operation
@@ -1816,7 +1862,7 @@ class ManhattanSUMOManager:
         
         # Print status if EVs are charging or need charge
         if actual_charging > 0 or low_battery_count > 0:
-            print(f"\n📊 EV STATUS:")
+            print(f"\nStats EV STATUS:")
             print(f"  Charging: {actual_charging}/10 max per station")
             print(f"  Circling: {circling_count}")
             print(f"  Stranded: {stranded_count}")
@@ -1906,7 +1952,7 @@ class ManhattanSUMOManager:
             if vehicle.config.is_ev and vehicle.id in traci.vehicle.getIDList():
                 # Set battery to 10%
                 vehicle.config.current_soc = 0.10
-                print(f"🔋 Set {vehicle.id} battery to 10% for testing")
+                print(f"Battery Set {vehicle.id} battery to 10% for testing")
                 
                 # Set orange color
                 traci.vehicle.setColor(vehicle.id, (255, 165, 0, 255))

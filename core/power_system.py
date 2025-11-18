@@ -660,7 +660,7 @@ class ManhattanPowerGrid:
                         impact['load_lost_mw'] += self.network.loads.at[load, 'p_set'].mean()
                         self.network.loads.at[load, 'p_set'] = 0
                 
-                # Estimate customers affected (1MW ≈ 1000 customers in Manhattan)
+                # Estimate customers affected (1MW ~ 1000 customers in Manhattan)
                 impact['customers_affected'] = int(impact['load_lost_mw'] * 1000)
                 
                 if cascading:

@@ -48,14 +48,14 @@ class ManhattanSUMOManager(BaseSUMOManager):
         missing_files = [f for f in required_files if not os.path.exists(f)]
         
         if missing_files:
-            print("⚠️ Missing required files:")
+            print("WARNING: Missing required files:")
             for f in missing_files:
                 print(f"  - {f}")
             
             if 'data/sumo/manhattan.net.xml' in missing_files:
-                print("\n📍 To fix: Run 'python get_manhattan_sumo_network.py'")
+                print("\nINFO To fix: Run 'python get_manhattan_sumo_network.py'")
             if 'data/manhattan_traffic_lights.json' in missing_files:
-                print("\n📍 To fix: Run 'python get_real_traffic_lights.py'")
+                print("\nINFO To fix: Run 'python get_real_traffic_lights.py'")
             
             return False
         
@@ -68,7 +68,7 @@ class ManhattanSUMOManager(BaseSUMOManager):
                 # Use connected edges for better routing
                 if 'spawn_edges' in network_data:
                     self.spawn_edges = network_data['spawn_edges']
-                    print(f"✅ Loaded {len(self.spawn_edges)} spawn points")
+                    print(f"Loaded {len(self.spawn_edges)} spawn points")
                 
                 # Update charging station locations
                 if 'charging_stations' in network_data:
@@ -95,41 +95,41 @@ class ManhattanSUMOManager(BaseSUMOManager):
         if self.current_scenario == SimulationScenario.MORNING_RUSH:
             # Heavy traffic from residential to business areas
             self.spawn_vehicles(30, ev_percentage=0.3)  # More gas vehicles in rush hour
-            print("🌅 Morning rush: Heavy traffic spawned")
+            print("Morning Morning rush: Heavy traffic spawned")
             
         elif self.current_scenario == SimulationScenario.EVENING_RUSH:
             # Heavy traffic from business to residential/entertainment
             self.spawn_vehicles(35, ev_percentage=0.4)  # EVs need charging after work
-            print("🌇 Evening rush: Maximum traffic spawned")
+            print("Evening Evening rush: Maximum traffic spawned")
             
         elif self.current_scenario == SimulationScenario.MIDDAY:
             # Moderate traffic, mixed purposes
             self.spawn_vehicles(15, ev_percentage=0.5)
-            print("☀️ Midday: Moderate traffic spawned")
+            print("Midday Midday: Moderate traffic spawned")
             
         elif self.current_scenario == SimulationScenario.NIGHT:
             # Light traffic, mostly taxis and deliveries
             self.spawn_vehicles(8, ev_percentage=0.7)  # More EVs at night
-            print("🌙 Night: Light traffic spawned")
+            print("Night Night: Light traffic spawned")
             
         elif self.current_scenario == SimulationScenario.WEEKEND:
             # Shopping and entertainment traffic
             self.spawn_vehicles(20, ev_percentage=0.6)
-            print("🎉 Weekend: Shopping/entertainment traffic spawned")
+            print("Weekend Weekend: Shopping/entertainment traffic spawned")
             
         elif self.current_scenario == SimulationScenario.EMERGENCY:
             # Reduced traffic, emergency vehicles
             self.spawn_vehicles(5, ev_percentage=0.2)
-            print("🚨 Emergency: Minimal traffic spawned")
+            print("Emergency Emergency: Minimal traffic spawned")
     
     def simulate_power_outage_impact(self, affected_substations: List[str]):
         """Simulate how power outage affects traffic"""
         
-        print(f"\n⚡ POWER OUTAGE AFFECTING TRAFFIC")
+        print(f"\nPOWER POWER OUTAGE AFFECTING TRAFFIC")
         print(f"Affected substations: {', '.join(affected_substations)}")
         
         if not self.running:
-            print("⚠️ SUMO not running")
+            print("WARNING SUMO not running")
             return
         
         # Update traffic lights
@@ -143,7 +143,7 @@ class ManhattanSUMOManager(BaseSUMOManager):
                 if not power_tl['powered']:
                     affected_tls += 1
         
-        print(f"🚦 {affected_tls} traffic lights without power (showing as all red)")
+        print(f"Traffic lights {affected_tls} traffic lights without power (showing as all red)")
         
         # Check EV stations
         affected_ev_stations = 0
@@ -163,7 +163,7 @@ class ManhattanSUMOManager(BaseSUMOManager):
                             # Find alternative station
                             self._route_to_charging_station(vehicle)
         
-        print(f"⚡ {affected_ev_stations} EV charging stations offline")
+        print(f"POWER {affected_ev_stations} EV charging stations offline")
         
         # Estimate traffic impact
         try:
@@ -175,17 +175,17 @@ class ManhattanSUMOManager(BaseSUMOManager):
                     avg_speed_before = sum(traci.vehicle.getSpeed(v) for v in vehicle_ids) / len(vehicle_ids)
                     total_waiting = sum(traci.vehicle.getWaitingTime(v) for v in vehicle_ids)
                     
-                    print(f"\n📊 TRAFFIC IMPACT:")
+                    print(f"\nStats TRAFFIC IMPACT:")
                     print(f"  - Average speed: {avg_speed_before * 3.6:.1f} km/h")
                     print(f"  - Total waiting time: {total_waiting:.0f} seconds")
                     print(f"  - Vehicles affected: {len(vehicle_ids)}")
                     
                     if affected_tls > 10:
-                        print("  ⚠️ SEVERE: Major traffic disruption expected")
+                        print("  WARNING SEVERE: Major traffic disruption expected")
                     elif affected_tls > 5:
-                        print("  ⚠️ MODERATE: Significant delays expected")
+                        print("  WARNING MODERATE: Significant delays expected")
                     else:
-                        print("  ⚠️ MINOR: Local delays expected")
+                        print("  WARNING MINOR: Local delays expected")
         except:
             pass
     

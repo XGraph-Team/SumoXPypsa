@@ -32,6 +32,23 @@ structlog>=23.1.0
 # AI & LLM Integration
 openai==1.40.0
 
+# Advanced AI Processing
+opencv-python>=4.8.0
+Pillow>=10.0.0
+
+# Async processing
+asyncio-throttle>=1.0.2
+
+# Additional ML libraries
+scikit-image>=0.21.0
+plotly>=5.15.0
+
+# Performance monitoring
+psutil>=5.9.0
+
+# Data serialization
+msgpack>=1.0.5
+
 # HTTP Requests
 requests>=2.31.0
 

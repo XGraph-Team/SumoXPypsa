@@ -74,7 +74,7 @@ class SetupManager:
             )
             return False
 
-        self.print_status(f"Python {version.major}.{version.minor}.{version.micro} ✓", "success")
+        self.print_status(f"Python {version.major}.{version.minor}.{version.micro} checkmark", "success")
         return True
 
     def create_virtual_environment(self) -> bool:
@@ -87,7 +87,7 @@ class SetupManager:
 
         try:
             venv.create(self.venv_path, with_pip=True)
-            self.print_status("Virtual environment created ✓", "success")
+            self.print_status("Virtual environment created checkmark", "success")
             return True
         except Exception as e:
             self.print_status(f"Failed to create virtual environment: {e}", "error")
@@ -130,7 +130,7 @@ class SetupManager:
             self.print_status(f"SUMO binary not found at {sumo_path}", "error")
             return False
 
-        self.print_status("SUMO installation found ✓", "success")
+        self.print_status("SUMO installation found checkmark", "success")
         return True
 
     def provide_sumo_instructions(self):
@@ -195,7 +195,7 @@ LOG_LEVEL=INFO
         else:
             shutil.copy(env_example, env_file)
 
-        self.print_status("Environment file created ✓", "success")
+        self.print_status("Environment file created checkmark", "success")
         self.print_status("Please edit .env file with your configuration", "info")
         return True
 
@@ -215,7 +215,7 @@ LOG_LEVEL=INFO
             dir_path = self.project_root / directory
             dir_path.mkdir(parents=True, exist_ok=True)
 
-        self.print_status("Data directories created ✓", "success")
+        self.print_status("Data directories created checkmark", "success")
         return True
 
     def test_installation(self) -> bool:
@@ -232,9 +232,9 @@ try:
     import pandas
     import sklearn
     import pypsa
-    print("✓ All core dependencies imported successfully")
+    print("checkmark All core dependencies imported successfully")
 except ImportError as e:
-    print(f"✗ Import error: {e}")
+    print(f"x Import error: {e}")
     sys.exit(1)
 '''
 
@@ -245,7 +245,7 @@ except ImportError as e:
                 text=True,
                 check=True
             )
-            self.print_status("Installation test passed ✓", "success")
+            self.print_status("Installation test passed checkmark", "success")
             return True
         except subprocess.CalledProcessError as e:
             self.print_status("Installation test failed", "error")

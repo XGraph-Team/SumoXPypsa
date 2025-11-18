@@ -53,7 +53,7 @@ def setup_database():
     print("3. Loading initial configuration...")
     seed_initial_data()
     
-    print("\n✅ Database setup complete!")
+    print("\nSuccess Database setup complete!")
     print("=" * 60)
 
 def seed_initial_data():

@@ -1,12 +1,8 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -20,225 +16,161 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-.pybuilder/
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-Pipfile.lock
-
-# poetry
-poetry.lock
-
-# pdm
-.pdm.toml
-
-# PEP 582
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
+# Virtual Environment
 venv/
+env/
 ENV/
 env.bak/
 venv.bak/
 
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# PyCharm
-.idea/
-
-# VS Code
+# IDEs
 .vscode/
-
-# Operating System
+.idea/
+*.swp
+*.swo
+*~
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
 
-# SUMO Traffic Simulator
-*.rou.xml
-*.rou.alt.xml
-*.summary.xml
-*.tripinfo.xml
-*.emissions.xml
-*.fcd.xml
-*.netstate.xml
-*.queue.xml
-*.edgedata.xml
-*.lanearea.xml
-*.meandata.xml
-sumo-gui-settings.xml
-sumo.sumocfg
-
-# Power Grid Simulation Data
-data/cache/
-data/temp/
-data/output/
-data/**/*.tmp
-data/**/*.backup
-*.pkl
-*.h5
-*.hdf5
-
-# Logs and Reports
-logs/
+# Logs
 *.log
-reports/
-outputs/
+logs/
+server*.log
 
-# ML Models and Data
-models/
-*.model
-*.joblib
-*.pt
-*.pth
-*.onnx
-
-# Energy Trading Data
-trading_data/
-market_data/
-
-# Backup Files
-*_BACKUP_*
-*_ORIGINAL.*
-*.bak
-*.backup
-
-# Configuration Files (with sensitive data)
-config.ini
-settings.ini
-.env.local
-.env.*.local
-
-# Node.js (if using any JS tools)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Coverage reports
-coverage/
-htmlcov/
-
-# Documentation build
-docs/build/
-
-# Temporary files
-*.tmp
-*.temp
-temp/
-tmp/
-
-# Archive files
-*.zip
-*.tar.gz
-*.rar
-
-# Compiled binaries
-*.exe
-*.dll
-
-# Database files
+# Database
 *.db
 *.sqlite
 *.sqlite3
 
-# API Keys and Secrets
-api_keys.txt
-secrets.json
+# Environment Variables
+.env
+.env.local
+.env.*.local
 
+# Generated/Cache Files
+*.pyc
+*.pyo
+*.pyd
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# SUMO Generated Files
+data/*.xml
+data/tripinfo.xml
+data/cache/
+!data/manhattan.net.xml
+!data/manhattan.osm
+!data/manhattan.sumocfg
+!data/vehicle_types.add.xml
+!data/gui_settings.xml
+
+# ML Model Files (if large)
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+
+# Results and Performance Data
+*_results.json
+performance_*.json
+ml_demo_results.json
+
+# Backup and Archive
+archive/
+*.bak
+*_BACKUP_*
+*_ORIGINAL.*
+
+# OS Files
+Thumbs.db
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+
+# Docker
+*.dockerignore
+docker-compose.override.yml
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.pdf
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Monitoring
+monitoring/*.log
+monitoring/*.json
+!monitoring/README.md
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+nul
+
+# Development Documentation (keep organized docs only)
+*_FIX.md
+*_ANALYSIS.md
+*_FEEDBACK*.md
+*_VERIFICATION*.md
+*_COMPARISON*.md
+*_SUMMARY.md
+*_COMPLETE.txt
+*_READY*.md
+ACTUAL_FIX.md
+COLLISION_*.md
+SMOOTH_*.md
+STUTTERING_*.md
+TIMING_*.md
+INSTALL_ULTRA_MODE.md
+ULTRA_*.md
+README_PERFORMANCE.md
+REALISTIC_*.md
+
+# LaTeX temp files (keep final PDFs in docs if needed)
+*.tex
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+webconf*.tex
+PowerGrid_*.tex
+PowerGrid_*.md
+
+# Paper drafts (keep final in docs/papers/)
+AAAI.pdf
+*.pdf
+
+# Website deployment files (keep in website/ folder only)
+website/ALL_FIXES_COMPLETE.md
+website/COLOR_*.md
+website/DEPLOYMENT_*.md
+website/FIXES_*.md
+website/HONEST_*.md
+website/QUICK_*.md
+website/VIDEO_*.md
+website/WEBSITE_*.md

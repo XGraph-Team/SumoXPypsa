@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real-Time Co-Simulation of Power Grid and Traffic Systems integrating PyPSA, SUMO, and V2G for Manhattan">
+    <meta name="keywords" content="Power Grid, Traffic Simulation, V2G, Co-Simulation, PyPSA, SUMO, Smart Grid, Electric Vehicles">
+    <meta name="author" content="Manhattan Co-Simulation Team">
+
+    <title>Manhattan Power Grid Co-Simulation | WebConf 2026 Demo Track</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-bolt"></i>
+                <span>Manhattan Co-Simulation</span>
+            </div>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#overview" class="nav-link">Overview</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#statistics" class="nav-link">Specifications</a></li>
+                <li><a href="#demo" class="nav-link">Demo</a></li>
+                <li><a href="#publication" class="nav-link">Publication</a></li>
+                <li><a href="https://github.com/XGraph-Team/SumoXPypsa" target="_blank" class="nav-link github-link">
+                    <i class="fab fa-github"></i> GitHub
+                </a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-background"></div>
+        <div class="container hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-calendar-alt"></i>
+                The Web Conference 2026 - Demo Track | Dubai, UAE | April 13-17, 2026
+            </div>
+            <h1 class="hero-title">
+                Real-Time Co-Simulation of
+                <span class="gradient-text">Power Grid & Traffic Systems</span>
+            </h1>
+            <p class="hero-subtitle">
+                Integrated simulation platform combining PyPSA power flow analysis with SUMO traffic microsimulation
+                for Manhattan, featuring Vehicle-to-Grid technology and realistic load modeling
+            </p>
+            <div class="hero-buttons">
+                <a href="#demo" class="btn btn-primary">
+                    <i class="fas fa-play"></i>
+                    Watch Demo
+                </a>
+                <a href="https://github.com/XGraph-Team/SumoXPypsa" target="_blank" class="btn btn-secondary">
+                    <i class="fab fa-github"></i>
+                    View on GitHub
+                </a>
+            </div>
+            <div class="scroll-indicator">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Project Overview</h2>
+                <p class="section-subtitle">
+                    A professional-grade co-simulation platform integrating power grid operations with urban traffic dynamics
+                </p>
+            </div>
+
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <div class="overview-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Power Grid Simulation</h3>
+                    <p>
+                        PyPSA-based power flow analysis for Manhattan's 8-substation electrical network.
+                        Features DC power flow calculations, real-time load modeling, and substation failure simulation
+                        with realistic power system operations.
+                    </p>
+                </div>
+
+                <div class="overview-card">
+                    <div class="overview-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <h3>Traffic Microsimulation</h3>
+                    <p>
+                        SUMO-based traffic simulation with dynamic vehicle routing, battery state-of-charge tracking,
+                        and realistic Manhattan road network. Supports time-of-day traffic patterns and
+                        electric vehicle fleet management.
+                    </p>
+                </div>
+
+                <div class="overview-card">
+                    <div class="overview-icon">
+                        <i class="fas fa-car-battery"></i>
+                    </div>
+                    <h3>Vehicle-to-Grid (V2G)</h3>
+                    <p>
+                        Bidirectional energy flow between electric vehicles and the power grid.
+                        Enables EVs to provide emergency power to failed substations with smart routing,
+                        real-time energy delivery tracking, and revenue analytics.
+                    </p>
+                </div>
+            </div>
+
+            <div class="tech-stack">
+                <h3 class="tech-stack-title">Technology Stack</h3>
+                <div class="tech-badges">
+                    <span class="tech-badge">PyPSA</span>
+                    <span class="tech-badge">SUMO</span>
+                    <span class="tech-badge">Python</span>
+                    <span class="tech-badge">Flask</span>
+                    <span class="tech-badge">Mapbox</span>
+                    <span class="tech-badge">WebSocket</span>
+                    <span class="tech-badge">NumPy</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Key Features</h2>
+                <p class="section-subtitle">
+                    What makes this platform unique
+                </p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon power">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Power Grid Simulation</h3>
+                    <ul class="feature-list">
+                        <li>8 Manhattan substations with realistic topology</li>
+                        <li>PyPSA DC power flow analysis</li>
+                        <li>Real-time substation failure/restoration</li>
+                        <li>Temperature-sensitive load modeling (ASHRAE)</li>
+                        <li>Time-of-day load profiles</li>
+                        <li>Realistic building loads and weather impacts</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon traffic">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <h3>Traffic Microsimulation</h3>
+                    <ul class="feature-list">
+                        <li>SUMO-based Manhattan road network</li>
+                        <li>Dynamic vehicle spawning and routing</li>
+                        <li>Time-based traffic patterns (rush hour)</li>
+                        <li>Electric vehicle fleet management</li>
+                        <li>Battery SOC tracking with physics model</li>
+                        <li>Realistic car-following and lane changing</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon v2g">
+                        <i class="fas fa-battery-three-quarters"></i>
+                    </div>
+                    <h3>Vehicle-to-Grid (V2G)</h3>
+                    <ul class="feature-list">
+                        <li>Emergency substation restoration</li>
+                        <li>Smart EV recruitment and routing</li>
+                        <li>Real-time energy delivery tracking</li>
+                        <li>Dynamic pricing model</li>
+                        <li>Revenue analytics for EV owners</li>
+                        <li>Discharge rate: 50 kW per vehicle</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon charging">
+                        <i class="fas fa-charging-station"></i>
+                    </div>
+                    <h3>EV Charging Network</h3>
+                    <ul class="feature-list">
+                        <li>Multiple charging stations across Manhattan</li>
+                        <li>DC fast charging (150 kW)</li>
+                        <li>Level 2 charging (22 kW)</li>
+                        <li>20 ports per station (5 DC fast, 15 Level 2)</li>
+                        <li>Smart charging management</li>
+                        <li>Integration with power grid loads</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon viz">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3>Real-Time Visualization</h3>
+                    <ul class="feature-list">
+                        <li>Interactive Manhattan map (Mapbox)</li>
+                        <li>Live vehicle tracking with SOC coloring</li>
+                        <li>Substation status monitoring</li>
+                        <li>V2G session analytics dashboard</li>
+                        <li>WebSocket real-time updates</li>
+                        <li>Performance metrics display</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon ai">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI-Enhanced Control</h3>
+                    <ul class="feature-list">
+                        <li>Natural language command interface</li>
+                        <li>GPT-4 powered chatbot with typo correction</li>
+                        <li>Scenario orchestration (rush hour, weather)</li>
+                        <li>Intelligent suggestions and recommendations</li>
+                        <li>Simplified system interaction</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Statistics Section -->
+    <section id="statistics" class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">System Specifications</h2>
+                <p class="section-subtitle">
+                    Real infrastructure data from our Manhattan co-simulation platform
+                </p>
+            </div>
+
+            <!-- Statistics Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Substations</div>
+                    <div class="stat-detail">6,250 MVA Total Capacity</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-charging-station"></i>
+                    </div>
+                    <div class="stat-number">160</div>
+                    <div class="stat-label">EV Charging Ports</div>
+                    <div class="stat-detail">8 Stations × 20 Ports Each</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-traffic-light"></i>
+                    </div>
+                    <div class="stat-number">3,481</div>
+                    <div class="stat-label">Traffic Lights</div>
+                    <div class="stat-detail">Full Manhattan Network</div>
+                </div>
+            </div>
+
+            <!-- Technical Details -->
+            <div class="technical-specs">
+                <h3 class="specs-title">
+                    <i class="fas fa-microchip"></i>
+                    Technical Specifications
+                </h3>
+                <div class="specs-grid">
+                    <!-- Power System -->
+                    <div class="spec-category">
+                        <h4><i class="fas fa-bolt"></i> Power System</h4>
+                        <ul class="spec-list">
+                            <li><strong>Voltage Levels:</strong> 138kV / 27kV / 13.8kV / 480V</li>
+                            <li><strong>Power Flow:</strong> DC Linearized (PyPSA)</li>
+                            <li><strong>Update Rate:</strong> 5 seconds (SCADA standard)</li>
+                            <li><strong>Total Generation:</strong> 5,181 MW</li>
+                            <li><strong>Battery Storage:</strong> 120 MW / 480 MWh</li>
+                        </ul>
+                    </div>
+
+                    <!-- EV Charging -->
+                    <div class="spec-category">
+                        <h4><i class="fas fa-plug"></i> EV Charging</h4>
+                        <ul class="spec-list">
+                            <li><strong>DC Fast Charging:</strong> 150 kW (25% of ports)</li>
+                            <li><strong>Level 2 Charging:</strong> 22 kW (75% of ports)</li>
+                            <li><strong>Battery Capacity:</strong> 75 kWh per vehicle</li>
+                            <li><strong>SOC Range:</strong> 20% - 90%</li>
+                            <li><strong>Charging Trigger:</strong> Below 20% SOC</li>
+                        </ul>
+                    </div>
+
+                    <!-- Traffic Simulation -->
+                    <div class="spec-category">
+                        <h4><i class="fas fa-road"></i> Traffic Simulation</h4>
+                        <ul class="spec-list">
+                            <li><strong>Step Time:</strong> 0.1 seconds (SUMO standard)</li>
+                            <li><strong>Light Cycle:</strong> 60 seconds</li>
+                            <li><strong>Coverage:</strong> Manhattan 34th-59th Streets</li>
+                            <li><strong>Vehicle Types:</strong> EV Sedan, EV SUV, Passenger</li>
+                            <li><strong>Real-time Tracking:</strong> Position, SOC, Speed</li>
+                        </ul>
+                    </div>
+
+                    <!-- V2G System -->
+                    <div class="spec-category">
+                        <h4><i class="fas fa-exchange-alt"></i> Vehicle-to-Grid</h4>
+                        <ul class="spec-list">
+                            <li><strong>Discharge Rate:</strong> 50 kW per vehicle</li>
+                            <li><strong>Min SOC for V2G:</strong> 60%</li>
+                            <li><strong>V2G Rate:</strong> $7.50/kWh (50x premium)</li>
+                            <li><strong>Max Concurrent:</strong> 50 vehicles</li>
+                            <li><strong>Total V2G Capacity:</strong> 2.5 MW</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Infrastructure Details -->
+            <div class="infrastructure-details">
+                <h3 class="specs-title">
+                    <i class="fas fa-map-marked-alt"></i>
+                    Manhattan Substation Network
+                </h3>
+                <div class="substation-grid">
+                    <div class="substation-card">
+                        <h4>Hell's Kitchen</h4>
+                        <p><i class="fas fa-map-pin"></i> 40.765°N, 73.993°W</p>
+                        <p><i class="fas fa-bolt"></i> 750 MVA</p>
+                        <p><i class="fas fa-map"></i> West 42nd-59th St</p>
+                    </div>
+                    <div class="substation-card">
+                        <h4>Times Square</h4>
+                        <p><i class="fas fa-map-pin"></i> 40.758°N, 73.986°W</p>
+                        <p><i class="fas fa-bolt"></i> 850 MVA</p>
+                        <p><i class="fas fa-map"></i> Times Square Area</p>
+                    </div>
+                    <div class="substation-card">
+                        <h4>Penn Station</h4>
+                        <p><i class="fas fa-map-pin"></i> 40.751°N, 73.994°W</p>
+                        <p><i class="fas fa-bolt"></i> 900 MVA</p>
+                        <p><i class="fas fa-map"></i> West 34th-42nd St</p>
+                    </div>
+                    <div class="substation-card">
+                        <h4>Grand Central</h4>
+                        <p><i class="fas fa-map-pin"></i> 40.753°N, 73.977°W</p>
+                        <p><i class="fas fa-bolt"></i> 1000 MVA</p>
+                        <p><i class="fas fa-map"></i> East 42nd-50th St</p>
+                    </div>
+                    <div class="substation-card">
+                        <h4>Murray Hill</h4>
+                        <p><i class="fas fa-map-pin"></i> 40.748°N, 73.976°W</p>
+                        <p><i class="fas fa-bolt"></i> 650 MVA</p>
+                        <p><i class="fas fa-map"></i> East 34th-42nd St</p>
+                    </div>
+                    <div class="substation-card">
+                        <h4>Turtle Bay</h4>
+                        <p><i class="fas fa-map-pin"></i> 40.755°N, 73.968°W</p>
+                        <p><i class="fas fa-bolt"></i> 700 MVA</p>
+                        <p><i class="fas fa-map"></i> East 45th-55th St</p>
+                    </div>
+                    <div class="substation-card">
+                        <h4>Chelsea</h4>
+                        <p><i class="fas fa-map-pin"></i> 40.768°N, 73.982°W</p>
+                        <p><i class="fas fa-bolt"></i> 600 MVA</p>
+                        <p><i class="fas fa-map"></i> West 55th-65th St</p>
+                    </div>
+                    <div class="substation-card">
+                        <h4>Midtown East</h4>
+                        <p><i class="fas fa-map-pin"></i> 40.760°N, 73.969°W</p>
+                        <p><i class="fas fa-bolt"></i> 800 MVA</p>
+                        <p><i class="fas fa-map"></i> East 50th-59th St</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Videos Section -->
+    <section id="demo" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Demonstration</h2>
+                <p class="section-subtitle">
+                    See the platform in action
+                </p>
+            </div>
+
+            <!-- Main Demo Video -->
+            <div class="main-demo">
+                <div class="video-container">
+                    <iframe
+                        src="https://www.youtube.com/embed/36mGJWjrSxw?rel=0&modestbranding=1&enablejsapi=1"
+                        title="Manhattan Co-Simulation Platform - Full Demo"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                        referrerpolicy="strict-origin-when-cross-origin">
+                    </iframe>
+                </div>
+                <div class="video-fallback">
+                    <p>
+                        <i class="fas fa-info-circle"></i>
+                        Can't see the video?
+                        <a href="https://www.youtube.com/watch?v=36mGJWjrSxw" target="_blank" class="youtube-link">
+                            <i class="fab fa-youtube"></i>
+                            Watch on YouTube
+                        </a>
+                    </p>
+                </div>
+                <div class="video-info">
+                    <h3>
+                        <i class="fas fa-video"></i>
+                        Platform Demonstration
+                    </h3>
+                    <p>
+                        Watch the complete demonstration of the Manhattan power grid and traffic co-simulation system.
+                    </p>
+                </div>
+            </div>
+
+
+            <!-- Key Capabilities Shown -->
+            <div class="demo-highlights">
+                <h3 class="demo-highlights-title">What the Demo Shows</h3>
+                <div class="demo-highlights-grid">
+                    <div class="highlight-card">
+                        <i class="fas fa-bolt"></i>
+                        <h4>Power Grid Operations</h4>
+                        <p>PyPSA power flow analysis with real-time load monitoring</p>
+                    </div>
+                    <div class="highlight-card">
+                        <i class="fas fa-car"></i>
+                        <h4>Traffic Simulation</h4>
+                        <p>SUMO-based vehicle routing with SOC tracking</p>
+                    </div>
+                    <div class="highlight-card">
+                        <i class="fas fa-battery-three-quarters"></i>
+                        <h4>V2G Restoration</h4>
+                        <p>Emergency power restoration using electric vehicles</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Publication Section -->
+    <section id="publication" class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Publication & Resources</h2>
+                <p class="section-subtitle">
+                    Academic paper, source code, and documentation
+                </p>
+            </div>
+
+            <div class="publication-grid">
+                <!-- Paper -->
+                <div class="publication-card paper-card">
+                    <div class="publication-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Conference Paper</h3>
+                    <div class="paper-info">
+                        <p class="paper-title">
+                            Real-Time Co-Simulation of Power Grid and Traffic Systems with Vehicle-to-Grid Integration:
+                            A Manhattan Case Study
+                        </p>
+                        <p class="paper-authors">
+                            Marouane Benbrahim, Zhiqian Chen, Xin Fang
+                        </p>
+                        <p class="paper-venue">
+                            <i class="fas fa-calendar"></i>
+                            The Web Conference 2026 (WWW '26), April 13-17, 2026, Dubai, UAE
+                        </p>
+                    </div>
+                    <div class="paper-buttons">
+                        <a href="paper.pdf" class="btn btn-outline" target="_blank">
+                            <i class="fas fa-file-pdf"></i>
+                            PDF
+                        </a>
+                        <a href="citation.bib" class="btn btn-outline" download>
+                            <i class="fas fa-quote-right"></i>
+                            BibTeX
+                        </a>
+                    </div>
+                </div>
+
+                <!-- GitHub -->
+                <div class="publication-card github-card">
+                    <div class="publication-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <h3>Source Code</h3>
+                    <div class="github-info">
+                        <p>
+                            Complete source code, installation guide, and comprehensive documentation available on GitHub.
+                        </p>
+                        <div class="repo-link">
+                            <i class="fab fa-github"></i>
+                            <code>github.com/XGraph-Team/SumoXPypsa</code>
+                        </div>
+                    </div>
+                    <a href="https://github.com/XGraph-Team/SumoXPypsa" target="_blank" class="btn btn-primary">
+                        <i class="fab fa-github"></i>
+                        View Repository
+                    </a>
+                </div>
+
+                <!-- Documentation -->
+                <div class="publication-card docs-card">
+                    <div class="publication-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>Documentation</h3>
+                    <div class="docs-links">
+                        <a href="https://github.com/XGraph-Team/SumoXPypsa#installation" target="_blank" class="doc-link">
+                            <i class="fas fa-download"></i>
+                            Installation Guide
+                        </a>
+                        <a href="https://github.com/XGraph-Team/SumoXPypsa/tree/main/docs/LLM_SCENARIO_CONTROL_GUIDE.md" target="_blank" class="doc-link">
+                            <i class="fas fa-robot"></i>
+                            LLM Control Guide
+                        </a>
+                        <a href="https://github.com/XGraph-Team/SumoXPypsa/tree/main/docs/SCENARIO_TESTING_GUIDE.md" target="_blank" class="doc-link">
+                            <i class="fas fa-flask"></i>
+                            Scenario Testing
+                        </a>
+                        <a href="https://github.com/XGraph-Team/SumoXPypsa/tree/main/docs" target="_blank" class="doc-link">
+                            <i class="fas fa-book-open"></i>
+                            Full Documentation
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Manhattan Co-Simulation</h4>
+                    <p>
+                        Real-time power grid and traffic co-simulation platform
+                        integrating PyPSA, SUMO, and V2G for smart city resilience research.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#overview">Overview</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#demo">Demo</a></li>
+                        <li><a href="#publication">Publication</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://github.com/XGraph-Team/SumoXPypsa" target="_blank">GitHub Repository</a></li>
+                        <li><a href="https://www2026.thewebconf.org/" target="_blank">WebConf 2026</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul class="footer-links">
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            mb4194@msstate.edu
+                        </li>
+                        <li>
+                            <i class="fas fa-university"></i>
+                            Mississippi State University
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Manhattan Co-Simulation Project. Licensed under MIT License.</p>
+                <p>
+                    Submitted to <a href="https://www2026.thewebconf.org/calls/demos.html" target="_blank">WWW 2026 Demo Track</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

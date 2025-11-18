@@ -50,7 +50,7 @@ class V2GManager:
     # ==========================================
     CHARGING_COST = 0.15  # Normal charging cost ($/kWh)
     V2G_RATE_MULTIPLIER = 50.0  # PREMIUM 50x for V2G service (reduced from 100x)
-    EMERGENCY_MULTIPLIER = 150.0  # ULTRA PREMIUM 150x during critical events
+    EMERGENCY_MULTIPLIER = 50.0  # REALISTIC 50x during critical events ($7.50/kWh)
     
     # ==========================================
     # REALISTIC POWER SPECIFICATIONS
@@ -69,23 +69,23 @@ class V2GManager:
     # ==========================================
     # SIMULATION ACCELERATION
     # ==========================================
-    SIMULATION_TIME_MULTIPLIER = 20  # 20x faster for visible testing
-    # Each 0.1s simulation step = 2 seconds of real discharge
+    SIMULATION_TIME_MULTIPLIER = 120  # 120x faster for ULTRA FAST visible scenario completion
+    # Each 0.01s simulation step = 1.2 seconds of discharge time
     
     # ==========================================
     # OPERATIONAL PARAMETERS
     # ==========================================
     MIN_DISCHARGE_DURATION_SECONDS = 0  # No minimum duration
     MIN_ENERGY_PER_VEHICLE_KWH = 0  # No minimum energy requirement
-    RESTORATION_ENERGY_THRESHOLD_KWH = 25  # Need 25 kWh total for restoration (slower recovery)
-    MAX_V2G_VEHICLES = 10  # Maximum 10 vehicles simultaneously
+    RESTORATION_ENERGY_THRESHOLD_KWH = 25  # Need 25 kWh total for restoration (faster recovery with 120x multiplier)
+    MAX_V2G_VEHICLES = 50  # Maximum 50 vehicles simultaneously for FAST scenario completion
     
     def __init__(self, integrated_system, sumo_manager):
         """Initialize WORLD CLASS V2G Manager"""
-        
+
         self.integrated_system = integrated_system
         self.sumo_manager = sumo_manager
-        
+
         # ==========================================
         # STATE MANAGEMENT WITH CONFLICT PREVENTION
         # ==========================================
@@ -94,18 +94,22 @@ class V2GManager:
         self.v2g_locked_vehicles = set()  # Vehicles locked in V2G mode
         self.pending_v2g_vehicles = {}  # Vehicles en route to V2G
         self.contracts = []  # Smart contracts
-        
+
         # Power and energy tracking
         self.substation_power_needs = {}  # kW needed
         self.substation_energy_delivered = {}  # kWh delivered
         self.substation_energy_required = {}  # kWh required for restoration
         self.vehicles_providing_v2g = {}  # Active V2G providers
-        
+
         # Restoration tracking
         self.restored_substations = set()
         self.restoration_in_progress = set()
         # Track recent restorations for UX (persist across refresh briefly)
         self.recently_restored: Dict[str, datetime] = {}
+
+        # PROACTIVE CHATBOT NOTIFICATION TRACKING
+        self.last_notified_state = {}  # substation -> last_state for change detection
+        self.notification_callbacks = []  # List of callback functions for state changes
         
         # ==========================================
         # STATISTICS & ANALYTICS
@@ -130,18 +134,18 @@ class V2GManager:
         # INITIALIZATION MESSAGE
         # ==========================================
         print("\n" + "="*60)
-        print("⚡ V2G MANAGER INITIALIZED - ULTRA PREMIUM VERSION")
+        print("POWER V2G MANAGER INITIALIZED - ULTRA PREMIUM VERSION")
         print("="*60)
-        print(f"💰 PRICING:")
+        print(f"Money PRICING:")
         print(f"   Base rate: ${self.CHARGING_COST}/kWh")
         print(f"   V2G rate: ${self.market_price:.2f}/kWh (50x premium)")
         print(f"   Emergency rate: ${self.CHARGING_COST * self.EMERGENCY_MULTIPLIER:.2f}/kWh")
-        print(f"\n⚡ DISCHARGE SPECIFICATIONS:")
+        print(f"\nPOWER DISCHARGE SPECIFICATIONS:")
         print(f"   Standard rate: {self.DISCHARGE_RATE_KW} kW")
         print(f"   Simulation acceleration: {self.SIMULATION_TIME_MULTIPLIER}x")
-        print(f"   Real discharge time (60→30%): ~36 minutes")
+        print(f"   Real discharge time (60->30%): ~36 minutes")
         print(f"   Simulated time: ~{36/self.SIMULATION_TIME_MULTIPLIER:.1f} minutes")
-        print(f"\n🚗 OPERATIONAL LIMITS:")
+        print(f"\nVehicle OPERATIONAL LIMITS:")
         print(f"   Max vehicles: {self.MAX_V2G_VEHICLES}")
         print(f"   Min SOC to join: {self.MIN_SOC_FOR_V2G:.0%}")
         print(f"   Discharge until: {self.MAX_DISCHARGE_SOC:.0%}")
@@ -150,20 +154,29 @@ class V2GManager:
     
     def enable_v2g_for_substation(self, substation_name: str) -> bool:
         """Enable V2G support for failed substation - PREMIUM MODE"""
-        
+
         if substation_name not in self.integrated_system.substations:
+            print(f"ERROR: Substation '{substation_name}' not found in system")
             return False
-        
-        # Check if already restored
+
+        # Check if already restored (but allow if it was just failed)
         if substation_name in self.restored_substations:
-            print(f"✅ {substation_name} already restored - V2G not needed")
-            return False
-        
+            print(f"INFO: {substation_name} in restored list - removing to allow V2G")
+            self.restored_substations.discard(substation_name)
+
         substation = self.integrated_system.substations[substation_name]
-        
+
+        # DEBUG: Print full substation state
+        print(f"\n[V2G DEBUG] Attempting to enable V2G for {substation_name}")
+        print(f"[V2G DEBUG] Substation operational: {substation['operational']}")
+        print(f"[V2G DEBUG] Substation load_mw: {substation['load_mw']}")
+        print(f"[V2G DEBUG] In restored_substations: {substation_name in self.restored_substations}")
+        print(f"[V2G DEBUG] In v2g_enabled_substations: {substation_name in self.v2g_enabled_substations}")
+
         # Only enable for failed substations
         if substation['operational']:
-            print(f"⚠️ {substation_name} is operational - V2G not needed")
+            print(f"ERROR: {substation_name} is operational (operational={substation['operational']}) - Cannot enable V2G for working substation")
+            print(f"[V2G DEBUG] Full substation data: {substation}")
             return False
         
         self.v2g_enabled_substations.add(substation_name)
@@ -187,15 +200,15 @@ class V2GManager:
         max_revenue = energy_needed_kwh * rate * 10  # If 10 vehicles participate
         
         print("\n" + "="*60)
-        print(f"⚡💰 V2G ACTIVATED - {substation_name}")
+        print(f"POWERMoney V2G ACTIVATED - {substation_name}")
         print("="*60)
-        print(f"📊 POWER DEFICIT: {power_deficit_mw:.1f} MW")
-        print(f"⚡ ENERGY TARGET: {energy_needed_kwh:.1f} kWh for restoration")
+        print(f"Stats POWER DEFICIT: {power_deficit_mw:.1f} MW")
+        print(f"POWER ENERGY TARGET: {energy_needed_kwh:.1f} kWh for restoration")
         print(f"\n💵 PREMIUM PRICING:")
         print(f"   Rate: ${rate:.2f}/kWh ({int(rate/self.CHARGING_COST)}x normal)")
         print(f"   Max pool revenue: ${max_revenue:.0f}")
         print(f"   Per vehicle potential: ${max_revenue/10:.0f}")
-        print(f"\n🚗 VEHICLE REQUIREMENTS:")
+        print(f"\nVehicle VEHICLE REQUIREMENTS:")
         print(f"   Vehicles needed: Up to {self.MAX_V2G_VEHICLES}")
         print(f"   Min SOC: {self.MIN_SOC_FOR_V2G:.0%}")
         print(f"   Discharge to: {self.MAX_DISCHARGE_SOC:.0%}")
@@ -212,35 +225,49 @@ class V2GManager:
     
     def disable_v2g_for_substation(self, substation_name: str):
         """Disable V2G and release all vehicles"""
-        
+
         if substation_name in self.v2g_enabled_substations:
             self.v2g_enabled_substations.remove(substation_name)
-        
+
         self.restored_substations.add(substation_name)
-        
+
         # End all sessions for this substation
         sessions_to_end = []
         for vehicle_id, session in self.active_sessions.items():
             if session.substation_id == substation_name:
                 sessions_to_end.append(vehicle_id)
-        
+
         for vehicle_id in sessions_to_end:
             self._force_end_v2g_session(vehicle_id, reason="substation_manually_restored")
-        
+
         # Clear pending vehicles
         pending_to_clear = []
         for vid, sub in self.pending_v2g_vehicles.items():
             if sub == substation_name:
                 pending_to_clear.append(vid)
-        
+
         for vid in pending_to_clear:
             del self.pending_v2g_vehicles[vid]
             if vid in self.sumo_manager.vehicles:
                 vehicle = self.sumo_manager.vehicles[vid]
                 if hasattr(vehicle, 'v2g_target_substation'):
                     delattr(vehicle, 'v2g_target_substation')
-        
-        print(f"🔌 V2G DISABLED for {substation_name} - All vehicles released")
+
+        # CRITICAL FIX: Clear energy tracking dictionaries to sync V2G UI
+        if substation_name in self.substation_power_needs:
+            del self.substation_power_needs[substation_name]
+        if substation_name in self.substation_energy_delivered:
+            del self.substation_energy_delivered[substation_name]
+        if substation_name in self.substation_energy_required:
+            del self.substation_energy_required[substation_name]
+        if substation_name in self.emergency_zones:
+            self.emergency_zones.discard(substation_name)
+
+        # Clear from recently_restored after 90 seconds (handled by get_v2g_dashboard_data)
+        # But mark as restored now
+        self.recently_restored[substation_name] = datetime.now()
+
+        print(f"🔌 V2G DISABLED for {substation_name} - All vehicles released and state cleared")
     
     def get_current_rate(self, substation_name: str) -> float:
         """Calculate dynamic V2G rate with time-of-day pricing"""
@@ -303,18 +330,18 @@ class V2GManager:
             
             rate = self.get_current_rate(substation_name)
             
-            print(f"\n📢 V2G RECRUITMENT - {substation_name}")
+            print(f"\n[ANNOUNCE] V2G RECRUITMENT - {substation_name}")
             print(f"   Found: {len(eligible_vehicles)} eligible EVs")
             print(f"   Recruiting: {vehicles_to_use} vehicles")
-            print(f"   💰 Rate: ${rate:.2f}/kWh")
+            print(f"   Money Rate: ${rate:.2f}/kWh")
             
             # Route vehicles to V2G
             for i, vehicle in enumerate(eligible_vehicles[:vehicles_to_use]):
                 potential_energy = (vehicle.config.current_soc - self.MAX_DISCHARGE_SOC) * vehicle.config.battery_capacity_kwh
                 potential_earnings = potential_energy * rate
                 
-                print(f"   🚗 {vehicle.id}: SOC={vehicle.config.current_soc:.0%} "
-                      f"→ Potential: {potential_energy:.1f}kWh = ${potential_earnings:.0f}")
+                print(f"   Vehicle {vehicle.id}: SOC={vehicle.config.current_soc:.0%} "
+                      f"-> Potential: {potential_energy:.1f}kWh = ${potential_earnings:.0f}")
                 
                 self._route_to_v2g_station(vehicle, substation_name)
     
@@ -374,7 +401,7 @@ class V2GManager:
                         traci.vehicle.setColor(vehicle.id, (128, 0, 255, 255))
                         
                         station_name = self.integrated_system.ev_stations[best_station]['name']
-                        print(f"      → Routing to {station_name}")
+                        print(f"      -> Routing to {station_name}")
                         
                 except Exception as e:
                     print(f"Error routing to V2G: {e}")
@@ -443,13 +470,13 @@ class V2GManager:
         station_name = self.integrated_system.ev_stations[station_id]['name']
         rate = self.get_current_rate(substation_id)
         
-        print(f"\n⚡ V2G SESSION INITIATED")
+        print(f"\nPOWER V2G SESSION INITIATED")
         print(f"   Vehicle: {vehicle_id}")
         print(f"   Battery: {vehicle.config.battery_capacity_kwh}kWh @ {vehicle.config.current_soc:.0%}")
         print(f"   Station: {station_name}")
-        print(f"   💰 Rate: ${rate:.2f}/kWh")
-        print(f"   ⚡ Power: {self.DISCHARGE_RATE_KW}kW")
-        print(f"   📊 Potential: {max_discharge_kwh:.1f}kWh = ${max_discharge_kwh * rate:.0f}")
+        print(f"   Money Rate: ${rate:.2f}/kWh")
+        print(f"   POWER Power: {self.DISCHARGE_RATE_KW}kW")
+        print(f"   Stats Potential: {max_discharge_kwh:.1f}kWh = ${max_discharge_kwh * rate:.0f}")
         
         return True
     
@@ -487,8 +514,8 @@ class V2GManager:
             # ==========================================
             # REALISTIC DISCHARGE CALCULATION
             # ==========================================
-            # Each 0.1s step with acceleration multiplier
-            time_per_step = 0.1 * self.SIMULATION_TIME_MULTIPLIER  # 2 seconds per step
+            # Each 0.01s real-time step with 20x acceleration = 0.2 seconds simulated time per step
+            time_per_step = 0.01 * self.SIMULATION_TIME_MULTIPLIER  # 0.2 seconds simulated per real 0.01s step
             
             # Energy discharged (kWh)
             discharge_rate_kwh = (self.DISCHARGE_RATE_KW * time_per_step) / 3600
@@ -530,7 +557,7 @@ class V2GManager:
                 session_duration = (datetime.now() - session.start_time).total_seconds()
                 effective_minutes = (session.power_delivered_kwh / self.DISCHARGE_RATE_KW) * 60
                 
-                print(f"⚡ {vehicle_id}: {vehicle.config.current_soc:.0%}% | "
+                print(f"POWER {vehicle_id}: {vehicle.config.current_soc:.0%}% | "
                       f"${session.earnings:.2f} | "
                       f"{session.power_delivered_kwh:.2f}kWh | "
                       f"{effective_minutes:.1f}min | "
@@ -544,8 +571,8 @@ class V2GManager:
                 total_soc = session.initial_soc - session.current_soc
                 discharge_minutes = (session.power_delivered_kwh / self.DISCHARGE_RATE_KW) * 60
                 
-                print(f"\n🔋 {vehicle_id} DISCHARGE COMPLETE")
-                print(f"   SOC: {session.initial_soc:.0%} → {session.current_soc:.0%}")
+                print(f"\nBattery {vehicle_id} DISCHARGE COMPLETE")
+                print(f"   SOC: {session.initial_soc:.0%} -> {session.current_soc:.0%}")
                 print(f"   Energy: {session.power_delivered_kwh:.2f}kWh")
                 print(f"   Time: {discharge_minutes:.1f} minutes")
                 print(f"   💵 Earned: ${session.earnings:.2f}")
@@ -598,14 +625,14 @@ class V2GManager:
         self.stats['total_discharge_time_minutes'] += duration_minutes
         
         # Summary
-        print(f"\n💰 V2G SESSION COMPLETE - {reason.upper()}")
+        print(f"\nMoney V2G SESSION COMPLETE - {reason.upper()}")
         print(f"   Vehicle: {vehicle_id}")
         print(f"   Duration: {duration_minutes:.1f} minutes")
         print(f"   Energy: {session.power_delivered_kwh:.2f} kWh")
         print(f"   💵 EARNINGS: ${session.earnings:.2f}")
         if session.power_delivered_kwh > 0:
             print(f"   Effective rate: ${session.earnings/session.power_delivered_kwh:.2f}/kWh")
-        print(f"   SOC: {session.initial_soc:.0%} → {session.current_soc:.0%}")
+        print(f"   SOC: {session.initial_soc:.0%} -> {session.current_soc:.0%}")
         
         # Release vehicle
         vehicle = self.sumo_manager.vehicles.get(vehicle_id)
@@ -629,21 +656,52 @@ class V2GManager:
                 traci.vehicle.setSpeed(vehicle_id, -1)
                 traci.vehicle.setMaxSpeed(vehicle_id, 200)
                 
-                # New route
+                # New route - ensure vehicle continues driving
                 current_edge = traci.vehicle.getRoadID(vehicle_id)
+
+                # Skip internal junction edges (start with ':')
+                if current_edge.startswith(':'):
+                    # Get the route and use the next valid edge
+                    current_route = traci.vehicle.getRoute(vehicle_id)
+                    if current_route:
+                        # Find next non-junction edge
+                        for edge in current_route:
+                            if not edge.startswith(':'):
+                                current_edge = edge
+                                break
+
                 all_edges = [e for e in traci.edge.getIDList() if not e.startswith(':')]
-                
+
                 if len(all_edges) > 10:
                     import random
-                    destination = random.choice(all_edges[5:])
-                    
-                    try:
-                        route = traci.simulation.findRoute(current_edge, destination)
-                        if route and route.edges:
-                            traci.vehicle.setRoute(vehicle_id, route.edges)
-                    except:
-                        if all_edges:
-                            traci.vehicle.setRoute(vehicle_id, [current_edge, all_edges[0]])
+                    # Try multiple destinations until we find a valid route
+                    max_attempts = 5
+                    route_found = False
+
+                    for attempt in range(max_attempts):
+                        destination = random.choice(all_edges[5:])
+
+                        try:
+                            route = traci.simulation.findRoute(current_edge, destination)
+                            if route and route.edges and len(route.edges) > 1:
+                                traci.vehicle.setRoute(vehicle_id, route.edges)
+                                route_found = True
+                                print(f"[V2G] ✅ Rerouted {vehicle_id} from {current_edge} to {destination}")
+                                break
+                        except Exception as e:
+                            if attempt == max_attempts - 1:
+                                print(f"[V2G] ⚠️ Failed to reroute {vehicle_id}: {e}")
+
+                    # Final fallback: if no route found, try to continue on current route
+                    if not route_found:
+                        try:
+                            current_route = traci.vehicle.getRoute(vehicle_id)
+                            if current_route and len(current_route) > 1:
+                                # Just continue on existing route
+                                traci.vehicle.resume(vehicle_id)
+                                print(f"[V2G] ⚠️ {vehicle_id} continuing on existing route")
+                        except:
+                            pass
         
         # Cleanup
         del self.active_sessions[vehicle_id]
@@ -658,16 +716,16 @@ class V2GManager:
     
     def _complete_substation_restoration(self, substation_name: str):
         """Complete restoration with celebration"""
-        
+
         energy_delivered = self.substation_energy_delivered.get(substation_name, 0)
         energy_required = self.substation_energy_required.get(substation_name, 0)
-        
+
         print("\n" + "="*60)
-        print(f"🎉 SUBSTATION {substation_name} RESTORED!")
+        print(f"Success SUBSTATION {substation_name} RESTORED!")
         print("="*60)
-        print(f"⚡ Energy delivered: {energy_delivered:.1f} kWh")
-        print(f"📊 Target achieved: {(energy_delivered/max(energy_required, 1))*100:.0f}%")
-        
+        print(f"POWER Energy delivered: {energy_delivered:.1f} kWh")
+        print(f"Stats Target achieved: {(energy_delivered/max(energy_required, 1))*100:.0f}%")
+
         # Calculate totals
         total_revenue = 0
         contributing_vehicles = []
@@ -675,53 +733,73 @@ class V2GManager:
             if session.substation_id == substation_name:
                 contributing_vehicles.append((vehicle_id, session.earnings))
                 total_revenue += session.earnings
-        
+
         if contributing_vehicles:
-            print(f"\n💰 REVENUE DISTRIBUTION:")
+            print(f"\nMoney REVENUE DISTRIBUTION:")
             for vid, earnings in contributing_vehicles:
                 print(f"   {vid}: ${earnings:.2f}")
             print(f"   TOTAL: ${total_revenue:.2f}")
-        
+
         print("="*60 + "\n")
-        
+
         # Mark restored
         self.restored_substations.add(substation_name)
         # Record recent restoration timestamp
         self.recently_restored[substation_name] = datetime.now()
-        
+
+        # TRIGGER PROACTIVE NOTIFICATIONS for state change
+        self._notify_state_change('restoration_complete', {
+            'substation': substation_name,
+            'energy_delivered': energy_delivered,
+            'total_revenue': total_revenue,
+            'vehicles_contributed': len(contributing_vehicles)
+        })
+
         # Restore in system
         if not self.integrated_system.substations[substation_name]['operational']:
             self.integrated_system.restore_substation(substation_name)
-        
+
         # Cleanup
         self.v2g_enabled_substations.discard(substation_name)
-        
+
         if substation_name in self.substation_power_needs:
             del self.substation_power_needs[substation_name]
         if substation_name in self.substation_energy_delivered:
             del self.substation_energy_delivered[substation_name]
         if substation_name in self.substation_energy_required:
             del self.substation_energy_required[substation_name]
-        
+
         # End sessions
         sessions_to_end = []
         for vehicle_id, session in self.active_sessions.items():
             if session.substation_id == substation_name:
                 sessions_to_end.append(vehicle_id)
-        
+
         for vehicle_id in sessions_to_end:
             self._force_end_v2g_session(vehicle_id, reason="substation_restored")
-        
+
         # Clear pending
         pending_to_clear = []
         for vid, sub in self.pending_v2g_vehicles.items():
             if sub == substation_name:
                 pending_to_clear.append(vid)
-        
+
         for vid in pending_to_clear:
             del self.pending_v2g_vehicles[vid]
-        
+
         self.stats['substations_restored'] += 1
+
+    def register_notification_callback(self, callback):
+        """Register a callback for V2G state change notifications"""
+        self.notification_callbacks.append(callback)
+
+    def _notify_state_change(self, event_type: str, data: Dict):
+        """Notify all registered callbacks of state changes"""
+        for callback in self.notification_callbacks:
+            try:
+                callback(event_type, data)
+            except Exception as e:
+                print(f"[V2G] Error in notification callback: {e}")
     
     def get_v2g_dashboard_data(self) -> Dict:
         """Provide real-time V2G analytics"""
@@ -777,6 +855,8 @@ class V2GManager:
             'active_vehicles': [
                 {
                     'vehicle_id': v_id,
+                    'id': v_id,  # Add 'id' as alias
+                    'station_id': session.station_id,  # CRITICAL: Add station_id for visual effects
                     'soc': self.sumo_manager.vehicles[v_id].config.current_soc * 100,
                     'earnings': session.earnings,
                     'power_delivered': session.power_delivered_kwh,
@@ -785,7 +865,7 @@ class V2GManager:
                     'status': 'discharging',
                     'duration': (datetime.now() - session.start_time).seconds,
                     'discharge_rate_kw': session.actual_power_kw,
-                    'remaining_energy': (self.sumo_manager.vehicles[v_id].config.current_soc - self.MAX_DISCHARGE_SOC) * 
+                    'remaining_energy': (self.sumo_manager.vehicles[v_id].config.current_soc - self.MAX_DISCHARGE_SOC) *
                                        self.sumo_manager.vehicles[v_id].config.battery_capacity_kwh
                 }
                 for v_id, session in self.active_sessions.items()

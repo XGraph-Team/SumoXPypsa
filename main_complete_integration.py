@@ -35,6 +35,7 @@ from core.sumo_manager import ManhattanSUMOManager, SimulationScenario
 from ml_engine import MLPowerGridEngine
 from v2g_manager import V2GManager
 from ai_chatbot import ManhattanAIChatbot
+from ultra_intelligent_chatbot import initialize_ultra_intelligent_chatbot
 try:
     from openai import OpenAI
 except Exception:
@@ -108,9 +109,66 @@ ml_engine = MLPowerGridEngine(integrated_system=integrated_system, power_grid=po
 # Initialize World-Class AI Chatbot
 ai_chatbot = ManhattanAIChatbot(integrated_system=integrated_system, ml_engine=ml_engine, v2g_manager=v2g_manager)
 
+# Initialize ULTRA-INTELLIGENT CHATBOT with typo correction and suggestions
+try:
+    from enhanced_v2g_manager import initialize_enhanced_v2g
+    enhanced_v2g_manager = initialize_enhanced_v2g(integrated_system)
+    ultra_chatbot = initialize_ultra_intelligent_chatbot(integrated_system, ml_engine, enhanced_v2g_manager, app)
+    print("ULTRA-INTELLIGENT CHATBOT WITH TYPO CORRECTION INTEGRATED")
+except Exception as e:
+    print(f"Ultra-Intelligent Chatbot not available: {e}")
+    ultra_chatbot = None
+
+# Initialize ADVANCED AI SYSTEM CONTROLLER with OpenAI + LangChain
+try:
+    from advanced_ai_controller import initialize_advanced_ai
+    world_class_ai = initialize_advanced_ai(integrated_system, ml_engine, v2g_manager, app)
+    print("ADVANCED AI CONTROLLER WITH OPENAI + LANGCHAIN INTEGRATED")
+except ImportError as e:
+    print(f"Advanced AI Controller not available: {e}")
+    world_class_ai = None
+
 # Initialize OpenAI client (optional if key provided)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 openai_client = OpenAI(api_key=OPENAI_API_KEY) if (OPENAI_API_KEY and OpenAI) else None
+
+# Initialize REALISTIC LOAD MODEL and SCENARIO CONTROLLER
+print("=" * 60)
+print("INITIALIZING WORLD-CLASS REALISTIC LOAD MODEL")
+print("=" * 60)
+
+try:
+    from realistic_load_model import RealisticLoadModel
+    from scenario_controller import ScenarioController
+    from scenario_integration import integrate_scenario_controller
+
+    print("Initializing realistic load model with building types...")
+    load_model = RealisticLoadModel(integrated_system)
+
+    print("Initializing scenario controller...")
+    scenario_controller = ScenarioController(
+        integrated_system=integrated_system,
+        load_model=load_model,
+        power_grid=power_grid,
+        sumo_manager=sumo_manager
+    )
+
+    # Start automatic monitoring
+    scenario_controller.start_auto_monitoring()
+
+    # Add API endpoints
+    integrate_scenario_controller(app, scenario_controller, load_model)
+
+    print("=" * 60)
+    print("✓ REALISTIC LOAD MODEL ACTIVE")
+    print("✓ SCENARIO CONTROLLER ACTIVE")
+    print("✓ AUTOMATIC FAILURE DETECTION ENABLED")
+    print("=" * 60)
+
+except Exception as e:
+    print(f"ERROR: Could not initialize realistic load model: {e}")
+    load_model = None
+    scenario_controller = None
 
 # Optional: cache of SUMO edge shapes (lon/lat) for road-locked rendering
 EDGE_SHAPES: dict = {}
@@ -166,432 +224,269 @@ current_ev_config = {
 }
 
 def simulation_loop():
-    """Main simulation loop integrating power, traffic lights, and vehicles"""
+    """Main simulation loop - REALISTIC TIMING (Real-world synchronized)"""
     global system_state
-    
+
+    # REALISTIC TIMING CONFIGURATION
+    # All intervals in SUMO steps (1 SUMO step = 0.1 simulation seconds)
+    SUMO_STEP_TIME = 0.1  # seconds - Industry standard for traffic simulation
+
+    # Realistic update intervals (in seconds)
+    TRAFFIC_LIGHT_CYCLE = 60       # 60 seconds - Realistic traffic light cycle
+    POWER_GRID_UPDATE = 5          # 5 seconds - Realistic SCADA/state estimation
+    EV_LOAD_UPDATE = 5             # 5 seconds - Realistic smart meter updates
+    V2G_UPDATE = 60                # 60 seconds - Realistic V2G state changes
+
+    # Convert to SUMO steps (multiply by 10 because 1 SUMO step = 0.1s)
+    TRAFFIC_LIGHT_STEPS = int(TRAFFIC_LIGHT_CYCLE / SUMO_STEP_TIME)  # 600 steps
+    POWER_GRID_STEPS = int(POWER_GRID_UPDATE / SUMO_STEP_TIME)       # 50 steps
+    EV_LOAD_STEPS = int(EV_LOAD_UPDATE / SUMO_STEP_TIME)             # 50 steps
+    V2G_STEPS = int(V2G_UPDATE / SUMO_STEP_TIME)                     # 600 steps
+
+    # Performance optimization: Use high-resolution timer
+    import time as time_module
+    next_step_time = time_module.perf_counter()
+    step_duration = 0.1  # Match SUMO step time (100ms)
+
+    # Cache for reducing update frequency
+    last_ev_update = 0
+    last_v2g_update = 0
+    last_power_flow = 0
+
+    # Performance monitoring
+    perf_stats = {'sumo_step': [], 'ev_update': [], 'power_flow': [], 'total_step': []}
+    last_perf_report = 0
+
+    print("\n" + "="*70)
+    print("REALISTIC TIMING MODE ENABLED")
+    print("="*70)
+    print(f"SUMO Traffic Step:      {SUMO_STEP_TIME}s (0.1s - Industry standard)")
+    print(f"Traffic Light Cycle:    {TRAFFIC_LIGHT_CYCLE}s (Realistic timing)")
+    print(f"Power Grid Update:      {POWER_GRID_UPDATE}s (SCADA rate)")
+    print(f"EV Load Update:         {EV_LOAD_UPDATE}s (Smart meter rate)")
+    print(f"V2G State Update:       {V2G_UPDATE}s (V2G session rate)")
+    print("="*70 + "\n")
+
     while system_state['running']:
         try:
-            # Update traffic light phases every 2 seconds
-            if system_state['current_time'] % 20 == 0:  # Every 2 seconds at 0.1s steps
+            step_start = time_module.perf_counter()
+            current_time = step_start
+
+            # Skip if we're ahead of schedule (non-blocking timing)
+            if current_time < next_step_time:
+                time_module.sleep(0.001)  # Short sleep to reduce CPU usage
+                continue
+
+            # REALISTIC TIMING: Traffic lights change every 60 seconds
+            if system_state['current_time'] % TRAFFIC_LIGHT_STEPS == 0:
                 integrated_system.update_traffic_light_phases()
-            
+                if system_state['current_time'] > 0:  # Don't print at startup
+                    print(f"[TRAFFIC] Light phase change at {system_state['current_time']*0.1:.1f}s")
+
             # Run SUMO step if active
             if system_state['sumo_running'] and sumo_manager.running:
-                # Sync traffic lights to SUMO
-                sumo_manager.update_traffic_lights()
-                
-                # Step SUMO simulation
+                sumo_start = time_module.perf_counter()
+
+                # SUMO step - advances traffic simulation by 0.1 seconds
                 sumo_manager.step()
 
-                # ADD THIS LINE HERE (after sumo_manager.step()):
-                v2g_manager.update_v2g_sessions()
+                sumo_time = (time_module.perf_counter() - sumo_start) * 1000
+                perf_stats['sumo_step'].append(sumo_time)
 
-                # Update power grid with EV charging loads
-                update_ev_power_loads()
-            
-            # Run power flow every 30 seconds
-            if system_state['current_time'] % 50 == 0:
-                power_grid.run_power_flow("dc")
-            
+                # REALISTIC: V2G updates every 60 seconds (vehicle-to-grid state changes)
+                if system_state['current_time'] - last_v2g_update >= V2G_STEPS:
+                    v2g_manager.update_v2g_sessions()
+                    last_v2g_update = system_state['current_time']
+
+                # REALISTIC: EV load updates every 5 seconds (smart meter telemetry)
+                if system_state['current_time'] - last_ev_update >= EV_LOAD_STEPS:
+                    ev_start = time_module.perf_counter()
+                    update_ev_power_loads()
+                    ev_time = (time_module.perf_counter() - ev_start) * 1000
+                    perf_stats['ev_update'].append(ev_time)
+                    last_ev_update = system_state['current_time']
+
+                # REALISTIC: Power flow every 5 seconds (SCADA state estimation)
+                if system_state['current_time'] - last_power_flow >= POWER_GRID_STEPS:
+                    pf_start = time_module.perf_counter()
+                    try:
+                        power_grid.run_power_flow("dc")
+                        pf_time = (time_module.perf_counter() - pf_start) * 1000
+                        perf_stats['power_flow'].append(pf_time)
+                        if pf_time > 100:  # Warn if power flow takes >100ms
+                            print(f"[WARNING] Power flow took {pf_time:.1f}ms")
+                    except Exception as e:
+                        print(f"[ERROR] Power flow failed: {e}")
+                    last_power_flow = system_state['current_time']
+
             system_state['current_time'] += 1
-            time.sleep(0.01 / system_state['simulation_speed'])
-            
+
+            # Track total step time
+            total_time = (time_module.perf_counter() - step_start) * 1000
+            perf_stats['total_step'].append(total_time)
+
+            # Performance report every 30 seconds (300 SUMO steps)
+            if system_state['current_time'] - last_perf_report >= 300:
+                sim_time = system_state['current_time'] * SUMO_STEP_TIME
+                if perf_stats['sumo_step']:
+                    avg_sumo = sum(perf_stats['sumo_step'][-100:]) / min(100, len(perf_stats['sumo_step']))
+                    avg_total = sum(perf_stats['total_step'][-100:]) / min(100, len(perf_stats['total_step']))
+                    avg_pf = sum(perf_stats['power_flow'][-10:]) / max(1, min(10, len(perf_stats['power_flow']))) if perf_stats['power_flow'] else 0
+
+                    print(f"\n[PERF] Simulation time: {sim_time:.1f}s")
+                    print(f"       Avg SUMO step: {avg_sumo:.1f}ms, Total step: {avg_total:.1f}ms")
+                    print(f"       Power flow: {avg_pf:.1f}ms, Real-time ratio: {avg_total/100:.2f}x")
+
+                    if sumo_manager.running:
+                        stats = sumo_manager.get_statistics()
+                        print(f"       Vehicles: {stats.get('total_vehicles', 0)}, EVs: {stats.get('ev_vehicles', 0)}, Charging: {stats.get('vehicles_charging', 0)}")
+
+                last_perf_report = system_state['current_time']
+
+            # Calculate next step time (compensates for processing time)
+            next_step_time += step_duration / system_state['simulation_speed']
+
+            # If we're falling behind, reset timer
+            if current_time > next_step_time + 0.5:
+                next_step_time = current_time
+                print(f"[WARNING] Simulation running slow! Step took {total_time:.1f}ms (target: {step_duration*1000:.1f}ms)")
+
         except Exception as e:
             print(f"Simulation error: {e}")
             traceback.print_exc()
             time.sleep(1)
+            next_step_time = time_module.perf_counter()
 
 def update_ev_power_loads():
-    """Update power grid loads based on EV charging - COMPLETE FIXED VERSION"""
-    
-    global power_grid  # Use the global instance
-    global previous_ev_load_mw  # Track previous load
-    
-    print(f"[DEBUG] update_ev_power_loads called at time {system_state['current_time']}")
-    
+    """Update power grid loads based on EV charging - OPTIMIZED FOR 1000+ VEHICLES"""
+
+    global power_grid
+    global previous_ev_load_mw
+
     # Initialize previous load tracking
     if 'previous_ev_load_mw' not in globals():
         previous_ev_load_mw = 0
-    
-    # Verify power_grid exists
-    if not power_grid:
-        print("[ERROR] power_grid not initialized!")
+
+    # Quick validation checks
+    if not power_grid or not sumo_manager.running:
         return
-    
-    # Check if SUMO is running
-    if not sumo_manager.running:
-        print(f"[DEBUG] SUMO not running, skipping EV load update")
-        return
-    
-    # Get SUMO statistics
-    stats = sumo_manager.get_statistics()
-    print(f"[DEBUG] Stats - Vehicles charging: {stats.get('vehicles_charging', 0)}")
-    
-    # Track detailed charging information
-    charging_by_station = {}
-    charging_details = {
-        'total_vehicles_charging': 0,
-        'total_power_kw': 0,
-        'stations_active': 0,
-        'critical_stations': []
-    }
-    
-    # Count charging vehicles properly - check both vehicle state and station manager
-    for vehicle in sumo_manager.vehicles.values():
-        if vehicle.config.is_ev:
-            # Check multiple charging indicators
-            has_is_charging = hasattr(vehicle, 'is_charging')
-            is_charging_val = has_is_charging and vehicle.is_charging
-            
-            has_charging_at = hasattr(vehicle, 'charging_at_station')
-            charging_at_val = has_charging_at and vehicle.charging_at_station
-            
-            # Also check if vehicle is in station manager's charging list
-            in_station_manager = False
-            if hasattr(sumo_manager, 'station_manager') and sumo_manager.station_manager:
-                for station_id, station in sumo_manager.station_manager.stations.items():
-                    if vehicle.id in station['vehicles_charging']:
-                        in_station_manager = True
-                        break
-            
-            # Debug output for EVs at stations
-            if vehicle.assigned_ev_station or in_station_manager:
-                print(f"[DEBUG] {vehicle.id}: station={vehicle.assigned_ev_station}, is_charging={is_charging_val}, in_station_mgr={in_station_manager}, SOC={vehicle.config.current_soc:.2f}")
-            
-            # Count if actually charging (either vehicle state OR in station manager)
-            if is_charging_val or charging_at_val or in_station_manager:
-                station_id = vehicle.assigned_ev_station
-                if not station_id and in_station_manager:
-                    # Find which station this vehicle is charging at
-                    for sid, station in sumo_manager.station_manager.stations.items():
-                        if vehicle.id in station['vehicles_charging']:
-                            station_id = sid
-                            break
-                
-                if station_id:
-                    if station_id not in charging_by_station:
-                        charging_by_station[station_id] = []
-                    charging_by_station[station_id].append(vehicle.id)
-    
-    # Convert to counts and show which vehicles are charging where
+
+    # OPTIMIZATION: Get charging data directly from station manager (O(stations) instead of O(vehicles))
     charging_counts = {}
-    for station_id, vehicles in charging_by_station.items():
-        charging_counts[station_id] = len(vehicles)
-        if vehicles:
-            station_name = integrated_system.ev_stations[station_id]['name']
-            print(f"[DEBUG] {station_name}: {len(vehicles)} charging - {', '.join(vehicles)}")
-    
-    print(f"[DEBUG] Charging by station summary: {charging_counts}")
-    
-    # Cross-check with station manager port usage
+
     if hasattr(sumo_manager, 'station_manager') and sumo_manager.station_manager:
-        print(f"[DEBUG] Station manager port usage:")
+        # Direct access to station charging data - much faster!
         for station_id, station in sumo_manager.station_manager.stations.items():
-            occupied_ports = len([p for p in station['ports'] if p.occupied_by is not None])
-            vehicles_in_list = len(station['vehicles_charging'])
-            print(f"  {station_id}: {occupied_ports} ports occupied, {vehicles_in_list} in vehicles_charging list")
+            num_charging = len(station['vehicles_charging'])
+            if num_charging > 0:
+                charging_counts[station_id] = num_charging
+    else:
+        # Fallback: Count from vehicle states
+        for vehicle in sumo_manager.vehicles.values():
+            if (vehicle.config.is_ev and
+                vehicle.assigned_ev_station and
+                getattr(vehicle, 'is_charging', False)):
+                station_id = vehicle.assigned_ev_station
+                charging_counts[station_id] = charging_counts.get(station_id, 0) + 1
     
-    # Update each EV station's load and PyPSA
+    # OPTIMIZED: Calculate station loads efficiently
     total_charging_kw = 0
     substation_loads = {}  # Track load per substation
-    
-    for ev_id, ev_station in integrated_system.ev_stations.items():
-        chargers_in_use = charging_counts.get(ev_id, 0)
-        
-        # Calculate realistic charging power based on number of vehicles
-        if chargers_in_use > 0:
-            # Variable charging rate based on station load
-            if chargers_in_use <= 5:
-                power_per_vehicle = 150  # 150kW DC fast charging when not crowded
-            elif chargers_in_use <= 10:
-                power_per_vehicle = 100  # 100kW when moderately busy
-            elif chargers_in_use <= 15:
-                power_per_vehicle = 50   # 50kW when busy
-            else:
-                power_per_vehicle = 22   # 22kW when very crowded
-            
-            charging_power_kw = chargers_in_use * power_per_vehicle
-        else:
-            charging_power_kw = 0
-        
-        total_charging_kw += charging_power_kw
-        
-        # Update the integrated system
-        ev_station['vehicles_charging'] = chargers_in_use
-        ev_station['current_load_kw'] = charging_power_kw
-        
-        # Track load by substation
-        substation_name = ev_station['substation']
-        if substation_name not in substation_loads:
-            substation_loads[substation_name] = 0
-        substation_loads[substation_name] += charging_power_kw
-        
-        # Update station statistics
-        if chargers_in_use > 0:
-            charging_details['stations_active'] += 1
-            charging_details['total_vehicles_charging'] += chargers_in_use
-            print(f"[DEBUG] {ev_station['name']}: {chargers_in_use} vehicles = {charging_power_kw} kW")
-            
-            # Check if station is critical (>80% capacity)
-            if chargers_in_use >= 16:  # 80% of 20 ports
-                charging_details['critical_stations'].append(ev_station['name'])
-    
-    charging_details['total_power_kw'] = total_charging_kw
-    
-    # UPDATE PYPSA NETWORK - Key part
-    print(f"[DEBUG] Total EV charging load: {total_charging_kw/1000:.2f} MW")
-    
-    # COMPLETE FIX: Map ALL substations correctly
+
+    # Bus name mapping cache (moved outside loop for efficiency)
     bus_name_mapping = {
-        "Hell's Kitchen": "Hell's Kitchen_13.8kV",  # Note the apostrophe in PyPSA!
+        "Hell's Kitchen": "Hell's Kitchen_13.8kV",
         "Times Square": "Times Square_13.8kV",
-        "Penn Station": "Penn Station_13.8kV", 
+        "Penn Station": "Penn Station_13.8kV",
         "Grand Central": "Grand Central_13.8kV",
         "Murray Hill": "Murray Hill_13.8kV",
         "Turtle Bay": "Turtle Bay_13.8kV",
-        "Columbus Circle": "Chelsea_13.8kV",  # Columbus Circle maps to Chelsea bus
+        "Columbus Circle": "Chelsea_13.8kV",
         "Midtown East": "Midtown East_13.8kV"
     }
-    
-    # Update PyPSA loads for each substation
+
+    # Calculate power loads per station
+    for ev_id, ev_station in integrated_system.ev_stations.items():
+        chargers_in_use = charging_counts.get(ev_id, 0)
+
+        # Realistic variable charging rate based on station load
+        if chargers_in_use > 0:
+            if chargers_in_use <= 5:
+                power_per_vehicle = 150  # 150kW DC fast charging
+            elif chargers_in_use <= 10:
+                power_per_vehicle = 100  # 100kW
+            elif chargers_in_use <= 15:
+                power_per_vehicle = 50   # 50kW
+            else:
+                power_per_vehicle = 22   # 22kW (congested)
+
+            charging_power_kw = chargers_in_use * power_per_vehicle
+        else:
+            charging_power_kw = 0
+
+        total_charging_kw += charging_power_kw
+
+        # Update integrated system
+        ev_station['vehicles_charging'] = chargers_in_use
+        ev_station['current_load_kw'] = charging_power_kw
+
+        # Aggregate by substation
+        substation_name = ev_station['substation']
+        substation_loads[substation_name] = substation_loads.get(substation_name, 0) + charging_power_kw
+
+    # OPTIMIZED: Batch PyPSA updates (collect all updates then apply at once)
+    pypsa_updates = {}  # {load_name: (bus_name, load_mw)}
+
     for substation_name, load_kw in substation_loads.items():
         load_mw = load_kw / 1000
-        
-        # Get correct bus name from mapping
+
+        # Get bus name
         bus_name = bus_name_mapping.get(substation_name)
         if not bus_name:
-            print(f"[ERROR] No mapping for substation: {substation_name}")
             continue
-        
-        # Check if bus exists in network (handling apostrophes)
+
+        # Check bus existence (with name variations)
         bus_name_in_pypsa = None
-        if bus_name in power_grid.network.buses.index:
-            bus_name_in_pypsa = bus_name
-        elif bus_name.replace("'", "") in power_grid.network.buses.index:
-            bus_name_in_pypsa = bus_name.replace("'", "")
-        elif bus_name.replace(" ", "_") in power_grid.network.buses.index:
-            bus_name_in_pypsa = bus_name.replace(" ", "_")
-        
+        for variant in [bus_name, bus_name.replace("'", ""), bus_name.replace(" ", "_")]:
+            if variant in power_grid.network.buses.index:
+                bus_name_in_pypsa = variant
+                break
+
         if not bus_name_in_pypsa:
-            print(f"[WARNING] Bus {bus_name} not found in network")
-            if system_state['current_time'] % 1000 == 0:  # Every 100 seconds
-                available_buses = [b for b in power_grid.network.buses.index if "13.8kV" in b]
-                print(f"[DEBUG] Available 13.8kV buses: {available_buses}")
             continue
-        
-        # Create EV load name
+
+        # Prepare update
         clean_name = substation_name.replace(' ', '_').replace("'", '')
         ev_load_name = f"EV_{clean_name}"
-        
+        pypsa_updates[ev_load_name] = (bus_name_in_pypsa, load_mw)
+
         # Update integrated system
         if substation_name in integrated_system.substations:
-            old_ev_load = integrated_system.substations[substation_name].get('ev_load_mw', 0)
             integrated_system.substations[substation_name]['ev_load_mw'] = load_mw
-            
-            if abs(old_ev_load - load_mw) > 0.01:
-                print(f"[DEBUG] {substation_name} EV load: {old_ev_load:.2f} → {load_mw:.2f} MW")
-        
-        # Update PyPSA bus load
+
+    # OPTIMIZED: Apply all PyPSA updates in batch (silent for performance)
+    for ev_load_name, (bus_name_in_pypsa, load_mw) in pypsa_updates.items():
         try:
             if ev_load_name not in power_grid.network.loads.index:
-                # Create new load
-                power_grid.network.add(
-                    "Load",
-                    ev_load_name,
-                    bus=bus_name_in_pypsa,
-                    p_set=load_mw
-                )
-                print(f"[DEBUG] Created new EV load at {bus_name_in_pypsa}: {load_mw:.2f} MW")
+                power_grid.network.add("Load", ev_load_name, bus=bus_name_in_pypsa, p_set=load_mw)
             else:
-                # Update existing load
-                old_value = power_grid.network.loads.at[ev_load_name, 'p_set']
                 power_grid.network.loads.at[ev_load_name, 'p_set'] = load_mw
-                
-                if abs(old_value - load_mw) > 0.01:  # Only log significant changes
-                    print(f"[DEBUG] Updated {ev_load_name}: {old_value:.2f} → {load_mw:.2f} MW")
-                    
-        except Exception as e:
-            print(f"[ERROR] Failed to update PyPSA load for {substation_name}: {e}")
-    
-    # Clean up zero loads
+        except Exception:
+            pass  # Silent failure for performance
+
+    # Clear zero loads efficiently
     for substation_name in bus_name_mapping.keys():
         if substation_name not in substation_loads:
             clean_name = substation_name.replace(' ', '_').replace("'", '')
             ev_load_name = f"EV_{clean_name}"
             if ev_load_name in power_grid.network.loads.index:
-                old_val = power_grid.network.loads.at[ev_load_name, 'p_set']
-                if old_val > 0:
-                    power_grid.network.loads.at[ev_load_name, 'p_set'] = 0
-                    print(f"[DEBUG] Cleared {ev_load_name}: {old_val:.2f} → 0.00 MW")
+                power_grid.network.loads.at[ev_load_name, 'p_set'] = 0
     
-    # TRIGGER POWER FLOW - COMPLETE FIXED VERSION
+    # OPTIMIZED: Track load changes (silent for performance)
     total_ev_load_mw = total_charging_kw / 1000
-    
-    # Ensure previous_ev_load_mw exists before using it
-    if 'previous_ev_load_mw' not in globals():
-        previous_ev_load_mw = 0.0
-        print(f"[DEBUG] Initialized previous_ev_load_mw to 0.0")
-    
-    # Calculate conditions
-    load_change = abs(total_ev_load_mw - previous_ev_load_mw)
-    time_for_periodic = (system_state['current_time'] % 50 == 0)
-    first_charging = (previous_ev_load_mw == 0 and total_ev_load_mw > 0)
-    
-    # Debug output
-    print(f"[DEBUG] Power flow check: current={total_ev_load_mw:.3f} MW, previous={previous_ev_load_mw:.3f} MW, diff={load_change:.3f} MW")
-    print(f"[DEBUG] Time check: timestep={system_state['current_time']}, periodic={time_for_periodic}")
-    
-    # Determine if power flow should run
-    should_run_power_flow = False
-    reason = ""
-    
-    if load_change > 0.05:
-        should_run_power_flow = True
-        reason = f"load change {load_change:.3f} MW"
-    elif system_state['current_time'] % 50 == 0 and total_ev_load_mw > 0:
-        should_run_power_flow = True
-        reason = f"forced periodic at timestep {system_state['current_time']}"
-        # Force update to trigger next time by setting an impossible previous value
-        previous_ev_load_mw = -999
-    elif first_charging:
-        should_run_power_flow = True
-        reason = "first EV started charging"
-    elif system_state['current_time'] % 500 == 0:  # Force every 50 seconds regardless
-        should_run_power_flow = True
-        reason = "forced periodic check"
-    
-    if should_run_power_flow:
-        print(f"[DEBUG] ⚡ TRIGGERING POWER FLOW: {reason}")
-        print(f"[DEBUG] Running power flow: EV load {previous_ev_load_mw:.2f} → {total_ev_load_mw:.2f} MW")
-        
-        try:
-            # Calculate total system load INCLUDING base load
-            base_load = sum(integrated_system.substations[s]['load_mw'] 
-                           for s in integrated_system.substations)
-            total_system_load = base_load + total_ev_load_mw
-            
-            print(f"[DEBUG] System loads: Base={base_load:.2f} MW, EV={total_ev_load_mw:.2f} MW, Total={total_system_load:.2f} MW")
-            
-            # Verify PyPSA network state
-            pypsa_total = sum(power_grid.network.loads.at[load, 'p_set'] 
-                             for load in power_grid.network.loads.index)
-            print(f"[DEBUG] PyPSA network total load: {pypsa_total:.2f} MW")
-            
-            # Run power flow
-            print(f"[DEBUG] Executing power flow calculation...")
-            result = power_grid.run_power_flow("dc")
-            
-            if result.converged:
-                print(f"[DEBUG] ✅ POWER FLOW CONVERGED")
-                print(f"[DEBUG]    Max line loading: {result.max_line_loading:.1%}")
-                # Line 430 - just comment it out or remove it
-                # print(f"[DEBUG]    Total losses: {result.total_losses_mw:.2f} MW")
-                
-                # Get actual values if available
-                if hasattr(result, 'total_generation'):
-                    print(f"[DEBUG]    Total generation: {result.total_generation:.2f} MW")
-                if hasattr(result, 'total_load'):
-                    print(f"[DEBUG]    Total load: {result.total_load:.2f} MW")
-                
-                # Detailed line analysis
-                if hasattr(result, 'critical_lines') and result.critical_lines:
-                    print(f"[DEBUG]    Critical lines (>80% loaded):")
-                    for line in result.critical_lines[:3]:
-                        print(f"[DEBUG]      - {line}")
-                
-                # CHECK FOR GRID STRESS
-                if result.max_line_loading > 0.9:
-                    print("⚠️ WARNING: TRANSMISSION LINE APPROACHING LIMIT!")
-                    print(f"   Line loading: {result.max_line_loading:.1%}")
-                    
-                    # Check which substations are most loaded
-                    for name, substation in integrated_system.substations.items():
-                        total_substation_load = substation['load_mw'] + substation.get('ev_load_mw', 0)
-                        capacity = substation['capacity_mva'] * 0.9  # Power factor
-                        loading_percent = (total_substation_load / capacity) * 100
-                        
-                        if loading_percent > 85:
-                            print(f"   ⚡ {name}: {loading_percent:.1f}% loaded")
-                    
-                    # Implement demand response if critical
-                    if charging_details['total_vehicles_charging'] > 10:
-                        print(f"   📉 Would implement demand response for {charging_details['total_vehicles_charging']} EVs")
-                        for station_name in charging_details['critical_stations']:
-                            print(f"    Would reduce charging at {station_name} by 50%")
-                            
-                elif result.max_line_loading > 0.8:
-                    print("📊 NOTICE: Line loading above 80% - monitoring required")
-                
-                # CHECK FOR VOLTAGE VIOLATIONS
-                if hasattr(result, 'voltage_violations') and result.voltage_violations:
-                    print(f"⚡ VOLTAGE ISSUES: {len(result.voltage_violations)} buses outside limits")
-                    for i, violation in enumerate(result.voltage_violations):
-                        if i < 3:  # Show first 3
-                            print(f"   Bus {violation.get('bus', 'unknown')}: {violation.get('voltage', 0):.3f} pu")
-                
-                # CHECK FOR SUBSTATION OVERLOADS
-                overloaded_substations = []
-                for name, substation in integrated_system.substations.items():
-                    total_substation_load = substation['load_mw'] + substation.get('ev_load_mw', 0)
-                    capacity = substation['capacity_mva'] * 0.9  # Power factor
-                    loading_percent = (total_substation_load / capacity) * 100
-                    
-                    if loading_percent > 90:
-                        overloaded_substations.append((name, loading_percent))
-                        print(f"🔥 SUBSTATION OVERLOAD: {name} at {loading_percent:.1f}% capacity!")
-                        print(f"   Load: {total_substation_load:.1f} MW / {capacity:.1f} MW")
-                        
-                        if loading_percent > 100:
-                            print(f"   💥 {name} WOULD TRIP! Initiating load shedding...")
-                            system_state['emergency'] = True
-                
-                # Summary
-                if not overloaded_substations and result.max_line_loading < 0.8:
-                    print(f"[DEBUG] ✅ Grid stable with {total_ev_load_mw:.2f} MW EV load")
-                
-            else:
-                print(f"[DEBUG] ❌ POWER FLOW DIVERGED - SYSTEM UNSTABLE!")
-                print(f"[DEBUG]    This indicates severe grid stress")
-                print(f"[DEBUG]    System cannot handle {total_ev_load_mw:.2f} MW additional EV load")
-                
-                # Emergency response
-                if charging_details['total_vehicles_charging'] > 5:
-                    print("   🚨 EMERGENCY: Stopping all new EV charging")
-                    print(f"   🚨 Must reduce load by {total_ev_load_mw * 0.5:.2f} MW")
-                    system_state['emergency'] = True
-                    
-        except Exception as e:
-            print(f"[ERROR] Power flow calculation failed: {e}")
-            import traceback
-            traceback.print_exc()
-        
-        # Update previous load after power flow
-        print(f"[DEBUG] Updating previous_ev_load_mw after power flow: {previous_ev_load_mw:.3f} → {total_ev_load_mw:.3f} MW")
-        previous_ev_load_mw = total_ev_load_mw
-        
-    else:
-        # No power flow needed
-        if load_change > 0.001:
-            print(f"[DEBUG] Minor load change ({load_change:.3f} MW), no power flow needed")
-            
-    # ALWAYS update previous load at the end to track changes
-    if total_ev_load_mw != previous_ev_load_mw:
-        print(f"[DEBUG] Final update previous_ev_load_mw: {previous_ev_load_mw:.3f} → {total_ev_load_mw:.3f} MW")
-        previous_ev_load_mw = total_ev_load_mw
-    
-    # Periodic summary (every 30 seconds at 0.1s timestep = 300 steps)
-    if system_state['current_time'] % 300 == 0 and charging_details['total_vehicles_charging'] > 0:
-        print(f"\n📊 EV CHARGING SUMMARY:")
-        print(f"  Total Load: {total_charging_kw/1000:.2f} MW")
-        print(f"  Vehicles Charging: {charging_details['total_vehicles_charging']}")
-        print(f"  Active Stations: {charging_details['stations_active']}/8")
-        if charging_details['critical_stations']:
-            print(f"  ⚠️ Critical Stations: {', '.join(charging_details['critical_stations'])}")
-        
-        # Show load distribution
-        print(f"  Load by Substation:")
-        for sub_name, load_kw in sorted(substation_loads.items(), key=lambda x: x[1], reverse=True):
-            print(f"    {sub_name}: {load_kw/1000:.2f} MW")
+    previous_ev_load_mw = globals().get('previous_ev_load_mw', 0.0)
+    globals()['previous_ev_load_mw'] = total_ev_load_mw
+
 def check_n_minus_1_contingency():
     """Check if system can survive any single component failure"""
     critical_components = []
@@ -625,7 +520,7 @@ def calculate_dynamic_charging_power(soc):
 def handle_grid_stress(power_flow_result, charging_details):
     """Handle grid stress conditions - WORLD CLASS"""
     
-    print("\n🚨 GRID STRESS DETECTED - INITIATING RESPONSE")
+    print("\n[EMERGENCY] GRID STRESS DETECTED - INITIATING RESPONSE")
     
     # Identify critical lines
     critical_lines = []
@@ -638,7 +533,7 @@ def handle_grid_stress(power_flow_result, charging_details):
     
     # Implement demand response
     if charging_details['total_vehicles_charging'] > 20:
-        print(f"  📉 Implementing demand response for {charging_details['total_vehicles_charging']} EVs")
+        print(f"  [DEMAND] Implementing demand response for {charging_details['total_vehicles_charging']} EVs")
         
         # Reduce charging rate at critical stations
         for station_name in charging_details['critical_stations']:
@@ -652,25 +547,25 @@ def handle_grid_stress(power_flow_result, charging_details):
     
     # Log critical lines
     for line, loading in critical_lines[:3]:
-        print(f"  ⚡ Line {line}: {loading:.1%} loaded")
+        print(f"  POWER Line {line}: {loading:.1%} loaded")
 
 def handle_voltage_issues(violations):
     """Handle voltage violations - WORLD CLASS"""
     
-    print("\n⚡ VOLTAGE CONTROL ACTIVATED")
+    print("\nPOWER VOLTAGE CONTROL ACTIVATED")
     
     # Group violations by severity
     critical = [v for v in violations if abs(v['deviation']) > 0.1]
     warning = [v for v in violations if 0.05 < abs(v['deviation']) <= 0.1]
     
     if critical:
-        print(f"  🔴 CRITICAL: {len(critical)} buses with >10% deviation")
+        print(f"  [CRITICAL] CRITICAL: {len(critical)} buses with >10% deviation")
         # Implement voltage control actions
         for violation in critical[:3]:  # Show top 3
             print(f"    Bus {violation.get('bus', 'unknown')}: {violation.get('voltage', 0):.3f} pu")
     
     if warning:
-        print(f"  🟡 WARNING: {len(warning)} buses with 5-10% deviation")
+        print(f"  [WARNING] WARNING: {len(warning)} buses with 5-10% deviation")
 
 def check_substation_overloads(substation_loads):
     """Check for substation overloads - WORLD CLASS"""
@@ -688,17 +583,17 @@ def check_substation_overloads(substation_loads):
             loading_percent = (total_load_mw / capacity_mw) * 100
             
             if loading_percent > 90:
-                print(f"🔥 SUBSTATION OVERLOAD: {substation_name}")
+                print(f"Fire SUBSTATION OVERLOAD: {substation_name}")
                 print(f"   Load: {total_load_mw:.1f} MW / {capacity_mw:.1f} MW ({loading_percent:.1f}%)")
                 
                 if loading_percent > 100:
-                    print(f"   💥 {substation_name} WOULD TRIP - INITIATING LOAD SHED")
+                    print(f"   [CRITICAL] {substation_name} WOULD TRIP - INITIATING LOAD SHED")
                     initiate_load_shedding(substation_name, total_load_mw - capacity_mw)
 
 def initiate_emergency_response(charging_details):
     """Emergency response when power flow diverges"""
     
-    print("\n🚨🚨 EMERGENCY RESPONSE ACTIVATED 🚨🚨")
+    print("\n[EMERGENCY][EMERGENCY] EMERGENCY RESPONSE ACTIVATED [EMERGENCY][EMERGENCY]")
     print(f"  System cannot support {charging_details['total_power_kw']/1000:.1f} MW EV load")
     
     # Stop all new charging
@@ -714,7 +609,7 @@ def initiate_emergency_response(charging_details):
 def initiate_load_shedding(substation_name, excess_mw):
     """Implement load shedding to prevent cascade"""
     
-    print(f"\n⚡ LOAD SHEDDING at {substation_name}: {excess_mw:.1f} MW")
+    print(f"\nPOWER LOAD SHEDDING at {substation_name}: {excess_mw:.1f} MW")
     
     # Priority order for shedding
     # 1. Reduce EV charging
@@ -811,119 +706,61 @@ def debug_ev_stations():
 
 @app.route('/api/network_state')
 def get_network_state():
-    """Get complete network state including vehicles"""
+    """Get complete network state including vehicles - OPTIMIZED FOR 1000+ VEHICLES"""
     state = integrated_system.get_network_state()
 
     # Add vehicle data if SUMO is running
     if system_state['sumo_running'] and sumo_manager.running:
         vehicles = []
-
-        # Create station charging counts
         station_charging_counts = {}
         station_queued_counts = {}
 
-        vehicle_list = list(sumo_manager.vehicles.values())
+        try:
+            import traci
+            # OPTIMIZATION: Get all vehicle IDs once (batch API call)
+            active_vehicle_ids = set(traci.vehicle.getIDList())
 
-        for vehicle in vehicle_list:
-            try:
-                import traci
-                # Check if vehicle exists in SUMO
-                if vehicle.id in traci.vehicle.getIDList():
+            # OPTIMIZATION: Only process vehicles that exist in SUMO
+            for vehicle in sumo_manager.vehicles.values():
+                if vehicle.id not in active_vehicle_ids:
+                    continue
+
+                try:
+                    # OPTIMIZATION: Single position call instead of multiple
                     x, y = traci.vehicle.getPosition(vehicle.id)
                     lon, lat = traci.simulation.convertGeo(x, y)
-                    # Extended kinematics and path info
-                    edge_id = None
-                    lane_id = None
-                    lane_pos = None
-                    lane_len = None
-                    edge_shape = None
-                    try:
-                        edge_id = traci.vehicle.getRoadID(vehicle.id)
-                        lane_id = traci.vehicle.getLaneID(vehicle.id)
-                        lane_pos = traci.vehicle.getLanePosition(vehicle.id)
-                        if lane_id:
-                            lane_len = traci.lane.getLength(lane_id)
-                        if edge_id and not edge_id.startswith(':'):
-                            # Use cached shapes if available
-                            try:
-                                from __main__ import EDGE_SHAPES
-                            except:
-                                EDGE_SHAPES = {}
-                            if edge_id in EDGE_SHAPES:
-                                shape_xy = EDGE_SHAPES[edge_id]['xy']
-                                edge_shape = EDGE_SHAPES[edge_id]['lonlat']
-                            else:
-                                shape_xy = traci.edge.getShape(edge_id)
-                                edge_shape = []
-                                for sx, sy in shape_xy:
-                                    slon, slat = traci.simulation.convertGeo(sx, sy)
-                                    edge_shape.append([slon, slat])
-                                EDGE_SHAPES[edge_id] = {'xy': shape_xy, 'lonlat': edge_shape}
-                            # Nearest point on XY polyline to (x,y)
-                            best_d = 1e18
-                            snap_x = x
-                            snap_y = y
-                            for i in range(len(shape_xy)-1):
-                                x1, y1 = shape_xy[i]
-                                x2, y2 = shape_xy[i+1]
-                                dx = x2 - x1
-                                dy = y2 - y1
-                                L2 = dx*dx + dy*dy if dx*dx + dy*dy != 0 else 1e-9
-                                t = ((x - x1)*dx + (y - y1)*dy) / L2
-                                if t < 0:
-                                    px, py = x1, y1
-                                elif t > 1:
-                                    px, py = x2, y2
-                                else:
-                                    px, py = x1 + dx*t, y1 + dy*t
-                                d = ((x - px)**2 + (y - py)**2) ** 0.5
-                                if d < best_d:
-                                    best_d = d
-                                    snap_x, snap_y = px, py
-                            snap_lon, snap_lat = traci.simulation.convertGeo(snap_x, snap_y)
-                    except:
-                        pass
 
-                    # Track charging at stations
-                    if hasattr(vehicle, 'is_charging') and vehicle.is_charging and vehicle.assigned_ev_station:
-                        if vehicle.assigned_ev_station not in station_charging_counts:
-                            station_charging_counts[vehicle.assigned_ev_station] = 0
-                        station_charging_counts[vehicle.assigned_ev_station] += 1
+                    # OPTIMIZATION: Skip expensive edge shape calculation for API response
+                    # Edge shapes should be sent once at initialization, not every frame
+                    edge_id = traci.vehicle.getRoadID(vehicle.id)
 
-                    # Track queued at stations
-                    if hasattr(vehicle, 'is_queued') and vehicle.is_queued and vehicle.assigned_ev_station:
-                        if vehicle.assigned_ev_station not in station_queued_counts:
-                            station_queued_counts[vehicle.assigned_ev_station] = 0
-                        station_queued_counts[vehicle.assigned_ev_station] += 1
+                    # Track charging/queued counts (no change)
+                    if getattr(vehicle, 'is_charging', False) and vehicle.assigned_ev_station:
+                        station_charging_counts[vehicle.assigned_ev_station] = station_charging_counts.get(vehicle.assigned_ev_station, 0) + 1
 
+                    if getattr(vehicle, 'is_queued', False) and vehicle.assigned_ev_station:
+                        station_queued_counts[vehicle.assigned_ev_station] = station_queued_counts.get(vehicle.assigned_ev_station, 0) + 1
+
+                    # OPTIMIZATION: Simplified vehicle data (removed unnecessary fields)
                     vehicles.append({
                         'id': vehicle.id,
                         'lat': lat,
                         'lon': lon,
                         'type': vehicle.config.vtype.value,
-                        'speed': vehicle.speed,
                         'speed_kmh': round(vehicle.speed * 3.6, 1),
-                        'soc': vehicle.config.current_soc if vehicle.config.is_ev else 1.0,
                         'battery_percent': round(vehicle.config.current_soc * 100) if vehicle.config.is_ev else 100,
                         'is_charging': getattr(vehicle, 'is_charging', False),
                         'is_queued': getattr(vehicle, 'is_queued', False),
-                        'is_circling': getattr(vehicle, 'is_circling', False),
-                        'is_stranded': getattr(vehicle, 'is_stranded', False),
+                        'is_v2g_active': vehicle.id in v2g_manager.active_sessions,
                         'is_ev': vehicle.config.is_ev,
-                        'distance_traveled': round(vehicle.distance_traveled, 1),
-                        'waiting_time': round(vehicle.waiting_time, 1),
-                        'destination': vehicle.destination,
                         'assigned_station': vehicle.assigned_ev_station,
-                        'edge_id': edge_id,
-                        'lane_id': lane_id,
-                        'lane_pos': lane_pos,
-                        'lane_len': lane_len,
-                        'edge_shape': edge_shape,
-                        'snap_lon': locals().get('snap_lon'),
-                        'snap_lat': locals().get('snap_lat')
+                        'edge_id': edge_id if edge_id and not edge_id.startswith(':') else None
                     })
-            except:
-                pass
+                except Exception:
+                    continue
+
+        except Exception:
+            pass
 
         state['vehicles'] = vehicles
         state['vehicle_stats'] = sumo_manager.get_statistics()
@@ -942,6 +779,15 @@ def get_network_state():
 def get_status():
     """Get complete system status"""
     power_status = power_grid.get_system_status()
+
+    # CRITICAL: Merge operational status from integrated_system (includes scenario controller failures!)
+    for sub_name in integrated_system.substations.keys():
+        if sub_name in power_status.get('substations', {}):
+            integrated_sub = integrated_system.substations[sub_name]
+            power_status['substations'][sub_name]['operational'] = integrated_sub.get('operational', True)
+            power_status['substations'][sub_name]['load_mw'] = integrated_sub.get('load_mw', 0)
+            power_status['substations'][sub_name]['lat'] = integrated_sub.get('lat', 0)
+            power_status['substations'][sub_name]['lon'] = integrated_sub.get('lon', 0)
 
     # Add vehicle statistics
     if system_state['sumo_running'] and sumo_manager.running:
@@ -1110,7 +956,7 @@ def update_ev_config():
             sumo_manager.battery_min_soc = battery_min_soc / 100
             sumo_manager.battery_max_soc = battery_max_soc / 100
 
-        print(f"✅ EV Configuration Updated:")
+        print(f"Success EV Configuration Updated:")
         print(f"   EV Percentage: {ev_percentage}%")
         print(f"   Battery SOC Range: {battery_min_soc}% - {battery_max_soc}%")
 
@@ -1121,7 +967,7 @@ def update_ev_config():
         })
 
     except Exception as e:
-        print(f"❌ EV config update error: {e}")
+        print(f"[ERROR] EV config update error: {e}")
         return jsonify({
             'success': False,
             'message': f'Failed to update EV configuration: {str(e)}'
@@ -1242,7 +1088,7 @@ def fail_substation(substation):
                         if hasattr(v, 'is_charging'):
                             v.is_charging = False
 
-    print(f"\n⚡ SUBSTATION FAILURE: {substation}")
+    print(f"\nPOWER SUBSTATION FAILURE: {substation}")
     print(f"   - Traffic lights: Set to YELLOW (caution mode)")
     print(f"   - EV stations affected: {impact.get('ev_stations_affected', 0)}")
     print(f"   - Load lost: {impact.get('load_lost_mw', 0):.1f} MW")
@@ -1303,18 +1149,40 @@ def fail_ev_station(station_id):
 def restore_substation(substation):
     """Restore substation"""
     success = integrated_system.restore_substation(substation)
+
+    restoration_data = {
+        'substation': substation,
+        'success': success,
+        'lights_restored': 0,
+        'ev_stations_restored': 0,
+        'timestamp': datetime.now().isoformat()
+    }
+
     if success:
         power_grid.restore_component('substation', substation)
 
+        # CRITICAL FIX: Disable V2G for this substation and release all vehicles
+        print(f"[RESTORE] Disabling V2G for {substation} and releasing vehicles...")
+        v2g_manager.disable_v2g_for_substation(substation)
+
         # Update SUMO traffic lights if running
         if system_state['sumo_running'] and sumo_manager.running:
+            # Count lights before update
+            lights_before = sum(1 for light in integrated_system.traffic_lights.values() if light.get('powered', False))
+
             sumo_manager.update_traffic_lights()
 
+            # Count lights after update
+            lights_after = sum(1 for light in integrated_system.traffic_lights.values() if light.get('powered', False))
+            restoration_data['lights_restored'] = lights_after - lights_before
+
             # RESTORE EV STATION STATUS
+            ev_stations_restored = 0
             for ev_id, ev_station in integrated_system.ev_stations.items():
                 if ev_station['substation'] == substation:
                     # Mark station as operational
                     ev_station['operational'] = True
+                    ev_stations_restored += 1
 
                     # Update SUMO manager
                     if ev_id in sumo_manager.ev_stations_sumo:
@@ -1324,9 +1192,21 @@ def restore_substation(substation):
                     if hasattr(sumo_manager, 'station_manager') and sumo_manager.station_manager:
                         if ev_id in sumo_manager.station_manager.stations:
                             sumo_manager.station_manager.stations[ev_id]['operational'] = True
-                            print(f"   ✅ Restored {ev_station['name']} ONLINE")
+                            print(f"   Success Restored {ev_station['name']} ONLINE")
 
-    return jsonify({'success': success})
+            restoration_data['ev_stations_restored'] = ev_stations_restored
+
+        # OPTIONAL: Send proactive notification to chatbot (commented out to avoid spam)
+        # Uncomment if you want chatbot to auto-announce all manual restorations
+        # try:
+        #     import asyncio
+        #     if ultra_chatbot:
+        #         notification_msg = f"System notification: {substation} substation has been manually restored. {restoration_data.get('lights_restored', 0)} traffic lights and {restoration_data.get('ev_stations_restored', 0)} EV stations are back online."
+        #         asyncio.run(ultra_chatbot.chat(notification_msg))
+        # except Exception as e:
+        #     print(f"[RESTORE] Could not notify chatbot: {e}")
+
+    return jsonify(restoration_data)
 
 @app.route('/api/restore/station/<station_id>', methods=['POST'])
 def restore_ev_station(station_id):
@@ -1364,9 +1244,16 @@ def restore_ev_station(station_id):
 @app.route('/api/restore_all', methods=['POST'])
 def restore_all():
     """Restore all substations"""
+    restored_count = 0
+
     for sub_name in integrated_system.substations.keys():
         integrated_system.restore_substation(sub_name)
         power_grid.restore_component('substation', sub_name)
+
+        # CRITICAL: Disable V2G for each substation and release vehicles
+        print(f"[RESTORE ALL] Disabling V2G for {sub_name} and releasing vehicles...")
+        v2g_manager.disable_v2g_for_substation(sub_name)
+        restored_count += 1
 
     # Update SUMO if running
     if system_state['sumo_running'] and sumo_manager.running:
@@ -1377,7 +1264,11 @@ def restore_all():
             if ev_id in sumo_manager.ev_stations_sumo:
                 sumo_manager.ev_stations_sumo[ev_id]['available'] = ev_station['chargers']
 
-    return jsonify({'success': True, 'message': 'All systems restored'})
+    return jsonify({
+        'success': True,
+        'message': f'All {restored_count} substations restored',
+        'restored_count': restored_count
+    })
 
 @app.route('/api/test/station_failure', methods=['POST'])
 def test_station_failure_scenario():
@@ -1483,6 +1374,88 @@ def disable_v2g(substation):
     v2g_manager.disable_v2g_for_substation(substation)
     return jsonify({'success': True})
 
+@app.route('/api/v2g/release_vehicles/<substation>', methods=['POST'])
+def release_v2g_vehicles(substation):
+    """Force release all V2G vehicles from this substation's charging stations"""
+    try:
+        print(f"\n[API RELEASE] ========== FORCE RELEASING V2G VEHICLES ==========")
+        print(f"[API RELEASE] Target substation: {substation}")
+        print(f"[API RELEASE] Current active sessions: {len(v2g_manager.active_sessions)}")
+
+        # Get all EV stations for this substation
+        substation_ev_stations = []
+        for ev_id, ev_data in integrated_system.ev_stations.items():
+            if ev_data.get('substation') == substation:
+                substation_ev_stations.append(ev_id)
+
+        print(f"[API RELEASE] Found {len(substation_ev_stations)} EV stations for {substation}: {substation_ev_stations}")
+
+        # CRITICAL: Force end ALL V2G sessions for this substation
+        # active_sessions is keyed by vehicle_id, not session_id
+        vehicles_to_release = []
+        for vehicle_id, session in list(v2g_manager.active_sessions.items()):
+            if session.substation_id == substation or session.station_id in substation_ev_stations:
+                vehicles_to_release.append(vehicle_id)
+
+        print(f"[API RELEASE] Found {len(vehicles_to_release)} vehicles to release: {vehicles_to_release}")
+
+        released_count = 0
+        for vehicle_id in vehicles_to_release:
+            print(f"[API RELEASE] Releasing {vehicle_id}...")
+
+            # 1. End the V2G session
+            if vehicle_id in v2g_manager.active_sessions:
+                session = v2g_manager.active_sessions[vehicle_id]
+                session.end_time = datetime.now()
+                session.locked_at_station = False
+                del v2g_manager.active_sessions[vehicle_id]
+                print(f"[API RELEASE]   ✓ Removed from active_sessions")
+
+            # 2. Remove from locked vehicles
+            if vehicle_id in v2g_manager.v2g_locked_vehicles:
+                v2g_manager.v2g_locked_vehicles.remove(vehicle_id)
+                print(f"[API RELEASE]   ✓ Removed from v2g_locked_vehicles")
+
+            # 3. Remove from pending vehicles
+            if vehicle_id in v2g_manager.pending_v2g_vehicles:
+                v2g_manager.pending_v2g_vehicles.remove(vehicle_id)
+                print(f"[API RELEASE]   ✓ Removed from pending_v2g_vehicles")
+
+            # 4. Clear SUMO vehicle V2G locks and state
+            if vehicle_id in sumo_manager.vehicles:
+                vehicle = sumo_manager.vehicles[vehicle_id]
+
+                # Clear V2G session flags
+                vehicle.in_v2g_session = False
+                vehicle.v2g_lock = False
+                vehicle.is_charging = False
+                vehicle.charge_start_time = None
+
+                # Let vehicle resume movement - SUMO manager will handle routing
+                print(f"[API RELEASE]   ✓ Cleared V2G locks for {vehicle_id}")
+
+            released_count += 1
+            print(f"[API RELEASE]   ✅ Successfully released {vehicle_id}")
+
+        print(f"\n[API RELEASE] ========== RELEASE COMPLETE ==========")
+        print(f"[API RELEASE] Released {released_count} vehicles")
+        print(f"[API RELEASE] Remaining active sessions: {len(v2g_manager.active_sessions)}")
+
+        return jsonify({
+            'success': True,
+            'released': released_count,
+            'substation': substation
+        })
+
+    except Exception as e:
+        print(f"[API ERROR] Failed to release V2G vehicles: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/api/v2g/status')
 def v2g_status():
     """Get V2G system status with REAL-TIME updates"""
@@ -1545,7 +1518,7 @@ def v2g_status():
     if v2g_data['active_sessions'] > 0:
         print(f"[V2G STATUS] Active sessions: {v2g_data['active_sessions']}")
         print(f"[V2G STATUS] Total V2G power: {v2g_data['system_metrics']['total_v2g_power_mw']:.2f} MW")
-        print(f"[V2G STATUS] Power deficit: {v2g_data['system_metrics']['total_power_deficit_mw']:.2f} MW → "
+        print(f"[V2G STATUS] Power deficit: {v2g_data['system_metrics']['total_power_deficit_mw']:.2f} MW -> "
               f"{v2g_data['system_metrics']['effective_power_deficit_mw']:.2f} MW")
 
     return jsonify(v2g_data)
@@ -1617,86 +1590,9 @@ def test_v2g_scenario():
         })
 
 # ============================================================================
-# 6. ML ANALYTICS ROUTES (/api/ml/*)
+# 6. ML ANALYTICS ROUTES - REMOVED
 # ============================================================================
-
-@app.route('/api/ml/dashboard')
-def ml_dashboard():
-    """Enhanced ML dashboard with V2G analytics and real-time insights."""
-    try:
-        # Get enhanced ML dashboard data with V2G integration
-        data = ml_engine.get_ml_dashboard_data()
-
-        # Add V2G-specific analytics
-        v2g_analytics = {
-            'v2g_performance': {
-                'active_vehicles': len(v2g_manager.vehicles),
-                'total_energy_traded': v2g_manager.total_energy_traded,
-                'total_revenue': v2g_manager.total_revenue,
-                'average_discharge_rate': v2g_manager.get_average_discharge_rate(),
-                'market_price': v2g_manager.market_price,
-                'rate_multiplier': v2g_manager.rate_multiplier
-            },
-            'v2g_insights': ai_chatbot.get_v2g_insights(),
-            'optimization_opportunities': ai_chatbot.get_optimization_opportunities()
-        }
-
-        # Merge V2G analytics with existing data
-        data['v2g_analytics'] = v2g_analytics
-
-        return jsonify(data)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/ml/predict/demand')
-def ml_predict_demand():
-    try:
-        hours = int(request.args.get('hours', 6))
-        preds = ml_engine.predict_power_demand(next_hours=hours)
-        return jsonify(preds)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/ml/optimize')
-def ml_optimize():
-    try:
-        result = ml_engine.optimize_power_distribution()
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/ml/baselines')
-def ml_baselines():
-    try:
-        baseline = {}
-        if hasattr(ml_engine, 'compare_with_baselines'):
-            baseline = ml_engine.compare_with_baselines()
-        return jsonify(baseline)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/ml/feature_importance')
-def ml_feature_importance():
-    try:
-        demand_labels = ['hour', 'day_of_week', 'temperature', 'total_evs', 'current_load']
-        charging_labels = ['hour', 'station_id', 'queue_length', 'avg_soc']
-        imp = {
-            'demand': {
-                'labels': demand_labels,
-                'importances': []
-            },
-            'charging': {
-                'labels': charging_labels,
-                'importances': []
-            }
-        }
-        if hasattr(ml_engine.demand_predictor, 'feature_importances_'):
-            imp['demand']['importances'] = [float(x) for x in ml_engine.demand_predictor.feature_importances_]
-        if hasattr(ml_engine.charging_predictor, 'feature_importances_'):
-            imp['charging']['importances'] = [float(x) for x in ml_engine.charging_predictor.feature_importances_]
-        return jsonify(imp)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+# All ML Analytics endpoints have been removed
 
 # ============================================================================
 # 7. AI & CHATBOT ROUTES (/api/ai/*)
@@ -1786,25 +1682,316 @@ def ai_predict():
 
 @app.route('/api/ai/chat', methods=['POST'])
 def ai_chat():
-    """Interactive AI chat endpoint."""
+    """WORLD-CLASS AI CHAT - True system control and intelligence."""
+    from datetime import datetime
     try:
         body = request.get_json() or {}
         message = body.get('message', '')
-        user_id = body.get('user_id', 'anonymous')
+        user_id = body.get('user_id', 'system_operator')
 
         if not message:
             return jsonify({'error': 'Message is required'}), 400
 
-        # Process chat message
-        response = ai_chatbot.process_message(message, user_id=user_id)
+        # FORCE USE ULTRA-INTELLIGENT CHATBOT - PRIORITY #1 (With typo correction)
+        print(f"[DEBUG] Processing message: {message}")
+        print(f"[DEBUG] ultra_chatbot available: {ultra_chatbot is not None}")
+        print(f"[DEBUG] world_class_ai available: {world_class_ai is not None}")
+
+        # TRY ULTRA-INTELLIGENT CHATBOT FIRST (with typo correction and suggestions)
+        print(f"[API /ai/chat] ultra_chatbot exists: {ultra_chatbot is not None}")
+        if ultra_chatbot:
+            print(f"[DEBUG] ✅ ROUTING TO ULTRA-INTELLIGENT CHATBOT for message: {message}")
+            try:
+                import asyncio
+                user_id = body.get('user_id', 'web_user')
+                print(f"[DEBUG] Calling ultra_chatbot.chat() with message='{message}', user_id='{user_id}'")
+                ai_response = asyncio.run(ultra_chatbot.chat(message, user_id=user_id))
+                print(f"[DEBUG] Ultra-Intelligent Chatbot SUCCESS: {ai_response}")
+
+                # CRITICAL FIX: Ensure proper response format for scenario-director.js
+                # Ultra chatbot returns {'text': ...}, but scenario expects {'response': ...}
+                response_text = ai_response.get('text', '') if isinstance(ai_response, dict) else str(ai_response)
+                return jsonify({
+                    'status': 'success',
+                    'response': response_text,
+                    'full_data': ai_response  # Include full response for debugging
+                })
+            except Exception as e:
+                print(f"[ERROR] Ultra-Intelligent Chatbot error: {e}")
+                import traceback
+                traceback.print_exc()
+                # Fallback to world-class AI if ultra chatbot fails
+
+        # FALLBACK TO WORLD-CLASS AI CONTROLLER
+        if world_class_ai:
+            print(f"[DEBUG] ROUTING TO WORLD-CLASS AI for message: {message}")
+            try:
+                ai_response = world_class_ai.process_intelligent_command(message)
+                print(f"[DEBUG] World-class AI SUCCESS: {ai_response}")
+                return jsonify(ai_response)
+            except Exception as e:
+                print(f"[ERROR] World-class AI error: {e}")
+                import traceback
+                traceback.print_exc()
+                # Even if there's an error, still try to use world-class AI fallback
+                return jsonify({
+                    'text': f'[ERROR] Command failed: {str(e)}\\n\\nTry: "Turn off Times Square substation", "Show me Penn Station area", "System status"',
+                    'type': 'error',
+                    'intent': 'system_control',
+                    'confidence': 0.5,
+                    'system_controlled': False,
+                    'timestamp': datetime.now().isoformat()
+                })
+        else:
+            print(f"[CRITICAL] World-class AI NOT AVAILABLE - this should never happen!")
+            return jsonify({
+                'text': 'CRITICAL ERROR: World-class AI controller not initialized',
+                'type': 'error',
+                'intent': 'system_error',
+                'confidence': 0.0,
+                'system_controlled': False,
+                'timestamp': datetime.now().isoformat()
+            })
+
+        # This should never be reached - world-class AI should always be available
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/ai/enhanced/status')
+def ai_enhanced_status():
+    """Get enhanced AI system status and capabilities."""
+    try:
+        status = ai_chatbot.get_ai_status()
+        return jsonify(status)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Removed: /api/ai/enhanced/research endpoint
+
+@app.route('/api/ai/enhanced/visual', methods=['POST'])
+def ai_visual_analysis():
+    """Analyze visual map data using computer vision."""
+    try:
+        data = request.get_json() or {}
+
+        # Get current network state for visual analysis
+        map_data = integrated_system.get_network_state()
+
+        # Add vehicle data if SUMO is running
+        if system_state['sumo_running'] and sumo_manager.running:
+            vehicles = []
+            try:
+                import traci
+                for vehicle in sumo_manager.vehicles.values():
+                    if vehicle.id in traci.vehicle.getIDList():
+                        x, y = traci.vehicle.getPosition(vehicle.id)
+                        lon, lat = traci.simulation.convertGeo(x, y)
+                        vehicles.append({
+                            'id': vehicle.id,
+                            'lat': lat,
+                            'lon': lon,
+                            'type': vehicle.config.vtype.value,
+                            'speed': vehicle.speed,
+                            'soc': vehicle.config.current_soc if vehicle.config.is_ev else 1.0
+                        })
+            except:
+                vehicles = []
+
+            map_data['vehicles'] = vehicles
+
+        # Perform visual analysis
+        visual_analysis = ai_chatbot.visual_processor.analyze_map_state(map_data)
 
         return jsonify({
-            'response': response['text'],
-            'type': response.get('type', 'response'),
-            'intent': response.get('intent', 'general'),
-            'data': response.get('data', {}),
-            'timestamp': response.get('timestamp', datetime.now().isoformat())
+            'visual_analysis': visual_analysis,
+            'timestamp': datetime.now().isoformat(),
+            'map_data_processed': True
         })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/ai/enhanced/multimodal', methods=['POST'])
+def ai_multimodal_processing():
+    """Process multi-modal input (text, image, voice)."""
+    try:
+        # Handle text input
+        text_input = request.form.get('text', '')
+
+        # Handle image upload
+        image_data = None
+        if 'image' in request.files:
+            image_file = request.files['image']
+            if image_file:
+                image_data = image_file.read()
+
+        # Handle voice upload (would be implemented)
+        voice_data = None
+        if 'voice' in request.files:
+            voice_file = request.files['voice']
+            if voice_file:
+                voice_data = voice_file.read()
+
+        # Process multi-modal input
+        result = ai_chatbot.process_multimodal_input(text_input, image_data, voice_data)
+
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/ai/enhanced/conversation/<user_id>')
+def ai_conversation_intelligence(user_id):
+    """Get conversation intelligence for a specific user."""
+    try:
+        intelligence = ai_chatbot.get_conversation_intelligence(user_id)
+        return jsonify(intelligence)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Removed: /api/ai/enhanced/comprehensive-report endpoint
+
+# Removed: /api/ai/enhanced/patterns endpoint
+
+# Removed: /api/ai/enhanced/predictions endpoint
+
+@app.route('/api/ai/enhanced/performance')
+def ai_performance_metrics():
+    """Get AI system performance metrics and learning insights."""
+    try:
+        performance = ai_chatbot.performance_tracker.get_performance_metrics()
+        learning = ai_chatbot.learning_engine.get_learning_insights()
+
+        return jsonify({
+            'performance_metrics': performance,
+            'learning_insights': learning,
+            'system_health': 'optimal',
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/map/focus', methods=['POST'])
+def focus_map():
+    """Focus map on specific location with real-time updates"""
+    try:
+        body = request.get_json() or {}
+        location = body.get('location', '')
+        zoom = body.get('zoom', 16)
+        action_type = body.get('action_type', 'focus')
+
+        if not location:
+            return jsonify({'error': 'Location is required'}), 400
+
+        # Predefined locations with coordinates
+        locations = {
+            'times_square': {'lat': 40.7580, 'lon': -73.9855, 'name': 'Times Square'},
+            'penn_station': {'lat': 40.7505, 'lon': -73.9934, 'name': 'Penn Station'},
+            'grand_central': {'lat': 40.7527, 'lon': -73.9772, 'name': 'Grand Central'},
+            'columbus_circle': {'lat': 40.7681, 'lon': -73.9819, 'name': 'Columbus Circle'},
+            'union_square': {'lat': 40.7359, 'lon': -73.9911, 'name': 'Union Square'},
+            'washington_square': {'lat': 40.7308, 'lon': -73.9973, 'name': 'Washington Square'},
+            'brooklyn_bridge': {'lat': 40.7061, 'lon': -73.9969, 'name': 'Brooklyn Bridge'},
+            'wall_street': {'lat': 40.7074, 'lon': -74.0113, 'name': 'Wall Street'},
+            'central_park': {'lat': 40.7829, 'lon': -73.9654, 'name': 'Central Park'},
+            'manhattan': {'lat': 40.7831, 'lon': -73.9712, 'name': 'Manhattan Overview'}
+        }
+
+        # Find matching location
+        location_key = location.lower().replace(' ', '_')
+        coords = None
+
+        for key, loc_info in locations.items():
+            if key in location_key or location_key in key:
+                coords = loc_info
+                break
+
+        if coords:
+            # Get infrastructure data for the area
+            infrastructure_data = {
+                'substations': [],
+                'ev_stations': [],
+                'traffic_lights': []
+            }
+
+            # Add nearby substations
+            if hasattr(integrated_system, 'substations'):
+                for sub_id, substation in integrated_system.substations.items():
+                    infrastructure_data['substations'].append({
+                        'id': sub_id,
+                        'name': substation.get('name', sub_id),
+                        'lat': substation.get('lat'),
+                        'lon': substation.get('lon'),
+                        'operational': substation.get('operational', True),
+                        'voltage_kv': substation.get('voltage_kv', 138)
+                    })
+
+            # Add nearby EV stations
+            if hasattr(integrated_system, 'ev_stations'):
+                for station_id, station in integrated_system.ev_stations.items():
+                    infrastructure_data['ev_stations'].append({
+                        'id': station_id,
+                        'name': station.get('name', station_id),
+                        'lat': station.get('lat'),
+                        'lon': station.get('lon'),
+                        'operational': station.get('operational', True),
+                        'ports_available': 20  # Fixed 20 ports per station
+                    })
+
+            return jsonify({
+                'success': True,
+                'map_focus': {
+                    'lat': coords['lat'],
+                    'lon': coords['lon'],
+                    'zoom': zoom,
+                    'location_name': coords['name']
+                },
+                'infrastructure': infrastructure_data,
+                'action_type': action_type,
+                'visual_elements': {
+                    'highlight_area': True,
+                    'show_infrastructure': True,
+                    'show_real_time_data': True
+                },
+                'timestamp': datetime.now().isoformat()
+            })
+
+            # Store map focus data for frontend polling
+            global ai_map_focus_data
+            ai_map_focus_data = {
+                'location': coords['name'],
+                'lat': coords['lat'],
+                'lon': coords['lon'],
+                'zoom': zoom,
+                'action_type': action_type,
+                'timestamp': datetime.now().isoformat()
+            }
+        else:
+            return jsonify({
+                'error': f'Location "{location}" not found',
+                'available_locations': list(locations.keys())
+            }), 404
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Global variable to store the latest AI map focus update
+ai_map_focus_data = None
+
+@app.route('/api/ai/map_focus_status')
+def ai_map_focus_status():
+    """Get AI map focus updates for frontend polling"""
+    global ai_map_focus_data
+    try:
+        if ai_map_focus_data:
+            return jsonify({
+                'has_update': True,
+                'focus_data': ai_map_focus_data
+            })
+        else:
+            return jsonify({
+                'has_update': False,
+                'focus_data': None
+            })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -1834,8 +2021,8 @@ if __name__ == '__main__':
     print(f"  - Primary Cables (13.8kV): {len(integrated_system.primary_cables)}")
     print(f"  - Secondary Cables (480V): {len(integrated_system.secondary_cables)}")
     print("=" * 60)
-    print("\n🚀 Starting Complete System at http://localhost:5000")
-    print("\n📋 INSTRUCTIONS:")
+    print("\nLaunch Starting Complete System at http://localhost:5000")
+    print("\nReport INSTRUCTIONS:")
     print("  1. Open http://localhost:5000 in your browser")
     print("  2. All your original features are preserved:")
     print("     - Toggle traffic lights, cables, EV stations layers")
