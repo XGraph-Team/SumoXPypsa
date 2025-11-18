@@ -183,10 +183,6 @@ For enhanced map features with satellite imagery and advanced styling:
    - Enable V2G for that substation
    - Watch high-SOC EVs provide backup power
 
-4. **Use AI Analytics**
-   - Access ML dashboard for insights
-   - Chat with AI assistant for recommendations
-   - Generate comprehensive system reports
 
 ### Configuration
 
@@ -219,14 +215,14 @@ Market Price: $0.15/kWh  # Energy trading price
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          └───────────────────────┼───────────────────────┘
-                                 │
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   PyPSA Grid    │    │   ML Engine     │    │   V2G Manager   │
-│                 │    │                 │    │                 │
-│ • Power Flow    │    │ • Demand Pred   │    │ • Energy Trade  │
-│ • Load Analysis │    │ • Optimization  │    │ • Market Pricing │
-│ • Grid Stability│    │ • AI Insights   │    │ • Route Planning │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+                                 
+┌─────────────────┐                           ┌─────────────────┐
+│   PyPSA Grid    │                           │   V2G Manager   │
+│                 │                           │                 │
+│ • Power Flow    │                           │ • Energy Trade  │
+│ • Load Analysis │                           │ • Market Pricing│
+│ • Grid Stability│                           │ • Route Planning│
+└─────────────────┘                           └─────────────────┘
 ```
 
 ### File Structure
@@ -246,8 +242,6 @@ SumoXPypsa/
 ├── main_complete_integration.py # Main application
 ├── integrated_backend.py      # Backend systems
 ├── v2g_manager.py             # V2G functionality
-├── ml_engine.py               # ML analytics
-├── ai_chatbot.py              # AI assistant
 ├── index.html                 # Main web interface
 ├── dashboard-preview.png      # Dashboard screenshot
 ├── requirements.txt           # Dependencies
@@ -437,7 +431,6 @@ SOFTWARE.
 - **PyPSA** - Power system analysis library
 - **Mapbox** - Interactive mapping platform
 - **Flask** - Web framework
-- **OpenAI** - AI integration capabilities
 
 ## 🗺️ Roadmap
 
@@ -445,7 +438,6 @@ SOFTWARE.
 - ✅ Complete power grid simulation
 - ✅ SUMO vehicle integration
 - ✅ V2G energy trading
-- ✅ AI analytics and chatbot
 - ✅ Professional web interface
 
 ### Upcoming Features 
@@ -460,7 +452,6 @@ SOFTWARE.
 - 🚀 Blockchain energy trading
 - 🚀 IoT device integration
 - 🚀 Digital twin capabilities
-- 🚀 Predictive maintenance AI
 
 ## 🏆 Performance Metrics
 
