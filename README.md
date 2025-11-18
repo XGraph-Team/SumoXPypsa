@@ -39,11 +39,6 @@ See the system in action with live power flow analysis, EV simulation, V2G emerg
 - **Dynamic Pricing**: Market-based energy trading
 - **Revenue Optimization**: Maximize EV owner earnings
 
-### 🧠 **AI-Powered Analytics**
-- **Machine Learning**: Demand prediction and optimization
-- **Real-time Insights**: Grid performance analytics
-- **Predictive Maintenance**: Failure prediction and prevention
-- **Interactive Chatbot**: AI assistant for grid operations
 
 ### 🎮 **Professional Web Interface**
 - **Glassmorphic Design**: Modern, premium UI/UX
