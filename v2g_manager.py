@@ -55,8 +55,11 @@ class V2GManager:
     # ==========================================
     # REALISTIC POWER SPECIFICATIONS
     # ==========================================
-    MIN_SOC_FOR_V2G = 0.60  # 60% minimum to participate
-    MAX_DISCHARGE_SOC = 0.30  # Don't discharge below 30%
+    # ==========================================
+    # REALISTIC POWER SPECIFICATIONS
+    # ==========================================
+    MIN_SOC_FOR_V2G = 0.20  # Lowered to 20% for demo purposes
+    MAX_DISCHARGE_SOC = 0.10  # Discharge down to 10%
     
     # Realistic V2G discharge rates (kW)
     DISCHARGE_RATE_LEVEL_1 = 7.2   # Level 1 V2G (home outlet equivalent)
@@ -77,7 +80,7 @@ class V2GManager:
     # ==========================================
     MIN_DISCHARGE_DURATION_SECONDS = 0  # No minimum duration
     MIN_ENERGY_PER_VEHICLE_KWH = 0  # No minimum energy requirement
-    RESTORATION_ENERGY_THRESHOLD_KWH = 25  # Need 25 kWh total for restoration (faster recovery with 120x multiplier)
+    RESTORATION_ENERGY_THRESHOLD_KWH = 2000  # Need 2000 kWh total for restoration (approx 40-60s with 50 vehicles)
     MAX_V2G_VEHICLES = 50  # Maximum 50 vehicles simultaneously for FAST scenario completion
     
     def __init__(self, integrated_system, sumo_manager):
@@ -308,6 +311,7 @@ class V2GManager:
             
             # Check SOC requirement
             if vehicle.config.current_soc < self.MIN_SOC_FOR_V2G:
+                # print(f"[V2G DEBUG] Skipped {vehicle.id}: Low SOC ({vehicle.config.current_soc:.2f})") 
                 continue
             
             # Skip if already occupied
@@ -316,6 +320,7 @@ class V2GManager:
                 vehicle.id in self.pending_v2g_vehicles or
                 (hasattr(vehicle, 'is_charging') and vehicle.is_charging) or
                 (hasattr(vehicle, 'assigned_ev_station') and vehicle.assigned_ev_station)):
+                # print(f"[V2G DEBUG] Skipped {vehicle.id}: Busy")
                 continue
             
             if vehicle.id in traci.vehicle.getIDList():
@@ -500,10 +505,15 @@ class V2GManager:
                 continue
             
             # Visual feedback
-            if vehicle_id in traci.vehicle.getIDList():
-                traci.vehicle.setSpeed(vehicle_id, 0)
-                current_edge = traci.vehicle.getRoadID(vehicle_id)
-                traci.vehicle.setRoute(vehicle_id, [current_edge])
+                if vehicle_id in traci.vehicle.getIDList():
+                    traci.vehicle.setSpeed(vehicle_id, 0)
+                    try:
+                        current_edge = traci.vehicle.getRoadID(vehicle_id)
+                        if current_edge and not current_edge.startswith(':'):
+                            traci.vehicle.setRoute(vehicle_id, [current_edge])
+                    except Exception:
+                        pass
+                
                 
                 # Pulsing cyan
                 pulse = int(time.time() * 4) % 4
@@ -598,7 +608,55 @@ class V2GManager:
         # Update peak power
         if total_power_provided > self.stats['peak_power_provided_kw']:
             self.stats['peak_power_provided_kw'] = total_power_provided
-        
+
+        # CONTINUOUS RECRUITMENT: Try to find new vehicles every few updates
+        # This ensures vehicles that spawn later or move into range are caught
+        if int(time.time()) % 5 == 0:  # Every ~5 seconds (real time)
+            for substation_name in list(self.v2g_enabled_substations):
+                 self._broadcast_v2g_opportunity(substation_name)
+
+        # PROCESS PENDING VEHICLES (Transition to Active)
+        # Vehicles that were assigned but haven't started discharging yet
+        import traci
+        for vehicle_id in list(self.pending_v2g_vehicles.keys()):
+            if vehicle_id not in self.sumo_manager.vehicles:
+                # Vehicle left simulation
+                del self.pending_v2g_vehicles[vehicle_id]
+                self.v2g_locked_vehicles.discard(vehicle_id)
+                continue
+                
+            # Check if vehicle has stopped (arrived at V2G spot)
+            try:
+                vehicle = self.sumo_manager.vehicles.get(vehicle_id)
+                if not vehicle:
+                    continue
+
+                if vehicle_id in traci.vehicle.getIDList():
+                    speed = traci.vehicle.getSpeed(vehicle_id)
+                    current_edge = traci.vehicle.getRoadID(vehicle_id)
+                    
+                    # Check if arrived: Stopped OR on target edge
+                    # We use a loose check to ensure the demo feels responsive
+                    target_station = getattr(vehicle, 'v2g_station', None)
+                    station_edge = None
+                    if target_station and self.sumo_manager.station_manager:
+                         st = self.sumo_manager.station_manager.stations.get(target_station)
+                         if st: station_edge = st.get('edge')
+
+                    is_stopped = speed < 0.5
+                    on_target_edge = (station_edge and current_edge == station_edge)
+                    
+                    if is_stopped or on_target_edge:
+                        # Activate session!
+                        substation_id = self.pending_v2g_vehicles[vehicle_id]
+                        # Retrieve the specific station ID assigned during recruitment
+                        station_id = getattr(vehicle, 'v2g_station', 'virtual_station')
+                        
+                        self.start_v2g_session(vehicle_id, station_id, substation_id)
+                        print(f"[V2G] 🚗 Vehicle {vehicle_id} arrived at {station_id} and STARTED discharging!")
+            except Exception as e:
+                print(f"[V2G] Error checking pending vehicle {vehicle_id}: {e}")
+
         # Update average discharge rate
         if self.active_sessions:
             total_rate = sum(s.actual_power_kw for s in self.active_sessions.values())
@@ -830,9 +888,21 @@ class V2GManager:
 
         return {
             'enabled_substations': list(self.v2g_enabled_substations),
+            'substations_with_v2g': list(self.v2g_enabled_substations),  # Alias for agentic tools
             'restored_substations': list(self.restored_substations),
             'recently_restored_substations': recent_restored_names,
-            'active_sessions': len(self.active_sessions),
+            'active_sessions_count': len(self.active_sessions),
+            'active_sessions_list': [
+                {
+                    'id': s.session_id,
+                    'vehicle_id': s.vehicle_id,
+                    'substation': s.substation_id,
+                    'power_kw': self.DISCHARGE_RATE_KW,
+                    'earnings': s.earnings,
+                    'status': 'discharging'
+                }
+                for s in self.active_sessions.values()
+            ],
             'locked_vehicles': len(self.v2g_locked_vehicles),
             'pending_vehicles': len(self.pending_v2g_vehicles),
             'total_power_kw': active_power,
@@ -852,7 +922,7 @@ class V2GManager:
             'average_discharge_rate': self.stats.get('average_discharge_rate_kw', 0),
             'peak_power': self.stats['peak_power_provided_kw'],
             'total_discharge_minutes': self.stats.get('total_discharge_time_minutes', 0),
-            'active_vehicles': [
+            'active_sessions': [
                 {
                     'vehicle_id': v_id,
                     'id': v_id,  # Add 'id' as alias
@@ -872,3 +942,7 @@ class V2GManager:
                 if v_id in self.sumo_manager.vehicles
             ]
         }
+
+    def get_v2g_status(self):
+        """Alias for compatibility with chatbot/API"""
+        return self.get_v2g_dashboard_data()

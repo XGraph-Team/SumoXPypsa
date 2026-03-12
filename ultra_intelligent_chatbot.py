@@ -578,30 +578,28 @@ class UltraIntelligentChatbot:
         print("[ULTRA CHATBOT] Initialized with MAXIMUM conversational intelligence!")
 
     async def _update_system_state(self):
-        """Update system state from backend APIs"""
+        """Update system state from the integrated system and V2G manager"""
         try:
-            import requests
+            substations = self.integrated_system.get_network_state()['substations']
 
-            # Get current system status
-            system_response = requests.get("http://127.0.0.1:5000/api/status", timeout=5)
-            v2g_response = requests.get("http://127.0.0.1:5000/api/v2g/status", timeout=5)
-
-            if system_response.status_code == 200:
-                system_data = system_response.json()
-                substations = system_data.get('substations', {})
-
-                self.system_state['substations'] = substations
+            self.system_state['substations'] = substations
+            if isinstance(substations, list):
+                self.system_state['failed_substations'] = [
+                    s['name'] for s in substations
+                    if not s.get('operational', True)
+                ]
+            else:
                 self.system_state['failed_substations'] = [
                     name for name, info in substations.items()
-                    if info.get('status') == 'failed'
+                    if not info.get('operational')
                 ]
 
-            if v2g_response.status_code == 200:
-                v2g_data = v2g_response.json()
+            if self.v2g_manager:
+                v2g_data = self.v2g_manager.get_v2g_dashboard_data()
                 self.system_state['v2g_enabled_substations'] = v2g_data.get('enabled_substations', [])
 
             self.system_state['last_updated'] = datetime.now()
-            print(f"[ULTRA CHATBOT] System updated: {len(self.system_state['failed_substations'])} failed substations, {len(self.system_state['v2g_enabled_substations'])} V2G enabled")
+            print(f"[ULTRA CHATBOT] System updated: {len(self.system_state['failed_substations'])} failed substations, {len(self.system_state.get('v2g_enabled_substations', []))} V2G enabled")
 
         except Exception as e:
             print(f"[ULTRA CHATBOT] Failed to update system state: {e}")
@@ -1041,7 +1039,7 @@ Type `"help"` to return.""",
     def _needs_confirmation(self, intent: str, entities: Dict[str, Any], corrected_input: str) -> bool:
         """Determine if an action needs user confirmation"""
 
-        # Critical actions that need confirmation
+        # Critical actions that need confirmation - ONLY for substation_control
         critical_intents = ['substation_control']
 
         if intent in critical_intents:
@@ -1050,10 +1048,12 @@ Type `"help"` to return.""",
             if any(action_word in action for action_word in critical_actions):
                 return True
 
-        # Also check for potentially destructive keywords
-        destructive_keywords = ['shut down', 'turn off', 'disable', 'fail', 'stop', 'kill']
-        if any(keyword in corrected_input.lower() for keyword in destructive_keywords):
-            return True
+            # Destructive keywords only apply to substation_control (avoid "has failed" in V2G context)
+            destructive_keywords = ['shut down', 'turn off', 'disable', 'stop', 'kill']
+            if any(keyword in corrected_input.lower() for keyword in destructive_keywords):
+                return True
+            if 'fail' in corrected_input.lower() and not re.search(r'\b(has|have|is|are|was|were)\s+failed\b', corrected_input.lower()):
+                return True
 
         return False
 
@@ -1556,8 +1556,8 @@ Return format: intent"""
                 print(f"[ULTRA CHATBOT] Fuzzy match: '{matched_text}' -> '{location}' (distance: {distance})")
 
         # Extract action entities with NATURAL LANGUAGE UNDERSTANDING
-        # Turn off/disable/fail synonyms
-        turn_off_variants = ['turn off', 'turn of', 'disable', 'fail', 'shut down', 'shut off',
+        # Turn off/disable/fail synonyms - EXCLUDE "has failed" (state description) vs "fail" (action)
+        turn_off_variants = ['turn off', 'turn of', 'disable', 'shut down', 'shut off',
                             'switch off', 'power down', 'take down', 'offline', 'stop', 'disconnect']
 
         # Turn on/enable/restore synonyms
@@ -1574,10 +1574,13 @@ Return format: intent"""
         # Deactivate/stop synonyms
         deactivate_variants = ['deactivate', 'stop', 'halt', 'shutdown', 'turn off', 'disable', 'cease', 'end']
 
-        # Check for turn off actions
+        # Check for turn off actions - 'fail' only when used as imperative, NOT in "has failed"/"is failed"
         if any(variant in text_lower for variant in turn_off_variants):
             entities['action'] = 'turn_off'
             print(f"[ULTRA CHATBOT] Detected turn_off action from: {[v for v in turn_off_variants if v in text_lower]}")
+        elif re.search(r'\bfail\b', text_lower) and not re.search(r'\b(has|have|is|are|was|were)\s+(failed|fail)\b', text_lower):
+            entities['action'] = 'turn_off'
+            print(f"[ULTRA CHATBOT] Detected turn_off action from: 'fail' (imperative)")
 
         # Check for turn on actions
         elif any(variant in text_lower for variant in turn_on_variants):
@@ -2137,23 +2140,22 @@ Return format: intent"""
         """Execute V2G commands - Can activate for any substation or all failed substations"""
 
         try:
-            import requests
+            if not self.v2g_manager:
+                return {
+                    'success': False,
+                    'text': 'V2G Manager is not available.',
+                }
 
             failed_substations = self.system_state.get('failed_substations', [])
             v2g_enabled = self.system_state.get('v2g_enabled_substations', [])
 
             if entities.get('action') == 'activate' or 'activate' in command:
-                # Check for "all" keyword to activate V2G for all failed substations
                 activate_all = any(word in command.lower() for word in ['all', 'every', 'everything', 'all failed'])
 
                 if activate_all and failed_substations:
-                    # Activate V2G for ALL failed substations
                     activated_substations = []
                     for sub_name in failed_substations:
-                        api_url = f"http://127.0.0.1:5000/api/v2g/enable/{sub_name}"
-                        print(f"[ULTRA CHATBOT] Activating V2G for {sub_name}: {api_url}")
-                        response = requests.post(api_url, timeout=10)
-                        if response.status_code == 200:
+                        if self.v2g_manager.enable_v2g_for_substation(sub_name):
                             activated_substations.append(sub_name)
 
                     if activated_substations:
@@ -2170,9 +2172,7 @@ Return format: intent"""
                             'backend_executed': True
                         }
 
-                # Check if there are failed substations that can use V2G
                 if not failed_substations:
-                    # Allow V2G activation even for operational substations (for testing/demo)
                     if entities.get('location_data'):
                         target_substation = entities['location_data']['substation']
                         return {
@@ -2189,30 +2189,18 @@ Return format: intent"""
                             'backend_executed': True
                         }
 
-                # Determine which substation to activate V2G for
                 target_substation = None
-                if entities.get('location_data'):
-                    substation_name = entities['location_data']['substation']
-                    target_substation = substation_name  # Allow any substation, not just failed ones
-
-                # If no specific substation mentioned, use the first failed one
-                if not target_substation and failed_substations:
+                # Prefer failed substations when user says "trigger v2g" without specifying one
+                if failed_substations:
                     target_substation = failed_substations[0]
+                if not target_substation and entities.get('location_data'):
+                    target_substation = entities['location_data']['substation']
 
                 if target_substation:
-                    # Use the correct V2G enable endpoint for specific substation
-                    api_url = f"http://127.0.0.1:5000/api/v2g/enable/{target_substation}"
-                    print(f"[ULTRA CHATBOT] Activating V2G for failed substation: {api_url}")
-                    response = requests.post(api_url, timeout=10)
-
-                    if response.status_code == 200:
-                        result = response.json()
-                        print(f"[ULTRA CHATBOT] V2G API response: {result}")
-
+                    if self.v2g_manager.enable_v2g_for_substation(target_substation):
                         return {
                             'success': True,
                             'text': f"**V2G ACTIVATED FOR {target_substation.upper()}**! Electric vehicles are being dispatched to provide emergency power to the failed substation. V2G toggle enabled on control panel.",
-                            'v2g_result': result,
                             'system_changes': [f"V2G enabled for {target_substation}", "V2G toggle activated"],
                             'backend_executed': True,
                             'map_action': {
@@ -2225,7 +2213,7 @@ Return format: intent"""
                     else:
                         return {
                             'success': False,
-                            'text': f"ERROR: Failed to activate V2G for {target_substation}. Backend error: {response.status_code}. Check if substation is actually failed.",
+                            'text': f"ERROR: Failed to activate V2G for {target_substation}. Check if substation is actually failed.",
                             'backend_error': True
                         }
                 else:
@@ -2236,7 +2224,6 @@ Return format: intent"""
                     }
 
             elif entities.get('action') == 'deactivate' or any(word in command for word in ['deactivate', 'disable', 'stop', 'shutdown', 'turn off']):
-                # Handle V2G deactivation
                 if not v2g_enabled:
                     return {
                         'success': True,
@@ -2245,46 +2232,29 @@ Return format: intent"""
                         'backend_executed': True
                     }
 
-                # Determine which substation to deactivate V2G for
                 target_substation = None
                 if entities.get('location_data'):
                     substation_name = entities['location_data']['substation']
                     if substation_name in v2g_enabled:
                         target_substation = substation_name
 
-                # If no specific substation mentioned, use the first enabled one
                 if not target_substation and v2g_enabled:
                     target_substation = v2g_enabled[0]
 
                 if target_substation:
-                    # Use the V2G disable endpoint for specific substation
-                    api_url = f"http://127.0.0.1:5000/api/v2g/disable/{target_substation}"
-                    print(f"[ULTRA CHATBOT] Deactivating V2G for substation: {api_url}")
-                    response = requests.post(api_url, timeout=10)
-
-                    if response.status_code == 200:
-                        result = response.json()
-                        print(f"[ULTRA CHATBOT] V2G Disable API response: {result}")
-
-                        return {
-                            'success': True,
-                            'text': f"**V2G DEACTIVATED FOR {target_substation.upper()}**! Electric vehicles have been released and are no longer providing emergency power. V2G toggle disabled on control panel.",
-                            'v2g_result': result,
-                            'system_changes': [f"V2G disabled for {target_substation}", "V2G toggle deactivated"],
-                            'backend_executed': True,
-                            'map_action': {
-                                'type': 'highlight_v2g_deactivation',
-                                'substation': target_substation,
-                                'coordinates': entities.get('location_data', {}).get('coords', [-73.9857, 40.7580]),
-                                'name': f"{target_substation} V2G Deactivated"
-                            }
+                    self.v2g_manager.disable_v2g_for_substation(target_substation)
+                    return {
+                        'success': True,
+                        'text': f"**V2G DEACTIVATED FOR {target_substation.upper()}**! Electric vehicles have been released and are no longer providing emergency power. V2G toggle disabled on control panel.",
+                        'system_changes': [f"V2G disabled for {target_substation}", "V2G toggle deactivated"],
+                        'backend_executed': True,
+                        'map_action': {
+                            'type': 'highlight_v2g_deactivation',
+                            'substation': target_substation,
+                            'coordinates': entities.get('location_data', {}).get('coords', [-73.9857, 40.7580]),
+                            'name': f"{target_substation} V2G Deactivated"
                         }
-                    else:
-                        return {
-                            'success': False,
-                            'text': f"ERROR: Failed to deactivate V2G for {target_substation}. Backend error: {response.status_code}.",
-                            'backend_error': True
-                        }
+                    }
                 else:
                     return {
                         'success': False,
@@ -2293,51 +2263,40 @@ Return format: intent"""
                     }
 
             else:
-                # Get V2G status and explain system intelligently
-                api_url = "http://127.0.0.1:5000/api/v2g/status"
-                print(f"[ULTRA CHATBOT] Calling V2G status API: {api_url}")
-                response = requests.get(api_url, timeout=10)
+                status = self.v2g_manager.get_v2g_dashboard_data()
 
-                if response.status_code == 200:
-                    status = response.json()
+                active_sessions = status.get('active_sessions_count', 0)
+                total_power = status.get('total_power_kw', 0)
+                total_earnings = status.get('total_earnings', 0)
+                enabled_substations = status.get('enabled_substations', [])
 
-                    active_sessions = status.get('active_sessions', 0)
-                    total_power = status.get('total_power_kw', 0)
-                    total_earnings = status.get('total_earnings', 0)
-                    enabled_substations = status.get('enabled_substations', [])
-
-                    if not failed_substations:
-                        status_text = f" **V2G SYSTEM STANDBY** - All {len(self.system_state['substations'])} substations operational. V2G ready for emergency deployment if any substation fails."
-                    elif enabled_substations:
-                        status_text = f" **V2G EMERGENCY ACTIVE** - Responding to {len(enabled_substations)} failed substations: {', '.join(enabled_substations)}. {active_sessions} vehicles providing {total_power:.1f}kW emergency power."
-                    else:
-                        status_text = f"**V2G NEEDED** - {len(failed_substations)} substations failed ({', '.join(failed_substations)}) but V2G not yet activated. Emergency power backup available."
-
-                    return {
-                        'success': True,
-                        'text': status_text + f"\\n\\n**Current Stats**: {active_sessions} vehicles active - ${total_earnings:.2f} earned - Rate: ${status.get('current_rate', 0):.2f}/kWh",
-                        'v2g_status': status,
-                        'system_context': {
-                            'failed_substations': failed_substations,
-                            'v2g_enabled': enabled_substations,
-                            'total_substations': len(self.system_state['substations'])
-                        },
-                        'backend_executed': True
-                    }
+                if not failed_substations:
+                    status_text = f" **V2G SYSTEM STANDBY** - All {len(self.system_state['substations'])} substations operational. V2G ready for emergency deployment if any substation fails."
+                elif enabled_substations:
+                    status_text = f" **V2G EMERGENCY ACTIVE** - Responding to {len(enabled_substations)} failed substations: {', '.join(enabled_substations)}. {active_sessions} vehicles providing {total_power:.1f}kW emergency power."
                 else:
-                    return {
-                        'success': False,
-                        'text': f"ERROR: Failed to get V2G status. Backend error: {response.status_code}",
-                        'backend_error': True
-                    }
+                    status_text = f"**V2G NEEDED** - {len(failed_substations)} substations failed ({', '.join(failed_substations)}) but V2G not yet activated. Emergency power backup available."
+
+                return {
+                    'success': True,
+                    'text': status_text + f"\\n\\n**Current Stats**: {active_sessions} vehicles active - ${total_earnings:.2f} earned - Rate: ${status.get('current_rate', 0):.2f}/kWh",
+                    'v2g_status': status,
+                    'system_context': {
+                        'failed_substations': failed_substations,
+                        'v2g_enabled': enabled_substations,
+                        'total_substations': len(self.system_state['substations'])
+                    },
+                    'backend_executed': True
+                }
 
         except Exception as e:
-            print(f"[ULTRA CHATBOT] V2G API error: {str(e)}")
+            print(f"[ULTRA CHATBOT] V2G command error: {str(e)}")
             return {
                 'success': False,
-                'text': f"ERROR: Could not execute V2G command: {str(e)}. Check if the backend server is running.",
+                'text': f"ERROR: Could not execute V2G command: {str(e)}.",
                 'error': str(e)
             }
+
 
     async def _execute_analysis_command(self, command: str, entities: Dict[str, Any]) -> Dict[str, Any]:
         """Execute system analysis with REAL backend data"""
@@ -3033,6 +2992,18 @@ Be helpful, accurate, and conversational while staying focused on the user's act
                     'type': 'set_camera',
                     'pitch': 60,
                     'zoom': 14
+                },
+                'intent': 'map_control'
+            }
+
+        elif any(phrase in text_lower for phrase in ['switch to 2d', '2d map', '2d view', 'flat map', 'top down', 'switch to 2d map']):
+            return {
+                'success': True,
+                'text': 'Switching to 2D top-down view',
+                'map_action': {
+                    'type': 'set_map_view',
+                    'mode': '2d',
+                    'pitch': 0
                 },
                 'intent': 'map_control'
             }

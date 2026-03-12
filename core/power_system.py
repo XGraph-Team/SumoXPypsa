@@ -525,6 +525,12 @@ class ManhattanPowerGrid:
         # Get line flows
         line_flows = self.network.lines_t.p0.iloc[0]
         line_limits = self.network.lines.s_nom
+        
+        # Align indices to ensure safe arithmetic
+        common_idx = line_flows.index.intersection(line_limits.index)
+        line_flows = line_flows.loc[common_idx]
+        line_limits = line_limits.loc[common_idx]
+        
         line_loading = abs(line_flows) / line_limits
         
         # Find violations
@@ -836,6 +842,11 @@ class ManhattanPowerGrid:
         import json
         
         try:
+            # Guard: Check if db_manager and get_session are available
+            if not hasattr(db_manager, 'get_session') or not callable(getattr(db_manager, 'get_session', None)):
+                # Database not configured - skip storage (this is optional for simulation)
+                return
+            
             with db_manager.get_session() as session:
                 state = NetworkState(
                     simulation_time=int(self.network.snapshots[0].timestamp()),
@@ -859,7 +870,8 @@ class ManhattanPowerGrid:
                 session.commit()
                 
         except Exception as e:
-            logger.error(f"Failed to store network state: {e}")
+            # Don't spam logs - database storage is optional for demo
+            pass
     def _calculate_health_score(self) -> float:
         """Calculate overall system health score (0-100)"""
         
@@ -880,6 +892,12 @@ class ManhattanPowerGrid:
         # Deduct for overloaded lines
         line_flows = abs(self.network.lines_t.p0.iloc[0])
         line_limits = self.network.lines.s_nom
+        
+        # Align indices
+        common_idx = line_flows.index.intersection(line_limits.index)
+        line_flows = line_flows.loc[common_idx]
+        line_limits = line_limits.loc[common_idx]
+        
         overloads = (line_flows > line_limits).sum()
         score -= overloads * 10
         
@@ -889,6 +907,11 @@ class ManhattanPowerGrid:
         """Log incident to database"""
         
         try:
+            # Guard: Check if db_manager and get_session are available
+            if not hasattr(db_manager, 'get_session') or not callable(getattr(db_manager, 'get_session', None)):
+                # Database not configured - skip logging (this is optional for simulation)
+                return
+            
             with db_manager.get_session() as session:
                 from config.database import Incident
                 

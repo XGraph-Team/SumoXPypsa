@@ -99,14 +99,17 @@ class ScenarioController:
     World-class scenario controller for testing Manhattan power grid
     """
 
-    def __init__(self, integrated_system, load_model, power_grid, sumo_manager=None):
+    def __init__(self, integrated_system, load_model, power_grid, sumo_manager=None, on_update_callback=None):
         self.integrated_system = integrated_system
         self.load_model = load_model
         self.power_grid = power_grid
         self.sumo_manager = sumo_manager
+        self.on_update_callback = on_update_callback
 
         # Scenario parameters - REALISTIC TIME SYSTEM
-        self.current_time_seconds = 12 * 3600  # Time in seconds since midnight (0-86400)
+        # Initialize from the actual system clock so the simulation starts at "now"
+        _now = time.localtime()
+        self.current_time_seconds = _now.tm_hour * 3600 + _now.tm_min * 60 + _now.tm_sec
         self.current_temperature = 72  # Fahrenheit
         self.time_speed = 60.0  # Simulation speed: 60x real-time (1 real second = 1 sim minute)
         self.auto_time_advance = True  # Auto-advance by default for realism
@@ -153,8 +156,9 @@ class ScenarioController:
     def set_time(self, hour: float, minute: int = 0, second: int = 0):
         """Set simulation time with hours, minutes, and seconds"""
         # Convert to seconds since midnight
-        total_seconds = (int(hour) * 3600 + int(minute) * 60 + int(second)) % 86400
-        self.current_time_seconds = total_seconds
+        # If hour is a float (e.g. 20.5), it includes minutes
+        total_seconds = (hour * 3600 + int(minute) * 60 + int(second)) % 86400
+        self.current_time_seconds = int(total_seconds)
         self.last_update_time = time.time()  # Reset the update timer
 
         # Update load model with hour value
@@ -450,6 +454,13 @@ class ScenarioController:
                     self.load_model.set_time_of_day(hour_float)
 
                 self._update_all_loads()
+                
+                # Broadcast update via WebSocket if callback exists
+                if self.on_update_callback:
+                    try:
+                        self.on_update_callback(self.get_system_status())
+                    except Exception as e:
+                        print(f"Callback error: {e}")
 
                 time.sleep(1)  # Update every real second
 
@@ -547,7 +558,7 @@ class ScenarioController:
             'timestamp': datetime.now().isoformat(),
             'type': event_type,
             'description': description,
-            'time': self.current_time,
+            'time': self._format_time(self.current_time_seconds),
             'temperature': self.current_temperature
         }
         self.event_log.append(event)

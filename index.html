@@ -8,6 +8,7 @@
     <!-- Mapbox GL JS -->
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 
     <!-- Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,8 +20,8 @@
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
 
     <!-- Custom Styles -->
-    <link href="/static/styles.css" rel="stylesheet">
-    <link href="/static/chatbot-enhanced-ui.css" rel="stylesheet">
+    <link href="/static/styles.css?v=nocache_1769983928" rel="stylesheet">
+    <link href="/static/chatbot-enhanced-ui.css?v=nocache_1769983928" rel="stylesheet">
 </head>
 <body data-tab="overview">
     <!-- Advanced Background Effects -->
@@ -94,6 +95,18 @@
         
         <h1>Manhattan Power Grid</h1>
         <div class="subtitle">Advanced Operations & Real-time Analytics</div>
+        
+        <!-- Quick Tools - Always Visible -->
+        <div class="tools-section" style="margin-bottom: 16px;">
+            <div class="btn-group" style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary" onclick="captureSnapshot()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <span style="font-size: 16px;">📸</span> Snapshot
+                </button>
+                <button class="btn btn-secondary" onclick="generateReport()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <span style="font-size: 16px;">📄</span> Report
+                </button>
+            </div>
+        </div>
         
         <!-- Main Statistics -->
         <div id="section-stats" class="stats-grid tab tab-overview">
@@ -361,7 +374,7 @@
             <!-- V2G Controls -->
             <div class="btn-group" style="margin-top:16px;">
                 <button class="btn btn-secondary" onclick="testV2G()">🧪 Test V2G</button>
-                <button class="btn btn-secondary" onclick="updateV2GDashboard()">🔄 Refresh</button>
+                <button class="btn btn-secondary" onclick="refreshV2GDashboard()">🔄 Refresh</button>
             </div>
         </div>
         
@@ -413,7 +426,7 @@
             <div class="layer-item">
                 <span>13.8kV Cables</span>
                 <label class="toggle">
-                    <input type="checkbox" id="layer-primary" onchange="toggleLayer('primary')">
+                    <input type="checkbox" checked id="layer-primary" onchange="toggleLayer('primary')">
                     <span class="slider"></span>
                 </label>
             </div>
@@ -465,6 +478,11 @@
         <div class="status-item">
             🌡️ <span id="temperature">72</span>°F
         </div>
+        <div class="status-item sync-monitor" id="syncMonitor" title="SUMO ↔ PyPSA Synchronization">
+            <div class="sync-dot"></div>
+            <span class="sync-label">SYNC</span>
+            <span class="sync-value" id="syncStatus">Idle</span>
+        </div>
     </div>
     
     <!-- Blackout Alert -->
@@ -477,8 +495,11 @@
     </div>
     
     <!-- Premium Legend -->
-    <div class="legend">
-        <div class="legend-title">System Components</div>
+    <div class="legend collapsed" id="system-legend">
+        <div class="legend-header" onclick="toggleLegend()">
+            <div class="legend-title">System Components</div>
+            <button class="legend-toggle" id="legend-toggle-btn">▶</button>
+        </div>
         <div class="legend-grid">
             <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Infrastructure</div>
             <div class="legend-row">
@@ -501,28 +522,28 @@
             </div>
             <div style="font-size: 11px; color: var(--text-muted); margin-top: 12px; text-transform: uppercase; letter-spacing: 1px;">Vehicles</div>
             <div class="legend-row">
-                <span class="legend-car" style="color:#00ff00;">
+                <span class="legend-car" style="color:#00FFD4;">
                     <svg viewBox="0 0 22 14"><rect x="1" y="2" rx="2" ry="2" width="20" height="10"/></svg>
                 </span>
                 <span>EV High 40%+</span>
                 <span id="legend-ev-high" class="badge">0</span>
             </div>
             <div class="legend-row">
-                <span class="legend-car" style="color:#ffaa00;">
+                <span class="legend-car" style="color:#4488FF;">
                     <svg viewBox="0 0 22 14"><rect x="1" y="2" rx="2" ry="2" width="20" height="10"/></svg>
                 </span>
                 <span>EV Medium 20-40%</span>
                 <span id="legend-ev-medium" class="badge">0</span>
             </div>
             <div class="legend-row">
-                <span class="legend-car" style="color:#ff0000;">
+                <span class="legend-car" style="color:#FF44AA;">
                     <svg viewBox="0 0 22 14"><rect x="1" y="2" rx="2" ry="2" width="20" height="10"/></svg>
                 </span>
                 <span>EV Low 2-20%</span>
                 <span id="legend-ev-low" class="badge">0</span>
             </div>
             <div class="legend-row">
-                <span class="legend-car" style="color:#6464ff;">
+                <span class="legend-car" style="color:#8899AA;">
                     <svg viewBox="0 0 22 14"><rect x="1" y="2" rx="2" ry="2" width="20" height="10"/></svg>
                 </span>
                 <span>Gas Vehicle</span>
@@ -531,18 +552,20 @@
         </div>
     </div>
 
+
+
     <!-- Custom JavaScript -->
-    <script src="/static/script.js"></script>
-    <script src="/static/ai-enhanced.js"></script>
-    <script src="/static/ai-functions.js"></script>
-    <script src="/static/world-class-map.js"></script>
-    <script src="/static/scenario-director.js"></script>
-    <script src="/static/chatbot-scenarios.js"></script>
+    <script src="/static/script.js?v=nocache_1771265000"></script>
+    <script src="/static/ai-enhanced.js?v=nocache_1771265000"></script>
+    <script src="/static/ai-functions.js?v=nocache_1771265000"></script>
+    <script src="/static/world-class-map.js?v=nocache_1771265000"></script>
+    <script src="/static/scenario-director.js?v=nocache_1771265000"></script>
+    <script src="/static/chatbot-scenarios.js?v=nocache_1771265000"></script>
 
     <!-- Scenario Controller -->
-    <script src="/static/traffic-patterns.js"></script>
-    <script src="/static/time-vehicle-manager.js"></script>
-    <script src="/static/scenario-controls.js"></script>
-    <script src="/static/chatbot-scenario-llm.js"></script>
+    <script src="/static/traffic-patterns.js?v=nocache_1771265000"></script>
+    <script src="/static/time-vehicle-manager.js?v=nocache_1771265000"></script>
+    <script src="/static/scenario-controls.js?v=nocache_1771265000"></script>
+    <script src="/static/chatbot-scenario-llm.js?v=nocache_1771265000"></script>
 </body>
 </html>

@@ -98,6 +98,38 @@ class EnhancedV2GManager:
 
         print(f"[V2G] Initialized {len(self.vehicles)} vehicles, {self.total_v2g_capacity_kw:.1f}kW V2G capacity")
 
+    def enable_v2g_for_substation(self, substation_name: str) -> bool:
+        """Enable V2G support for a specific substation (Chatbot hook)"""
+        print(f"[V2G] Enabling V2G for {substation_name}")
+        
+        # 1. Activate all vehicles in the area
+        count = 0
+        capacity = 0
+        
+        # Simple proximity check or just activate all for demo
+        for vehicle in self.vehicles.values():
+            # In a real system, we'd check location. For demo, if they are in the zone:
+            if vehicle.location.lower() in substation_name.lower().replace("_", " "):
+                vehicle.v2g_enabled = True
+                count += 1
+                capacity += vehicle.discharge_rate_kw
+                
+                # Create transaction
+                if vehicle.vehicle_id not in self.active_transactions:
+                    tx = V2GTransaction(
+                        transaction_id=f"ACT_{vehicle.vehicle_id}_{int(time.time())}",
+                        vehicle_id=vehicle.vehicle_id,
+                        energy_amount_kwh=0,
+                        transaction_type="activation",
+                        price_per_kwh=0.15,
+                        timestamp=datetime.now(),
+                        grid_benefit=0
+                    )
+                    self.active_transactions[tx.transaction_id] = tx
+
+        print(f"[V2G] Activated {count} vehicles for {substation_name}, +{capacity:.1f}kW")
+        return True
+
     def activate_all_vehicles(self) -> Dict[str, Any]:
         """Actually activate V2G for all eligible vehicles"""
 
@@ -238,6 +270,10 @@ class EnhancedV2GManager:
             'recent_transactions': list(self.active_transactions.values())[-5:] if self.active_transactions else []
         }
 
+    def get_v2g_dashboard_data(self) -> Dict[str, Any]:
+        """Alias for compatibility with main integration loop"""
+        return self.get_v2g_status()
+
     def optimize_charging_schedule(self) -> Dict[str, Any]:
         """Optimize V2G charging/discharging schedule based on grid needs"""
 
@@ -285,6 +321,43 @@ class EnhancedV2GManager:
             'total_vehicles_optimized': len(optimization_plan),
             'schedule': optimization_plan
         }
+
+    def update_v2g_sessions(self):
+        """Update V2G sessions with REALISTIC FAST DISCHARGE (Ported from standard manager)"""
+        
+        # If no active sessions, nothing to do
+        if not self.active_transactions:
+            return
+
+        # Simple update loop for efficiency
+        sessions_to_end = []
+        
+        for tx_id, transaction in self.active_transactions.items():
+            if transaction.transaction_type != 'discharge':
+                continue
+                
+            vehicle = self.vehicles.get(transaction.vehicle_id)
+            if not vehicle:
+                continue
+
+            # Discharge rate per step (assuming ~1 second per call for now, can refine)
+            discharge_amount = (vehicle.discharge_rate_kw / 3600) * 1.0  # 1 second of discharge
+            
+            # Check battery
+            if vehicle.current_charge_kwh <= (vehicle.battery_capacity_kwh * 0.10): # 10% limit
+                 sessions_to_end.append(tx_id)
+                 continue
+                 
+            # Update state
+            vehicle.current_charge_kwh -= discharge_amount
+            transaction.energy_amount_kwh += discharge_amount
+            self.total_v2g_capacity_kw += vehicle.discharge_rate_kw # Keep tracking capacity
+
+        # Clean up ended sessions
+        for tx_id in sessions_to_end:
+            # Archive or just remove for now
+            if tx_id in self.active_transactions:
+                 del self.active_transactions[tx_id]
 
 def initialize_enhanced_v2g(integrated_system) -> Optional[EnhancedV2GManager]:
     """Initialize the enhanced V2G manager"""

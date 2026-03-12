@@ -186,58 +186,126 @@ Status: ${restorationData.status}`;
     }
 
     /**
-     * Chatbot Monitoring Loop - Updates chatbot in real-time
+     * Chatbot Monitoring - Listen for V2G restoration events via WebSocket
      */
     startChatbotMonitoring(substation) {
-        let lastProgress = 0;
-        let hasNotifiedRestoration = false;
-        let maxEnergyDelivered = 0; // Track maximum energy seen
-        let maxVehicleCount = 0;
-
-        const monitorInterval = setInterval(async () => {
-            try {
-                // Get V2G status
-                const statusResp = await fetch('/api/v2g/status');
-                const status = await statusResp.json();
-
-                const required = (status?.energy_required && status.energy_required[substation]) || 25;
-                const delivered = (status?.energy_delivered && status.energy_delivered[substation]) || 0;
-                const progress = Math.round((delivered / Math.max(1, required)) * 100);
-                const activeVehicles = Array.isArray(status?.active_vehicles)
-                    ? status.active_vehicles.filter(v => v.substation === substation).length
-                    : 0;
-
-                // Track maximum values (in case they get cleared)
-                if (delivered > maxEnergyDelivered) {
-                    maxEnergyDelivered = delivered;
+        console.log(`[SCENARIO] Starting WebSocket monitoring for ${substation}`);
+        
+        // Listen for v2g_restoration_complete event from WebSocket
+        if (window.socket) {
+            // Remove any existing listener for this substation
+            window.socket.off('v2g_restoration_complete');
+            
+            // Add new listener
+            window.socket.on('v2g_restoration_complete', (data) => {
+                console.log('[SCENARIO] Received v2g_restoration_complete event:', data);
+                
+                if (data.substation === substation) {
+                    console.log(`[SCENARIO] Restoration complete for ${substation}!`);
+                    this.handleRestorationComplete(data);
                 }
-                if (activeVehicles > maxVehicleCount) {
-                    maxVehicleCount = activeVehicles;
+            });
+            
+            console.log(`[SCENARIO] WebSocket listener registered for ${substation} restoration`);
+        } else {
+            console.warn('[SCENARIO] WebSocket not available, restoration notifications disabled');
+        }
+    }
+    
+    /**
+     * Handle V2G restoration completion
+     */
+    handleRestorationComplete(data) {
+        const { substation, energy_delivered, revenue, vehicles } = data;
+        
+        console.log('[CHATBOT] 🎉 TRIGGERING RESTORATION NOTIFICATION!');
+        
+        // Calculate totals
+        const vehicleCount = vehicles ? vehicles.length : 0;
+        const totalRevenue = revenue || 0;
+        const energyDelivered = energy_delivered || 0;
+        
+        console.log(`[CHATBOT] Vehicles: ${vehicleCount}, Revenue: $${totalRevenue}, Energy: ${energyDelivered} kWh`);
+        
+        // Send restoration notification to chatbot - ALWAYS SHOW
+        const restoreMsg = `🎉 V2G RESTORATION COMPLETE!\n\n` +
+            `✅ ${substation} Substation RESTORED\n` +
+            `⚡ Energy delivered: ${Math.round(energyDelivered)} kWh\n` +
+            `💰 Total revenue: $${Math.round(totalRevenue)}\n` +
+            `🚗 Vehicles participated: ${vehicleCount}\n` +
+            `📊 Average earnings per vehicle: $${vehicleCount > 0 ? Math.round(totalRevenue / vehicleCount) : 0}`;
+        
+        this.addDirectChatMessage(restoreMsg, 'success');
+        console.log('[CHATBOT] ✅ Restoration message sent to chat!');
+        
+        // Send to chatbot AI
+        this.notifyChatbotOfRestoration(substation, energyDelivered, vehicleCount, totalRevenue);
+    }
+    
+   /**
+     * Notify AI chatbot of V2G restoration success
+     */
+    async notifyChatbotOfRestoration(substation, energy, vehicles, revenue) {
+        try {
+            console.log('[CHATBOT] Sending restoration notification to AI backend...');
+            
+            const chatbotResp = await fetch('/api/ai/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: `V2G EMERGENCY RESTORATION SUCCESS! The ${substation} substation has been fully restored! Here are the results: Energy delivered: ${Math.round(energy)} kWh by ${vehicles} electric vehicles. Total revenue generated: $${Math.round(revenue)}. Average earnings per vehicle: $${vehicles > 0 ? Math.round(revenue / vehicles) : 0}. This is a major success! Please celebrate and acknowledge this achievement!`,
+                    user_id: 'system'
+                })
+            });
+            
+            console.log('[CHATBOT] AI response status:', chatbotResp.status);
+            const chatbotData = await chatbotResp.json();
+            console.log('[CHATBOT] AI response data:', chatbotData);
+            
+            // Try to extract response from multiple formats
+            let aiResponse = null;
+            if (chatbotData.status === 'success' && chatbotData.response) {
+                aiResponse = chatbotData.response;
+            } else if (chatbotData.full_data && chatbotData.full_data.text) {
+                aiResponse = chatbotData.full_data.text;
+            } else if (chatbotData.text) {
+                aiResponse = chatbotData.text;
+            }
+            
+            if (aiResponse) {
+                const chatMessages = document.getElementById('chat-messages');
+                if (chatMessages) {
+                    const aiMsgHtml = `
+                        <div class="msg ai" style="
+                            margin: 8px 12px;
+                            padding: 12px;
+                            background: linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,200,255,0.06));
+                            border: 1px solid rgba(0,255,136,0.2);
+                            border-radius: 12px;
+                            font-size: 13px;
+                            line-height: 1.6;
+                            color: #ffffff;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                        ">
+                            <strong style="color: #00ff88; display: flex; align-items: center; margin-bottom: 6px;">
+                                💬 Ultra-AI:
+                            </strong>
+                            <div style="white-space: pre-wrap;">${aiResponse}</div>
+                        </div>
+                    `;
+                    chatMessages.innerHTML += aiMsgHtml;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    console.log('[CHATBOT] ✅ AI response added to chat!');
                 }
+            } else {
+                console.warn('[CHATBOT] No valid AI response found in:', chatbotData);
+            }
+        } catch (err) {
+            console.error('[CHATBOT] Error notifying chatbot:', err);
+        }
+    }
 
-                // Update chatbot every 20% progress change
-                if (progress >= lastProgress + 20 && progress < 100) {
-                    lastProgress = progress;
 
-                    // Send update to chatbot
-                    this.addDirectChatMessage(`⚡ V2G Progress: ${progress}% (${activeVehicles} vehicles discharging)`, 'progress');
-                }
-
-                // AGGRESSIVE 100% DETECTION - Multiple checks
-                const reached100 = progress >= 100;
-                const energyMet = delivered >= required;
-                const substationData = status?.enabled_substations || [];
-                const notInFailedList = !substationData.includes(substation);
-                const energyDroppedToZero = maxEnergyDelivered >= required && delivered === 0; // Energy was cleared
-
-                console.log(`[CHATBOT MONITOR] Progress: ${progress}%, Delivered: ${delivered}/${required}, Max: ${maxEnergyDelivered}, NotInFailedList: ${notInFailedList}, EnergyDropped: ${energyDroppedToZero}`);
-
-                // Trigger notification if ANY condition met
-                if (!hasNotifiedRestoration && (reached100 || energyMet || energyDroppedToZero || (notInFailedList && maxEnergyDelivered > 0))) {
-                    hasNotifiedRestoration = true;
-                    clearInterval(monitorInterval);
-
-                    console.log('[CHATBOT MONITOR] 🎉 TRIGGERING RESTORATION NOTIFICATION!');
 
                     // Calculate earnings - use MAX energy delivered (in case it was cleared)
                     const actualDelivered = Math.max(delivered, maxEnergyDelivered, required, 25); // Use maximum value seen

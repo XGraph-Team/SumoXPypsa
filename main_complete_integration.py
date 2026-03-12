@@ -14,6 +14,7 @@ ORGANIZED ROUTE STRUCTURE:
 
 from flask import Flask, render_template_string, jsonify, request
 from flask_cors import CORS
+from flask_socketio import SocketIO, emit
 import json
 import threading
 import time
@@ -43,7 +44,22 @@ except Exception:
 
 load_dotenv()
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
 CORS(app)
+socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
+
+# System state - Defined early for access
+from core.sumo_manager import SimulationScenario
+system_state = {
+    'running': True,
+    'sumo_running': False,
+    'simulation_speed': 1.0,
+    'current_time': 0,
+    'scenario': SimulationScenario.MIDDAY
+}
+
+# Asynchronous vehicle spawn queue (prevents UI freezing)
+vehicle_spawn_queue = []
 
 # Initialize systems
 print("=" * 60)
@@ -101,6 +117,32 @@ sumo_manager = ManhattanSUMOManager(integrated_system)
 print("Initializing V2G energy trading system...")
 v2g_manager = V2GManager(integrated_system, sumo_manager)
 
+# Register WebSocket callback for V2G state changes
+def v2g_websocket_callback(event_type, data):
+    """Emit V2G events via WebSocket"""
+    if event_type == 'restoration_complete':
+        # Calculate participating vehicles
+        vehicles = []
+        for vid, session in v2g_manager.active_sessions.items():
+            if session.substation_id == data['substation']:
+                vehicles.append({
+                    'id': vid,
+                    'earnings': session.earnings,
+                    'energy_delivered': session.power_delivered_kwh
+                })
+        
+        # Emit restoration complete event
+        socketio.emit('v2g_restoration_complete', {
+            'substation': data['substation'],
+            'energy_delivered': data['energy_delivered'],
+            'revenue': data['total_revenue'],
+            'vehicles': vehicles
+        })
+        print(f"[WebSocket] Emitted v2g_restoration_complete for {data['substation']}")
+
+v2g_manager.register_notification_callback(v2g_websocket_callback)
+print("V2G WebSocket notifications enabled")
+
 sumo_manager.set_v2g_manager(v2g_manager)
 
 # Initialize Enhanced ML Engine with V2G integration
@@ -111,9 +153,7 @@ ai_chatbot = ManhattanAIChatbot(integrated_system=integrated_system, ml_engine=m
 
 # Initialize ULTRA-INTELLIGENT CHATBOT with typo correction and suggestions
 try:
-    from enhanced_v2g_manager import initialize_enhanced_v2g
-    enhanced_v2g_manager = initialize_enhanced_v2g(integrated_system)
-    ultra_chatbot = initialize_ultra_intelligent_chatbot(integrated_system, ml_engine, enhanced_v2g_manager, app)
+    ultra_chatbot = initialize_ultra_intelligent_chatbot(integrated_system, ml_engine, v2g_manager, app)
     print("ULTRA-INTELLIGENT CHATBOT WITH TYPO CORRECTION INTEGRATED")
 except Exception as e:
     print(f"Ultra-Intelligent Chatbot not available: {e}")
@@ -130,7 +170,11 @@ except ImportError as e:
 
 # Initialize OpenAI client (optional if key provided)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-openai_client = OpenAI(api_key=OPENAI_API_KEY) if (OPENAI_API_KEY and OpenAI) else None
+try:
+    openai_client = OpenAI(api_key=OPENAI_API_KEY) if (OPENAI_API_KEY and OpenAI) else None
+except Exception as e:
+    print(f"OpenAI client initialization skipped: {e}")
+    openai_client = None
 
 # Initialize REALISTIC LOAD MODEL and SCENARIO CONTROLLER
 print("=" * 60)
@@ -146,15 +190,94 @@ try:
     load_model = RealisticLoadModel(integrated_system)
 
     print("Initializing scenario controller...")
+    
+    # Define WebSocket broadcast callback
+    # Define WebSocket broadcast callback - WORLD CLASS REAL-TIME UPDATES
+    def broadcast_state(scenario_status):
+        try:
+            # 1. Get Base Network State (Substations, Cables, etc.)
+            # This should be fast as it reads from internal memory structure
+            state = integrated_system.get_network_state()
+            
+            # 2. Add Scenario Controller Data (Time, Weather, Stats)
+            state['scenario'] = scenario_status
+            
+            # 3. Add SUMO Running Flag (needed for Start/Stop button state)
+            state['sumo_running'] = system_state.get('sumo_running', False)
+            
+            # 4. Add Real-Time Vehicle Data if SUMO is running
+            if system_state.get('sumo_running', False) and sumo_manager.running:
+                try:
+                    # Use the complete vehicle visualization method that includes all data
+                    # (battery_percent, soc, is_ev, is_charging, etc.)
+                    vehicles = sumo_manager.get_vehicle_positions_for_visualization()
+                    state['vehicles'] = vehicles
+                    state['vehicle_count'] = len(vehicles)
+                    
+                    # Get pending vehicles (in insertion queue)
+                    import traci
+                    try:
+                        # Get vehicles waiting to enter the network
+                        pending_count = traci.simulation.getPendingVehicles().getIDCount()
+                    except:
+                        # Fallback if API doesn't work
+                        pending_count = 0
+                    
+                    # Add vehicle statistics (for charging count, etc.)
+                    vehicle_stats = {
+                        'active_vehicles': len(vehicles),  # Currently on road
+                        'pending_vehicles': pending_count,  # Waiting in queue
+                        'total_configured': len(vehicles) + pending_count,  # Total spawned
+                        'total_vehicles': len(vehicles),  # Legacy field
+                        'ev_vehicles': sum(1 for v in vehicles if v.get('is_ev', False)),
+                        'gas_vehicles': sum(1 for v in vehicles if not v.get('is_ev', False)),
+                        'vehicles_charging': sum(1 for v in vehicles if v.get('is_charging', False)),
+                        'vehicles_low_battery': sum(1 for v in vehicles if v.get('is_ev', False) and v.get('battery_percent', 100) < 20),
+                        'vehicles_medium_battery': sum(1 for v in vehicles if v.get('is_ev', False) and 20 <= v.get('battery_percent', 100) < 50),
+                        'vehicles_high_battery': sum(1 for v in vehicles if v.get('is_ev', False) and v.get('battery_percent', 100) >= 50),
+                    }
+                    state['vehicle_stats'] = vehicle_stats
+                    
+                except Exception as e:
+                    print(f"Socket vehicle update error: {e}")
+            
+            # 4. Add V2G Data if initialized
+            if 'v2g_manager' in globals() and v2g_manager:
+                try:
+                    # Get the full dash data - this is efficient as it uses internal state
+                    v2g_data = v2g_manager.get_v2g_dashboard_data()
+                    state['v2g'] = v2g_data
+                except Exception as e:
+                    print(f"Socket V2G update error: {e}")
+            
+            # 5. Add AI Map Focus Data if available
+            if 'ai_map_focus_data' in globals() and ai_map_focus_data:
+                try:
+                    state['ai_focus'] = {
+                        'has_update': True,
+                        'focus_data': ai_map_focus_data
+                    }
+                except Exception as e:
+                    print(f"Socket AI focus update error: {e}")
+            else:
+                state['ai_focus'] = {'has_update': False}
+            
+            # Emit unified system update event
+            socketio.emit('system_update', state)
+            
+        except Exception as e:
+            print(f"Broadcast error: {e}")
+        
     scenario_controller = ScenarioController(
         integrated_system=integrated_system,
         load_model=load_model,
         power_grid=power_grid,
-        sumo_manager=sumo_manager
+        sumo_manager=sumo_manager,
+        on_update_callback=broadcast_state
     )
 
     # Start automatic monitoring
-    scenario_controller.start_auto_monitoring()
+    # scenario_controller.start_auto_monitoring() # DISABLED: Controlled by simulation_loop now
 
     # Add API endpoints
     integrate_scenario_controller(app, scenario_controller, load_model)
@@ -169,6 +292,36 @@ except Exception as e:
     print(f"ERROR: Could not initialize realistic load model: {e}")
     load_model = None
     scenario_controller = None
+
+# Initialize AGENTIC CHATBOT — OpenAI function calling with tool executor
+try:
+    from agentic_tools import ToolExecutor
+    from agentic_chatbot import AgenticChatbot
+
+    tool_executor = ToolExecutor(
+        integrated_system=integrated_system,
+        v2g_manager=v2g_manager,
+        sumo_manager=sumo_manager,
+        power_grid=power_grid,
+        system_state=system_state,
+        scenario_controller=scenario_controller,
+        current_ev_config=current_ev_config if 'current_ev_config' in dir() else {},
+        vehicle_spawn_queue=vehicle_spawn_queue
+    )
+    agentic_chatbot = AgenticChatbot(
+        tool_executor=tool_executor,
+        integrated_system=integrated_system,
+        v2g_manager=v2g_manager,
+        system_state=system_state,
+        socketio=socketio,
+        scenario_controller=scenario_controller
+    )
+    print(f"✓ AGENTIC CHATBOT INITIALIZED — {agentic_chatbot.get_tool_count()} tools available")
+except Exception as e:
+    print(f"Agentic Chatbot not available: {e}")
+    import traceback
+    traceback.print_exc()
+    agentic_chatbot = None
 
 # Optional: cache of SUMO edge shapes (lon/lat) for road-locked rendering
 EDGE_SHAPES: dict = {}
@@ -206,14 +359,7 @@ def preload_edge_shapes(max_edges: int | None = None) -> int:
         return count
     return count
 
-# System state
-system_state = {
-    'running': True,
-    'sumo_running': False,
-    'simulation_speed': 1.0,
-    'current_time': 0,
-    'scenario': SimulationScenario.MIDDAY
-}
+
 
 # EV Configuration
 current_ev_config = {
@@ -235,7 +381,7 @@ def simulation_loop():
     TRAFFIC_LIGHT_CYCLE = 60       # 60 seconds - Realistic traffic light cycle
     POWER_GRID_UPDATE = 5          # 5 seconds - Realistic SCADA/state estimation
     EV_LOAD_UPDATE = 5             # 5 seconds - Realistic smart meter updates
-    V2G_UPDATE = 60                # 60 seconds - Realistic V2G state changes
+    V2G_UPDATE = 1                 # 1 second -  Accelerated for demo feedback
 
     # Convert to SUMO steps (multiply by 10 because 1 SUMO step = 0.1s)
     TRAFFIC_LIGHT_STEPS = int(TRAFFIC_LIGHT_CYCLE / SUMO_STEP_TIME)  # 600 steps
@@ -267,6 +413,11 @@ def simulation_loop():
     print(f"V2G State Update:       {V2G_UPDATE}s (V2G session rate)")
     print("="*70 + "\n")
 
+
+    # BROADCAST OPTIMIZATION
+    BROADCAST_INTERVAL = 5  # Send 1 update per 5 physics steps
+    step_counter = 0
+
     while system_state['running']:
         try:
             step_start = time_module.perf_counter()
@@ -292,6 +443,32 @@ def simulation_loop():
 
                 sumo_time = (time_module.perf_counter() - sumo_start) * 1000
                 perf_stats['sumo_step'].append(sumo_time)
+
+                # SOCKET BROADCAST: Frame Skipping Logic
+                step_counter += 1
+                if step_counter % BROADCAST_INTERVAL == 0:
+                    try:
+                        status = scenario_controller.get_system_status() if scenario_controller else {"status": "Running"}
+                        broadcast_state(status)
+                    except Exception as e:
+                        print(f"Broadcast loop error: {e}")
+
+                # ASYNC VEHICLE SPAWNING: Process spawn queue in batches (max 5 per tick)
+                # This prevents UI freezing when bulk spawning vehicles
+                global vehicle_spawn_queue
+                if vehicle_spawn_queue:
+                    batch_size = min(5, len(vehicle_spawn_queue))
+                    for _ in range(batch_size):
+                        config = vehicle_spawn_queue.pop(0)
+                        try:
+                            sumo_manager.spawn_vehicles(
+                                count=1,
+                                ev_percentage=config['ev_percentage'],
+                                battery_min_soc=config['battery_min_soc'],
+                                battery_max_soc=config['battery_max_soc']
+                            )
+                        except Exception as e:
+                            print(f"[QUEUE] Spawn error: {e}")
 
                 # REALISTIC: V2G updates every 60 seconds (vehicle-to-grid state changes)
                 if system_state['current_time'] - last_v2g_update >= V2G_STEPS:
@@ -635,6 +812,13 @@ def index():
     """Serve complete dashboard with all features"""
     return render_template_string(load_html_template())
 
+@app.route('/api/config')
+def get_config():
+    """Serve client-side configuration (Mapbox token, etc.) from environment."""
+    return jsonify({
+        'mapbox_token': os.environ.get('MAPBOX_TOKEN', ''),
+    })
+
 @app.route('/api/debug/buses')
 def debug_buses():
     """Show all bus names in PyPSA"""
@@ -704,6 +888,42 @@ def debug_ev_stations():
 # 2. NETWORK & STATUS ROUTES
 # ============================================================================
 
+@app.route('/api/export-state')
+def export_state():
+    """Export the full system state as a downloadable JSON file."""
+    try:
+        # Get basic state
+        state = integrated_system.get_network_state()
+        
+        # Add timestamp and extra metadata
+        export_data = {
+            "timestamp": datetime.now().isoformat(),
+            "system_state": state,
+            "version": "1.0.0",
+            # Include basic stats if available
+            "stats": {
+                "vehicles": len(sumo_manager.vehicles) if sumo_manager.running else 0,
+                "substations_online": len([s for s in integrated_system.substations.values() if s.get('operational', True)]),
+                "ev_stations_online": len([s for s in integrated_system.ev_stations.values() if s.get('operational', True)])
+            }
+        }
+        
+        # Create in-memory file
+        import io
+        import json
+        mem = io.BytesIO()
+        mem.write(json.dumps(export_data, indent=2).encode('utf-8'))
+        mem.seek(0)
+        
+        return send_file(
+            mem,
+            mimetype='application/json',
+            as_attachment=True,
+            download_name=f"manhattan_grid_state_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        )
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/api/network_state')
 def get_network_state():
     """Get complete network state including vehicles - OPTIMIZED FOR 1000+ VEHICLES"""
@@ -772,6 +992,12 @@ def get_network_state():
     else:
         state['vehicles'] = []
         state['vehicle_stats'] = {}
+
+        state['vehicle_stats'] = {}
+
+    # Add V2G Data if initialized
+    if 'v2g_manager' in globals() and v2g_manager:
+        state['v2g'] = v2g_manager.get_v2g_dashboard_data()
 
     return jsonify(state)
 
@@ -877,23 +1103,34 @@ def stop_sumo():
 
 @app.route('/api/sumo/spawn', methods=['POST'])
 def spawn_vehicles():
-    """Spawn additional vehicles"""
+    """Spawn additional vehicles (async queue)"""
+    global vehicle_spawn_queue
+    
     if not system_state['sumo_running']:
         return jsonify({'success': False, 'message': 'SUMO not running'})
 
+    # Extract parameters from frontend request
     data = request.json or {}
     count = data.get('count', 5)
     ev_percentage = data.get('ev_percentage', 0.7)
     battery_min_soc = data.get('battery_min_soc', 0.2)
     battery_max_soc = data.get('battery_max_soc', 0.9)
 
-    spawned = sumo_manager.spawn_vehicles(count, ev_percentage, battery_min_soc, battery_max_soc)
-
+    # Queue individual vehicles with frontend-specified configs
+    for i in range(count):
+        vehicle_spawn_queue.append({
+            'ev_percentage': ev_percentage,
+            'battery_min_soc': battery_min_soc,
+            'battery_max_soc': battery_max_soc
+        })
+    
+    # Return immediately (202 Accepted) - vehicles will spawn in background
     return jsonify({
         'success': True,
-        'spawned': spawned,
-        'total_vehicles': sumo_manager.stats['total_vehicles']
-    })
+        'message': f'{count} vehicles queued for spawning',
+        'queued': len(vehicle_spawn_queue),
+        'total_vehicles': sumo_manager.stats.get('total_vehicles', 0)
+    }), 202
 
 @app.route('/api/sumo/scenario', methods=['POST'])
 def set_scenario():
@@ -1237,10 +1474,107 @@ def restore_ev_station(station_id):
     return jsonify({
         'success': success,
         'station_id': station_id,
-        'station_name': station_name,
-        'message': f'Station {station_name} restored successfully'
+        'station_name': station_name
     })
 
+def _collect_comprehensive_state() -> dict:
+    """Collect a rich system state dict used by both snapshot and report APIs."""
+    state = integrated_system.get_network_state()
+
+    # Vehicle stats
+    if system_state.get('sumo_running') and sumo_manager and sumo_manager.running:
+        state['vehicle_stats'] = sumo_manager.get_statistics()
+    else:
+        state['vehicle_stats'] = {}
+
+    # V2G data
+    if 'v2g_manager' in globals() and v2g_manager:
+        state['v2g'] = v2g_manager.get_v2g_dashboard_data()
+    else:
+        state['v2g'] = {}
+
+    # Scenario controller data
+    if scenario_controller:
+        sc_status = scenario_controller.get_system_status()
+        state['scenario'] = sc_status
+    else:
+        state['scenario'] = {}
+
+    state['sumo_running'] = system_state.get('sumo_running', False)
+
+    # Compute derived KPIs
+    stats = state.get('statistics', {})
+    subs = state.get('substations', [])
+    v2g_data = state.get('v2g', {})
+    v_stats = state.get('vehicle_stats', {})
+
+    total_capacity = sum(s.get('capacity_mva', 0) for s in subs)
+    total_load = stats.get('total_load_mw', state.get('total_load_mw', 0))
+    op_subs = sum(1 for s in subs if s.get('operational'))
+    total_subs = len(subs)
+    total_vehicles = v_stats.get('active_vehicles', v_stats.get('total_vehicles', 0))
+    ev_count = v_stats.get('ev_vehicles', 0)
+
+    state['kpis'] = {
+        'capacity_utilization_pct': round(total_load / total_capacity * 100, 1) if total_capacity else 0,
+        'grid_health_pct': round(op_subs / total_subs * 100, 1) if total_subs else 100,
+        'ev_adoption_pct': round(ev_count / total_vehicles * 100, 1) if total_vehicles else 0,
+        'v2g_participation_pct': round((v2g_data.get('active_sessions_count', 0)) / max(ev_count, 1) * 100, 1) if ev_count else 0,
+        'avg_substation_load_pct': round(total_load / total_capacity * 100, 1) if total_capacity else 0,
+        'cable_integrity_pct': round(
+            (stats.get('operational_primary_cables', 0) + stats.get('operational_secondary_cables', 0)) /
+            max(stats.get('total_primary_cables', 0) + stats.get('total_secondary_cables', 0), 1) * 100, 1
+        ),
+        'vehicles_charging_pct': round((v_stats.get('vehicles_charging', 0)) / max(total_vehicles, 1) * 100, 1) if total_vehicles else 0,
+    }
+
+    return state
+
+
+@app.route('/api/snapshot/state')
+def snapshot_state():
+    """Return comprehensive system state as JSON (server-side snapshot)."""
+    try:
+        state = _collect_comprehensive_state()
+        state['meta'] = {
+            'snapshot_id': f"SNAP-{int(datetime.now().timestamp() * 1000)}",
+            'timestamp': datetime.now().isoformat(),
+            'generated_by': 'Manhattan Grid Control — Server'
+        }
+        return jsonify(state)
+    except Exception as e:
+        print(f"Snapshot state failed: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/report/generate', methods=['POST'])
+def generate_report():
+    """Generate a comprehensive system status report PDF with optional AI analysis."""
+    try:
+        data = request.json or {}
+        notes = data.get('notes', None)
+        screenshot_b64 = data.get('screenshot_base64', None)
+
+        state = _collect_comprehensive_state()
+
+        from report_generator import ReportGenerator
+        generator = ReportGenerator()
+        report_url = generator.generate_status_report(
+            state,
+            notes=notes,
+            screenshot_base64=screenshot_b64
+        )
+
+        return jsonify({
+            'success': True,
+            'url': report_url,
+            'message': 'Report generated successfully'
+        })
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        print(f"Report generation failed: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500
 @app.route('/api/restore_all', methods=['POST'])
 def restore_all():
     """Restore all substations"""
@@ -1492,14 +1826,14 @@ def v2g_status():
                 'base_load_mw': base_power_need_mw,
                 'v2g_providing_mw': active_v2g_power_mw,
                 'remaining_need_mw': remaining_power_need_mw,
-                'vehicles_discharging': sum(1 for v in v2g_data['active_vehicles'] if v['substation'] == substation_name),
+                'vehicles_discharging': sum(1 for v in v2g_data['active_sessions'] if v['substation'] == substation_name),
                 'restoration_progress': (v2g_data.get('energy_delivered', {}).get(substation_name, 0) /
                                        max(v2g_data.get('energy_required', {}).get(substation_name, 1), 1)) * 100
             }
 
     # Add system-wide real-time metrics
     v2g_data['system_metrics'] = {
-        'total_v2g_power_mw': v2g_data['active_sessions'] * 0.25,  # 250kW per vehicle
+        'total_v2g_power_mw': len(v2g_data['active_sessions']) * 0.25,  # 250kW per vehicle
         'total_substations_needing_power': len(v2g_data['enabled_substations']),
         'total_power_deficit_mw': sum(
             integrated_system.substations[s]['load_mw']
@@ -1508,14 +1842,14 @@ def v2g_status():
         ),
         'effective_power_deficit_mw': sum(
             max(0, integrated_system.substations[s]['load_mw'] -
-                sum(0.25 for v in v2g_data['active_vehicles'] if v['substation'] == s))
+                sum(0.25 for v in v2g_data['active_sessions'] if v['substation'] == s))
             for s in v2g_data['enabled_substations']
             if s in integrated_system.substations
         )
     }
 
     # Log for debugging
-    if v2g_data['active_sessions'] > 0:
+    if len(v2g_data.get('active_sessions', [])) > 0:
         print(f"[V2G STATUS] Active sessions: {v2g_data['active_sessions']}")
         print(f"[V2G STATUS] Total V2G power: {v2g_data['system_metrics']['total_v2g_power_mw']:.2f} MW")
         print(f"[V2G STATUS] Power deficit: {v2g_data['system_metrics']['total_power_deficit_mw']:.2f} MW -> "
@@ -1682,78 +2016,75 @@ def ai_predict():
 
 @app.route('/api/ai/chat', methods=['POST'])
 def ai_chat():
-    """WORLD-CLASS AI CHAT - True system control and intelligence."""
+    """AI CHAT — Agentic tool-calling with fallback chain."""
     from datetime import datetime
+    import asyncio
     try:
         body = request.get_json() or {}
         message = body.get('message', '')
-        user_id = body.get('user_id', 'system_operator')
+        user_id = body.get('user_id', 'web_user')
 
         if not message:
             return jsonify({'error': 'Message is required'}), 400
 
-        # FORCE USE ULTRA-INTELLIGENT CHATBOT - PRIORITY #1 (With typo correction)
-        print(f"[DEBUG] Processing message: {message}")
-        print(f"[DEBUG] ultra_chatbot available: {ultra_chatbot is not None}")
-        print(f"[DEBUG] world_class_ai available: {world_class_ai is not None}")
-
-        # TRY ULTRA-INTELLIGENT CHATBOT FIRST (with typo correction and suggestions)
-        print(f"[API /ai/chat] ultra_chatbot exists: {ultra_chatbot is not None}")
-        if ultra_chatbot:
-            print(f"[DEBUG] ✅ ROUTING TO ULTRA-INTELLIGENT CHATBOT for message: {message}")
+        # PRIORITY 1: AGENTIC CHATBOT (OpenAI function calling)
+        if 'agentic_chatbot' in globals() and agentic_chatbot and agentic_chatbot.is_available():
+            print(f"[API /ai/chat] → AGENTIC CHATBOT: {message}")
             try:
-                import asyncio
-                user_id = body.get('user_id', 'web_user')
-                print(f"[DEBUG] Calling ultra_chatbot.chat() with message='{message}', user_id='{user_id}'")
-                ai_response = asyncio.run(ultra_chatbot.chat(message, user_id=user_id))
-                print(f"[DEBUG] Ultra-Intelligent Chatbot SUCCESS: {ai_response}")
+                ai_response = asyncio.run(agentic_chatbot.chat(message, user_id=user_id))
 
-                # CRITICAL FIX: Ensure proper response format for scenario-director.js
-                # Ultra chatbot returns {'text': ...}, but scenario expects {'response': ...}
+                # Check if agentic chatbot wants to fall back
+                if ai_response.get('fallback'):
+                    print(f"[API /ai/chat] Agentic chatbot requested fallback")
+                    raise Exception("Agentic fallback requested")
+
                 response_text = ai_response.get('text', '') if isinstance(ai_response, dict) else str(ai_response)
                 return jsonify({
                     'status': 'success',
                     'response': response_text,
-                    'full_data': ai_response  # Include full response for debugging
+                    'full_data': ai_response
                 })
             except Exception as e:
-                print(f"[ERROR] Ultra-Intelligent Chatbot error: {e}")
+                print(f"[API /ai/chat] Agentic chatbot error: {e}")
                 import traceback
                 traceback.print_exc()
-                # Fallback to world-class AI if ultra chatbot fails
+                # Fall through to ultra_chatbot
 
-        # FALLBACK TO WORLD-CLASS AI CONTROLLER
+        # PRIORITY 2: ULTRA-INTELLIGENT CHATBOT (rule-based fallback)
+        if ultra_chatbot:
+            print(f"[API /ai/chat] → ULTRA CHATBOT (fallback): {message}")
+            try:
+                ai_response = asyncio.run(ultra_chatbot.chat(message, user_id=user_id))
+                response_text = ai_response.get('text', '') if isinstance(ai_response, dict) else str(ai_response)
+                return jsonify({
+                    'status': 'success',
+                    'response': response_text,
+                    'full_data': ai_response
+                })
+            except Exception as e:
+                print(f"[API /ai/chat] Ultra chatbot error: {e}")
+                import traceback
+                traceback.print_exc()
+
+        # PRIORITY 3: WORLD-CLASS AI CONTROLLER (last resort)
         if world_class_ai:
-            print(f"[DEBUG] ROUTING TO WORLD-CLASS AI for message: {message}")
+            print(f"[API /ai/chat] → WORLD-CLASS AI (last resort): {message}")
             try:
                 ai_response = world_class_ai.process_intelligent_command(message)
-                print(f"[DEBUG] World-class AI SUCCESS: {ai_response}")
                 return jsonify(ai_response)
             except Exception as e:
-                print(f"[ERROR] World-class AI error: {e}")
-                import traceback
-                traceback.print_exc()
-                # Even if there's an error, still try to use world-class AI fallback
+                print(f"[API /ai/chat] World-class AI error: {e}")
                 return jsonify({
-                    'text': f'[ERROR] Command failed: {str(e)}\\n\\nTry: "Turn off Times Square substation", "Show me Penn Station area", "System status"',
+                    'text': f'Command failed: {str(e)}',
                     'type': 'error',
-                    'intent': 'system_control',
-                    'confidence': 0.5,
-                    'system_controlled': False,
                     'timestamp': datetime.now().isoformat()
                 })
-        else:
-            print(f"[CRITICAL] World-class AI NOT AVAILABLE - this should never happen!")
-            return jsonify({
-                'text': 'CRITICAL ERROR: World-class AI controller not initialized',
-                'type': 'error',
-                'intent': 'system_error',
-                'confidence': 0.0,
-                'system_controlled': False,
-                'timestamp': datetime.now().isoformat()
-            })
 
-        # This should never be reached - world-class AI should always be available
+        return jsonify({
+            'text': 'No AI system available. Please check configuration.',
+            'type': 'error',
+            'timestamp': datetime.now().isoformat()
+        })
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -1995,6 +2326,8 @@ def ai_map_focus_status():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+
 # ============================================================================
 # HTML TEMPLATE LOADER & INITIALIZATION
 # ============================================================================
@@ -2036,4 +2369,4 @@ if __name__ == '__main__':
     print("     - Fail substations to see EV stations go offline")
     print("=" * 60)
 
-    app.run(debug=False, port=5000)
+    socketio.run(app, debug=False, port=5000, allow_unsafe_werkzeug=True)

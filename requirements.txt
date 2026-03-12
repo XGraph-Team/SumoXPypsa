@@ -55,6 +55,9 @@ requests>=2.31.0
 # Scientific Computing
 scipy>=1.11.0
 
+# Report Generation
+fpdf2>=2.7.0
+
 # SUMO Traffic Simulation (External dependency - install separately)
 # Download from: https://eclipse.org/sumo/
 # traci (included with SUMO)
